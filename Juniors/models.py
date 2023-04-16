@@ -17,10 +17,7 @@ class Juniors(models.Model):
     age = models.PositiveIntegerField(validators=[
         MinValueValidator(0, 'Age cannot be negative.')
     ])
-    skills = models.TextField(validators=[
-        RegexValidator(
-            r'^[a-zA-Z ,.\'-]*$', 'Only letters, spaces, commas, periods, apostrophes and hyphens are allowed.')
-    ])
+    skills = models.TextField()
     summary = models.TextField()
     cv_file = models.FileField(upload_to='media', validators=[
         FileExtensionValidator(['pdf'], 'Only pdf files are allowed.')
