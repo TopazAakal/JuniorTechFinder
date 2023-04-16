@@ -74,6 +74,18 @@ main {
     margin-bottom: 20px;
 }
 
+.profile-candidate {
+    margin-left: 50px;
+}
+
+.profile-pic {
+    width: 150px;
+    height: 150px;
+    object-fit: cover;
+    object-position: right;
+    border-radius: 50%;
+}
+
 button {
     background-color: #333;
     border: none;
@@ -88,6 +100,19 @@ button {
 
 button:hover {
     background-color: #555;
+}
+
+.container.my-4 {
+    text-align: center;
+}
+
+.form-group {
+    margin-bottom: 5px;
+}
+
+#btn-form {
+    font-size: 15px;
+    margin-bottom: 10px;
 }
 
 footer {
