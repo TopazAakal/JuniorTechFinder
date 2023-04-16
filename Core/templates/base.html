@@ -24,6 +24,7 @@
                 <li><a href="#">About Us</a></li>
                 <li><a href="#">Contact Us</a></li>
                 {% if user.is_authenticated %}
+                <li><a href="createProfile/">Create profile</a></li>
                 <li>
                     <form method="POST" action="{% url 'logout' %}">
                         {% csrf_token %}
