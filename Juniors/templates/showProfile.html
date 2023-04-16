@@ -1,0 +1,18 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block content %}
+
+<div class="profile-candidate">
+    <h1>My Profile</h1>
+    <img class="profile-pic" src="{{ junior.photo.url }}" alt="{{ junior.name }}'s profile picture ">
+    <h3>Full Name: {{ junior.full_name }}</h3>
+    <h3>Email: {{ junior.email }}</h3>
+    <h3>Phone Number: {{ junior.age }}</h3>
+    <h3>City: {{ junior.city }}</h3>
+    <h3>Age: {{ junior.age }}</h3>
+    <h3>Skills: {{junior.skills}}</h3>
+    <h3>Summary: {{junior.summary}}</h3>
+</div>
+
+{% endblock %}

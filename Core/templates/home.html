@@ -1,0 +1,25 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block content %}
+
+<main class="main-container">
+    <div class="content-container">
+        <strong>
+            <h1>Welcome to JobTechFinder</h1>
+        </strong>
+        <p>If you're looking for a job, look no further! <br>
+            Our site offers a wide range of job opportunities across various industries.
+            We offer tools to help you improve your resume and improve chances of getting hired
+            <br><br>
+            Sign up now and start your job search today!
+        </p>
+        <br>
+        <button>Try us!</button>
+    </div>
+    <div class="image-container">
+        <img src="{% static 'media/home.jpg' %}" alt="homepage-picture">
+    </div>
+</main>
+
+{% endblock %}
