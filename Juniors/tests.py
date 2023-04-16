@@ -1,8 +1,8 @@
 
 from django.test import RequestFactory, TestCase
 from django.contrib.messages.storage.fallback import FallbackStorage
-from .views import createProfile
-from .forms import JuniorForm
+from Juniors.views import createProfile
+from Juniors.forms import JuniorForm
 
 
 class CreateProfileTestCase(TestCase):
