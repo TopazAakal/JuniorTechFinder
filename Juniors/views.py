@@ -15,7 +15,6 @@ def createProfile(request):
             except Exception as e:
                 messages.error(request, f"Error saving form: {e}")
         else:
-            print("there is a problem with the form")
             print(form.errors)
             messages.error(request, "Form is not valid.")
     else:
