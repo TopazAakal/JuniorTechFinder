@@ -1,6 +1,7 @@
 from django.shortcuts import render, redirect
-from django.contrib import auth
+from django.contrib import auth, messages
 from .forms import LoginForm
+from django.contrib.auth import logout
 
 
 def login_view(request):
@@ -18,3 +19,9 @@ def login_view(request):
         form = LoginForm()
 
     return render(request, 'login.html', {'form': form})
+
+
+def logout_view(request):
+    logout(request)
+    messages.success(request, 'You have been logged out successfully.')
+    return redirect('home')
