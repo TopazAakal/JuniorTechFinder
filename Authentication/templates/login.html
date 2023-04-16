@@ -18,7 +18,11 @@
   <h1>Junior Tech Finder</h1>
 
   {% if form.errors %}
-  <p class="error">Please correct the errors below:</p>
+  <div class="alert alert-danger">
+    {% for field, errors in form.errors.items %}
+    {{ errors }}
+    {% endfor %}
+  </div>
   {% endif %}
 
   <form method="post">
