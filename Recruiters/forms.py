@@ -2,6 +2,7 @@ from django import forms
 from .models import Recruiters
 
 
+
 class RecruitersForm(forms.ModelForm):
     class Meta:
         model = Recruiters
