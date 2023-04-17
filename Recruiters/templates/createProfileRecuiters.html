@@ -1,0 +1,73 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block content %}
+
+<!-- Create Profile form -->
+<div class="create rec_prof">
+    <h1>Create Profile</h1>
+    <form action="{% url 'createProfile' %}" method="POST" enctype="multipart/form-data">
+        {% csrf_token %}
+        <div class="form-group">
+            <label for="full_name"><strong>Full Name: </strong></label>
+            <input type="text" class="form-control" id="full_name" name="full_name" required pattern="[A-Za-z ]+">
+            <span id="nameError" class="text-danger"></span>
+        </div>
+        <br>
+        <div class="form-group">
+            <label for="email"><strong>Email:</strong></label>
+            <input type="email" class="form-control" id="email" name="email" required>
+            <span id="emailError" class="text-danger"></span>
+        </div>
+        <br>
+
+        <div class="form-group">
+            <label for="phone_number"><strong>Phone Number:</strong></label>
+            <input type="tel" class="form-control" id="phone_number" name="phone_number" required pattern="[0-9]{10}">
+            <span id="phoneError" class="text-danger"></span>
+
+        </div>
+        <br>
+
+        <div class=" form-group">
+            <label for="city"><strong>City:</strong></label>
+            <input type="text" class="form-control" id="city" name="city" required pattern="[A-Za-z\s\.\-\,]+">
+            <span id="cityError" class="text-danger"></span>
+        </div>
+        <br>
+
+        <div class="form-group">
+            <label for="age"><strong>Age:</strong></label>
+            <input type="number" class="form-control" id="age" name="age" required min="1">
+            <span id="ageError" class="text-danger"></span>
+        </div>
+        <br>
+
+        <div class="form-group">
+            <label for="summary"><strong>Summary:</strong></label>
+            <textarea class="form-control" id="summary" name="summary" rows="4"></textarea>
+        </div>
+        <br>
+
+        <div class="form-group">
+            <label for="company"><strong>Summary:</strong></label>
+            <textarea class="form-control" id="company" name="company" rows="4"></textarea>
+        </div>
+        <br>
+
+        <div class="form-group">
+            <label for="photo"><strong>Upload Photo:</strong></label>
+            <input type="file" class="form-control-file" id="photo" name="photo" required accept=".jpg,.jpeg,.png,.gif">
+            <br>
+            <small class="form-text text-muted">Only jpg, jpeg, png and gif files are allowed.</small>
+            <span id="photoError" class="text-danger"></span>
+        </div>
+        <br>
+
+        <button type="submit" id="btn-form" class="btn btn-primary">Save</button>
+        <br>
+
+    </form>
+</div>
+
+{% endblock %}

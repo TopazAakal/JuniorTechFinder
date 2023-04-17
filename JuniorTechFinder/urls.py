@@ -17,6 +17,7 @@ from django.contrib import admin
 from django.urls import path
 import Core.views
 import Juniors.views
+import Recruiters.views
 import Authentication.views
 from django.conf import settings
 from django.conf.urls.static import static
@@ -26,6 +27,8 @@ urlpatterns = [
     path('', Core.views.homePage, name='home'),
     path('createProfile/', Juniors.views.createProfile, name='createProfile'),
     path('showProfile/<int:pk>', Juniors.views.showProfile, name='showProfile'),
+    path('showProfileRecruiter/<int:pk>', Recruiters.views.showProfile, name='showProfileRecruiter'),
+    path('createProfileRecruiters/<int:pk>', Recruiters.views.createProfile, name='createProfileRecruiters'),
     path('admin/', admin.site.urls),
     path('login/', Authentication.views.login_view, name='login'),
     path('signup/', Authentication.views.signup_view, name='signup'),
