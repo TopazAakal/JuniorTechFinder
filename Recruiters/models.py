@@ -2,7 +2,7 @@ from django.db import models
 from django.core.validators import RegexValidator, FileExtensionValidator, MinValueValidator
 
 
-class Recuiters(models.Model):
+class Recruiters(models.Model):
     full_name = models.CharField(max_length=100, validators=[
         RegexValidator(r'^[a-zA-Z ]*$', 'Only letters and spaces are allowed.')
     ])
@@ -17,8 +17,8 @@ class Recuiters(models.Model):
     age = models.PositiveIntegerField(validators=[
         MinValueValidator(0, 'Age cannot be negative.')
     ])
-    summary = models.TextField()
     company = models.TextField()
+    summary = models.TextField()
     photo = models.ImageField(upload_to='media', blank=True, null=True, validators=[
         FileExtensionValidator(['jpg', 'jpeg', 'png', 'gif'],
                                'Only jpg, jpeg, png and gif files are allowed.')

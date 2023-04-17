@@ -1,10 +1,11 @@
 from django import forms
-from .models import Recuiters
+from .models import Recruiters
+
 
 
 class RecruitersForm(forms.ModelForm):
     class Meta:
-        model = Recuiters
+        model = Recruiters
         fields = ['full_name', 'email', 'phone_number', 'city',
                   'age', 'summary', 'company', 'photo']
         widgets = {
@@ -13,7 +14,7 @@ class RecruitersForm(forms.ModelForm):
             'phone_number': forms.TextInput(attrs={'class': 'form-control'}),
             'city': forms.TextInput(attrs={'class': 'form-control'}),
             'age': forms.NumberInput(attrs={'class': 'form-control'}),
-            'summary': forms.Textarea(attrs={'class': 'form-control'}),
             'company': forms.Textarea(attrs={'class': 'form-control'}),
+            'summary': forms.Textarea(attrs={'class': 'form-control'}),
             'photo': forms.ClearableFileInput(attrs={'class': 'form-control'}),
         }
