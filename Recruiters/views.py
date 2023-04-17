@@ -9,9 +9,9 @@ def createProfileRecruiters(request):
         form = RecruitersForm(request.POST, request.FILES)
         if form.is_valid():
             try:
-                recuriter = form.save()  # save the new Junior instance to the database
+                recruiter = form.save()  # save the new Junior instance to the database
                 # redirect to the detail page for the new Junior instance
-                return redirect('createProfileRecruiters.html', pk=recuriter.pk)
+                return redirect('createProfileRecruiters.html', pk=recruiter.pk)
             except Exception as e:
                 messages.error(request, f"Error saving form: {e}")
         else:
@@ -24,5 +24,5 @@ def createProfileRecruiters(request):
 
 def showProfileRecruiter(request, pk):
     # retrieve the Junior instance with the given primary key, or return a 404 error
-    recuiter = get_object_or_404(Recruiters, pk=pk)
-    return render(request, 'showProfileRecruiter.html', {'recuiter': recruiter})
+    recruiter = get_object_or_404(Recruiters, pk=pk)
+    return render(request, 'showProfileRecruiter.html', {'recruiter': recruiter})
