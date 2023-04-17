@@ -4,7 +4,7 @@ from .models import Recuiters
 from .forms import RecruitersForm
 
 
-def createProfile(request):
+def createProfileRecruiters(request):
     if request.method == 'POST':
         form = RecruitersForm(request.POST, request.FILES)
         if form.is_valid():
@@ -22,7 +22,7 @@ def createProfile(request):
     return render(request, 'createProfileRecruiters.html', {'form': form})
 
 
-def showProfile(request, pk):
+def showProfileRecruiter(request, pk):
     # retrieve the Junior instance with the given primary key, or return a 404 error
     recuiter = get_object_or_404(Recuiters, pk=pk)
     return render(request, 'showProfileRecuiter.html', {'recuiter': recuiter})
