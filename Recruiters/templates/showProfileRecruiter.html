@@ -1,0 +1,18 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block content %}
+
+<div class="profile-recruiter">
+    <h1>My Profile</h1>
+    <img class="profile-pic" src="{{ recruiter.photo.url }}" alt="{{ recruiter.name }}'s profile picture ">
+    <h3>Full Name: {{ recruiter.full_name }}</h3>
+    <h3>Email: {{ recruiter.email }}</h3>
+    <h3>Phone Number: {{ recruiter.age }}</h3>
+    <h3>City: {{ recruiter.city }}</h3>
+    <h3>Age: {{ recruiter.age }}</h3>
+    <h3>Summary: {{recruiter.summary}}</h3>
+    <h3>Company: {{recruiter.company}}<h3>
+</div>
+
+{% endblock %}

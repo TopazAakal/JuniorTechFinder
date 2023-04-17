@@ -42,6 +42,7 @@ class CreateProfileTestCase(TestCase):
             'city': 'Tel Aviv',
             'age': '-1',  # invalid
             'summary': 'lets test it',
+            'company':'del',
             'photo': 'path/to/photo.pdf',  # invalid
         }
         # create a POST request object with the invalid form data
