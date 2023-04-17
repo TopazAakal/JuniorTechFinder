@@ -22,7 +22,7 @@
             <ul>
                 <li><a href="/">Home</a></li>
                 <li><a href="{% url 'aboutUs' %}">About Us</a></li>
-                <li><a href="#">Contact Us</a></li>
+                <li><a href="{% url 'contactUs' %}">Contact Us</a></li>
                 {% if user.is_authenticated %}
                 <li><a href="createProfile/">Create profile</a></li>
                 <li>
