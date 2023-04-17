@@ -6,20 +6,79 @@
 <main class="main-container">
     <div class="content-container">
         <strong>
-            <h1>Welcome to JobTechFinder</h1>
+            <h1 style="color: #204f8c;">Welcome to JobTechFinder</h1>
         </strong>
         <p>If you're looking for a job, look no further! <br>
             Our site offers a wide range of job opportunities across various industries.
-            We offer tools to help you improve your resume and improve chances of getting hired
-            <br><br>
+            We offer tools to help you improve your resume and improve chances of getting hired.<br>
             Sign up now and start your job search today!
         </p>
         <br>
-        <button>Try us!</button>
+        <a href="/login">
+            <button>Try us!</button>
+        </a>
+        <br><br>
     </div>
     <div class="image-container">
         <img src="{% static 'media/home.jpg' %}" alt="homepage-picture">
     </div>
+
+    <div class="home-icons">
+        <div class="description" style="background-color: #e1edfd;">
+            <p></p>
+            <h2 style="font-size: 40px; text-align: center;">Reliable. Secure. Professional.</h2>
+            <p></p>
+        </div>
+
+        <div class="cm-container dis-flex"
+            style="display: flex; justify-content: center; background-color: #e1edfd; margin: 40px; padding: 10px;">
+
+            <div class="column-container" style="padding: 20px;">
+                <div class="images-container">
+                    <img src="{% static 'media/reliable.png' %}" data-class="same-height" alt="taxes icon"
+                        loading="lazy" width="100" height="100" style="max-width: 100%; height: auto;">
+                </div>
+
+
+                <h3>It's Our Reliability, Not Yours</h3>
+
+
+                <strong style="width: 60%; text-align: center;">
+                    <p style="margin: 0;">We offer a reliable job search platform for juniors
+                        looking to break into the software industry.
+                    </p>
+                </strong>
+            </div>
+
+            <div class="column-container" style="padding: 20px;">
+                <div class="images-container">
+                    <img src="{% static 'media/support.png' %}" data-class="same-height" alt="contactSupport"
+                        loading="lazy" width="100" height="100" style="max-width: 100%; height: auto;">
+                </div>
+                <h3>Always-on 24/7 Support</h3>
+                <strong style="width: 60%; text-align: center;">
+                    <p style="margin: 0;">Morning, noon, or night our support team's logged on. Have a question? We'll
+                        be there to answer
+                        it.
+                    </p>
+                </strong>
+            </div>
+
+            <div class="column-container" style="padding: 20px;">
+                <div class="images-container">
+                    <img src="{% static 'media/secure.png' %}" data-class="same-height" alt="Your IPs Safe with Us"
+                        loading="lazy" width="100" height="100" style="max-width: 100%; height: auto;">
+                </div>
+                <strong style="width: 60%; text-align: center;">
+                    <h3>Your IPs Safe with Us</h3>
+                    <p style="margin: 0;">Your personal information and data are kept secure on our website.</p>
+                </strong>
+            </div>
+
+        </div>
+
+    </div>
+
 </main>
 
 {% endblock %}

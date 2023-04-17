@@ -29,5 +29,6 @@ urlpatterns = [
     path('admin/', admin.site.urls),
     path('login/', Authentication.views.login_view, name='login'),
     path('signup/', Authentication.views.signup_view, name='signup'),
+    path('logout/', Authentication.views.logout_view, name='logout'),
 
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

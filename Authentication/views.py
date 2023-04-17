@@ -1,10 +1,8 @@
 from django.shortcuts import render, redirect
-from django.contrib import auth
 from .forms import LoginForm, SignUpForm
-from django.contrib.auth.forms import UserCreationForm
-from django.contrib.auth import login, authenticate
-from django.contrib import messages
+from django.contrib.auth import login, authenticate, logout
 from django.contrib.auth.models import User
+from django.contrib import auth, messages
 
 
 # This view is responsible for handling the user login functionality
@@ -64,3 +62,9 @@ def signup_view(request):
 
     # Render the signup page with the form object
     return render(request, 'signup.html', {'form': form})
+
+
+def logout_view(request):
+    logout(request)
+    messages.success(request, 'You have been logged out successfully.')
+    return redirect('home')
