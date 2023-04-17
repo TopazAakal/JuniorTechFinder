@@ -28,5 +28,6 @@ urlpatterns = [
     path('showProfile/<int:pk>', Juniors.views.showProfile, name='showProfile'),
     path('admin/', admin.site.urls),
     path('login/', Authentication.views.login_view, name='login'),
+    path('signup/', Authentication.views.signup_view, name='signup'),
 
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
