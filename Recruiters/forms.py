@@ -2,7 +2,7 @@ from django import forms
 from .models import Recuiters
 
 
-class JuniorForm(forms.ModelForm):
+class RecruitersForm(forms.ModelForm):
     class Meta:
         model = Recuiters
         fields = ['full_name', 'email', 'phone_number', 'city',
