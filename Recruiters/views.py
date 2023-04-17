@@ -9,9 +9,9 @@ def createProfileRecruiters(request):
         form = RecruitersForm(request.POST, request.FILES)
         if form.is_valid():
             try:
-                recuiter = form.save()  # save the new Junior instance to the database
+                recuriter = form.save()  # save the new Junior instance to the database
                 # redirect to the detail page for the new Junior instance
-                return redirect('createProfileRecruiters.html', pk=recruiter.pk)
+                return redirect('createProfileRecruiters.html', pk=recuriter.pk)
             except Exception as e:
                 messages.error(request, f"Error saving form: {e}")
         else:
