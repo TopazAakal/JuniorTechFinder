@@ -1,6 +1,6 @@
 from django.shortcuts import get_object_or_404, render, redirect
 from django.contrib import messages
-from .models import Recuiters
+from .models import Recruiters
 from .forms import RecruitersForm
 
 
@@ -11,7 +11,7 @@ def createProfileRecruiters(request):
             try:
                 recuiter = form.save()  # save the new Junior instance to the database
                 # redirect to the detail page for the new Junior instance
-                return redirect('createProfileRecruiters.html', pk=recuiter.pk)
+                return redirect('createProfileRecruiters.html', pk=recruiter.pk)
             except Exception as e:
                 messages.error(request, f"Error saving form: {e}")
         else:
@@ -24,5 +24,5 @@ def createProfileRecruiters(request):
 
 def showProfileRecruiter(request, pk):
     # retrieve the Junior instance with the given primary key, or return a 404 error
-    recuiter = get_object_or_404(Recuiters, pk=pk)
-    return render(request, 'showProfileRecuiter.html', {'recuiter': recuiter})
+    recuiter = get_object_or_404(Recruiters, pk=pk)
+    return render(request, 'showProfileRecruiter.html', {'recuiter': recruiter})
