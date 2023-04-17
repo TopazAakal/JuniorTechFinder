@@ -111,3 +111,20 @@ footer .heart {
   color: #B22222;
   font-size: 1.5em
 }
+
+
+.form-control {
+  padding: 10px;
+  border-radius: 5px;
+  border: 1px solid #ccc;
+  margin-bottom: 10px;
+}
+
+.alert {
+  padding: 10px;
+  border-radius: 5px;
+  border: 1px solid #f00;
+  background-color: #ffe2e2;
+  margin-bottom: 10px;
+  color: #f00;
+}
