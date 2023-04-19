@@ -1,74 +1,115 @@
 
-from django.test import RequestFactory, TestCase
-from django.contrib.messages.storage.fallback import FallbackStorage
-from Juniors.views import createProfile
+from django.test import TestCase, Client
+from django.urls import reverse
+from Juniors.models import Juniors
 from Juniors.forms import JuniorForm
+from django.contrib.auth.models import User
+from django.core.files.uploadedfile import SimpleUploadedFile
 
 
 class CreateProfileTestCase(TestCase):
+
     def setUp(self):
-        self.factory = RequestFactory()
+        self.client = Client()
+        self.user = User.objects.create_user(
+            username='testuser',
+            email='testuser@test.com',
+            password='testpass'
+        )
+        self.client.login(username='testuser', password='testpass')
 
-    def test_create_profile_valid_form(self):
-        # create a dict of valid form data to be used in the test
-        data = {
-            'full_name': 'John Test',
-            'email': 'john.test@example.com',
-            'phone_number': '1234567890',
-            'city': 'Tel Aviv',
-            'age': '25',
-            'skills': 'Team work, Python, JavaScript',
-            'summary': 'A junior developer with experience in web development',
-            'cv_file': 'path/to/cv.pdf',
-            'photo': 'path/to/photo.jpg',
-        }
-        # create a POST request with the form data
-        request = self.factory.post('/create_profile/', data)
-        # create a JuniorForm object with the POST data and files from the request object
-        form = JuniorForm(request.POST, request.FILES)
-        # create a session object and attach it to the request object
-        request.session = {}
-        # create a message storage object and attach it to the request object
-        messages = FallbackStorage(request)
-        setattr(request, '_messages', messages)
-        # call the view function with the request object and store the response object
-        response = createProfile(request)
-        # assert that the response status code is 302 (a redirect)
-        self.assertEqual(response.status_code, 302)  # expect redirect
-
-    def test_create_profile_invalid_form(self):
-        # create a dict of invalid form data to be used in the test
-        data = {
-            'full_name': '',  # invalid
-            'email': '',  # invalid
-            'phone_number': '123',  # invalid
-            'city': 'Tel Aviv',
-            'age': '-1',  # invalid
-            'skills': 'Team work, Python, JavaScript',
-            'summary': 'A junior developer with experience in web development',
-            'cv_file': 'path/to/cv.txt',  # invalid
-            'photo': 'path/to/photo.pdf',  # invalid
-        }
-        # create a POST request object with the invalid form data
-        request = self.factory.post('/create_profile/', data)
-        # create a JuniorForm object with the POST data and files from the request object
-        form = JuniorForm(request.POST, request.FILES)
-        # create a session object and attach it to the request object
-        request.session = {}
-        # create a message storage object and attach it to the request object
-        messages = FallbackStorage(request)
-        setattr(request, '_messages', messages)
-        # call the createProfile view with the request object and store the response object
-        response = createProfile(request)
-        # expect to stay on the same page
+    def test_create_profile_GET(self):
+        response = self.client.get(reverse('createProfile'))
         self.assertEqual(response.status_code, 200)
-        # assert that the response contains the error message "Form is not valid."
-        self.assertContains(response, "Form is not valid.")
-
-    def test_create_profile_get(self):
-        request = self.factory.get('/create_profile/')
-        response = createProfile(request)
-        # expect successful GET request
-        self.assertEqual(response.status_code, 200)
-        # expect form instance in the response context
+        self.assertTemplateUsed(response, 'createProfile.html')
         self.assertIsInstance(response.context['form'], JuniorForm)
+
+    def test_create_profile_POST_valid(self):
+
+        # create a valid form data dictionary
+        form_data = {
+            'full_name': 'Test User',
+            'email': 'testuser@test.com',
+            'phone_number': '1234567890',
+            'city': 'Test City',
+            'age': 25,
+            'skills': 'Test Skills',
+            'summary': 'Test Summary',
+        }
+
+        # create a valid POST request with the form data
+        response = self.client.post(reverse('createProfile'), data=form_data)
+
+        # check that the response status code is 302 (redirect)
+        self.assertEqual(response.status_code, 302)
+
+        # check that the new Junior instance was created in the database
+        self.assertEqual(Juniors.objects.count(), 1)
+
+        # check that the new Junior instance has the correct attributes
+        junior = Juniors.objects.first()
+        self.assertEqual(junior.full_name, 'Test User')
+        self.assertEqual(junior.email, 'testuser@test.com')
+        self.assertEqual(junior.phone_number, '1234567890')
+        self.assertEqual(junior.city, 'Test City')
+        self.assertEqual(junior.age, 25)
+        self.assertEqual(junior.skills, 'Test Skills')
+        self.assertEqual(junior.summary, 'Test Summary')
+
+    def test_create_profile_POST_invalid(self):
+
+        # create an invalid form data dictionary
+        form_data = {
+            'full_name': 'Test User',
+            'email': '',  # invalid email address
+            'phone_number': '123456789',  # phone number is too short
+            'city': '',  # city field is required
+            'age': -1,  # age is negative
+            'skills': 'Test Skills',
+            'summary': 'Test Summary'
+        }
+
+        # create a POST request with the invalid form data
+        response = self.client.post(reverse('createProfile'), data=form_data)
+
+        # check that the response status code is 200 (form submission failed)
+        self.assertEqual(response.status_code, 200)
+
+        # check that the new Junior instance was not created in the database
+        self.assertEqual(Juniors.objects.count(), 0)
+
+
+class ShowProfileTestCase(TestCase):
+    def setUp(self):
+        # create a Junior instance
+        self.junior = Juniors.objects.create(
+            full_name='Test User',
+            email='testuser@test.com',
+            phone_number='1234567890',
+            city='Test City',
+            age=25,
+            skills='Test Skills',
+            summary='Test Summary',
+            cv_file=SimpleUploadedFile('cv.pdf', b'test'),
+            photo=SimpleUploadedFile('photo.jpg', b'test')
+        )
+
+        # create a Django test client
+        self.client = Client()
+
+    def test_showProfile_GET_valid(self):
+        # send a GET request to the showProfile view
+        response = self.client.get(
+            reverse('showProfile', args=[self.junior.pk]))
+        # check that the response status code is 200
+        self.assertEqual(response.status_code, 200)
+        # check that the response contains the correct Junior instance
+        self.assertEqual(response.context['junior'], self.junior)
+
+    def test_showProfile_GET_invalid(self):
+        # send a GET request to the showProfile view with an invalid primary key
+        response = self.client.get(
+            reverse('showProfile', args=[self.junior.pk + 1]))
+
+        # check that the response status code is 404
+        self.assertEqual(response.status_code, 404)
