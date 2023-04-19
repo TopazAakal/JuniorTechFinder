@@ -19,7 +19,7 @@ class Juniors(models.Model):
     ])
     skills = models.TextField()
     summary = models.TextField()
-    cv_file = models.FileField(upload_to='media', validators=[
+    cv_file = models.FileField(upload_to='media', blank=True, null=True, validators=[
         FileExtensionValidator(['pdf'], 'Only pdf files are allowed.')
     ])
     photo = models.ImageField(upload_to='media', blank=True, null=True, validators=[

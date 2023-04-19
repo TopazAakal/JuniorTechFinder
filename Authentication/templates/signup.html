@@ -1,7 +1,7 @@
 {% extends 'base.html' %}
 
 {% block content %}
-<h2>Sign up</h2>
+<h2 style="text-align: center;">Sign up</h2>
 
 {% if form.errors %}
 <div class="alert alert-danger">
@@ -11,9 +11,11 @@
 </div>
 {% endif %}
 
-<form method="post">
-  {% csrf_token %}
-  {{ form.as_p }}
-  <button type="submit">Sign up</button>
-</form>
+<div class="signup-container" style="text-align: center; margin-bottom: 150px;">
+  <form method="post">
+    {% csrf_token %}
+    {{ form.as_p }}
+    <button type="submit">Sign up</button>
+  </form>
+</div>
 {% endblock %}

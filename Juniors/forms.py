@@ -3,6 +3,7 @@ from .models import Juniors
 
 
 class JuniorForm(forms.ModelForm):
+
     class Meta:
         model = Juniors
         fields = ['full_name', 'email', 'phone_number', 'city',
@@ -18,3 +19,8 @@ class JuniorForm(forms.ModelForm):
             'cv_file': forms.ClearableFileInput(attrs={'class': 'form-control'}),
             'photo': forms.ClearableFileInput(attrs={'class': 'form-control'}),
         }
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.fields['cv_file'].required = False
+        self.fields['photo'].required = False
