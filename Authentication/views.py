@@ -50,7 +50,9 @@ def signup_view(request):
                     'email', 'A user with that email already exists.')
                 return render(request, 'signup.html', {'form': form})
             user.username = email
+            group = form.cleaned_data.get('group')
             user.save()
+            user.groups.add(group)
             raw_password = form.cleaned_data.get('password1')
             user = authenticate(username=user.username, password=raw_password)
             # Log the user in and redirect to home page
@@ -68,4 +70,3 @@ def logout_view(request):
     logout(request)
     messages.success(request, 'You have been logged out successfully.')
     return redirect('home')
-
