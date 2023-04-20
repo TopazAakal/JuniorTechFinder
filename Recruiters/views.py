@@ -21,8 +21,19 @@ def createProfileRecruiters(request):
         form = RecruitersForm()
     return render(request, 'createProfileRecruiters.html', {'form': form})
 
-
 def showProfileRecruiter(request, pk):
-    # retrieve the Junior instance with the given primary key, or return a 404 error
     recruiter = get_object_or_404(Recruiters, pk=pk)
+
+    if request.method == 'POST':
+        recruiter.full_name = request.POST.get('full_name')
+        recruiter.email = request.POST.get('email')
+        recruiter.phone_number = request.POST.get('phone_number')
+        recruiter.city = request.POST.get('city')
+        recruiter.age = request.POST.get('age')
+        recruiter.summary = request.POST.get('summary')
+        recruiter.company = request.POST.get('company')
+        if request.FILES.get('photo'):
+            recruiter.photo = request.FILES.get('photo')       
+        recruiter.save()
+
     return render(request, 'showProfileRecruiter.html', {'recruiter': recruiter})
