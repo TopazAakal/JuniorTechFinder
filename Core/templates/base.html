@@ -1,4 +1,5 @@
 {% load static %}
+{% load my_tags %}
 
 <!DOCTYPE html>
 <html lang="en">
@@ -24,13 +25,19 @@
                 <li><a href="{% url 'aboutUs' %}">About Us</a></li>
                 <li><a href="{% url 'contactUs' %}">Contact Us</a></li>
                 {% if user.is_authenticated %}
-                <li><a href="createProfile/">Create profile</a></li>
+
+                {% if request.user|user_in_group:"Junior" %}
+                <li><a href="{% url 'createProfile' %}">Create profile</a></li>
+                {% elif request.user|user_in_group:"Recruiter" %}
+                <li><a href="{% url 'createProfileRecruiters' %}">Create profile</a></li>
+                {% endif %}
                 <li>
                     <form method="POST" action="{% url 'logout' %}">
                         {% csrf_token %}
                 <li><a href="{% url 'logout' %}">Logout</a></li>
                 </form>
                 </li>
+
                 <li style="font-weight: bold; font-size: 13px; color:bisque">
                     You are logged in as : {{ user.username }}
                 </li>
