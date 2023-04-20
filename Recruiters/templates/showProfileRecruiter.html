@@ -3,7 +3,13 @@
 
 {% block content %}
 
-<div class="profile-recruiter">
+<div class="profile-container">
+  <div class="profile-recruiter">
+    {% if saved %}
+      <div class="alert alert-success">
+        Your changes have been saved.
+      </div>
+    {% endif %}
     <h1>My Profile</h1>
     <img class="profile-pic" src="{{ recruiter.photo.url }}" alt="{{ recruiter.name }}'s profile picture ">
     <h3>Full Name: {{ recruiter.full_name }}</h3>
@@ -15,41 +21,48 @@
     <h3>Company: {{ recruiter.company }}</h3>
 
     <button id="edit-profile-button">Edit Profile</button>
+  </div>
 
-    <div id="edit-profile-section" style="display:none;">
-        <h2>Edit Profile</h2>
-        <form method="POST" enctype="multipart/form-data">
-            {% csrf_token %}
-          
-            <label for="id_full_name">Full Name:</label>
-            <input type="text" name="full_name" value="{{ recruiter.full_name }}"><br>
-            <label for="id_email">Email:</label>
-            <input type="email" name="email" value="{{ recruiter.email }}"><br>
-            <label for="id_phone_number">Phone Number:</label>
-            <input type="text" name="phone_number" value="{{ recruiter.phone_number }}"><br>
-            <label for="id_city">City:</label>
-            <input type="text" name="city" value="{{ recruiter.city }}"><br>
-            <label for="id_age">Age:</label>
-            <input type="text" name="age" value="{{ recruiter.age }}"><br>
-            <label for="id_summary">Summary:</label>
-            <textarea name="summary">{{ recruiter.summary }}</textarea><br>
-            <label for="id_company">Company:</label>
-            <input type="text" name="company" value="{{ recruiter.company }}"><br>
-            <input type="submit" value="Save Changes">
-        </form>
-    </div>
+  <div id="edit-profile-section" style="display:none;">
+    <h2>Edit Profile</h2>
+    <form method="POST" enctype="multipart/form-data">
+      {% csrf_token %}
+
+      <label for="id_full_name">Full Name:</label>
+      <input type="text" name="full_name" value="{{ recruiter.full_name }}"><br>
+      <label for="id_email">Email:</label>
+      <input type="email" name="email" value="{{ recruiter.email }}"><br>
+      <label for="id_phone_number">Phone Number:</label>
+      <input type="text" name="phone_number" value="{{ recruiter.phone_number }}"><br>
+      <label for="id_city">City:</label>
+      <input type="text" name="city" value="{{ recruiter.city }}"><br>
+      <label for="id_age">Age:</label>
+      <input type="text" name="age" value="{{ recruiter.age }}"><br>
+      <label for="id_summary">Summary:</label>
+      <textarea name="summary">{{ recruiter.summary }}</textarea><br>
+      <label for="id_company">Company:</label>
+      <input type="text" name="company" value="{{ recruiter.company }}"><br>
+      <label for="id_photo">Profile Picture:</label>
+      <input type="file" name="photo"><br>
+      <input type="submit" value="Save Changes">
+    </form>
+  </div>
 </div>
 
 <script>
-    var editButton = document.getElementById("edit-profile-button");
-    var editSection = document.getElementById("edit-profile-section");
+  var editButton = document.getElementById("edit-profile-button");
+  var editSection = document.getElementById("edit-profile-section");
+  var regularSection = document.querySelector('.profile-container > .profile-recruiter');
 
-    editButton.addEventListener("click", function() {
-        if (editSection.style.display === "none") {
-            editSection.style.display = "block";
-        } else {
-            editSection.style.display = "none";
-        }
-    });
+  editButton.addEventListener("click", function() {
+    if (editSection.style.display === "none") {
+      editSection.style.display = "block";
+      regularSection.style.display = "none";
+    } else {
+      editSection.style.display = "none";
+      regularSection.style.display = "block";
+    }
+  });
 </script>
+
 {% endblock %}
