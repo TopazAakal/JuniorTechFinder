@@ -8,11 +8,48 @@
     <img class="profile-pic" src="{{ recruiter.photo.url }}" alt="{{ recruiter.name }}'s profile picture ">
     <h3>Full Name: {{ recruiter.full_name }}</h3>
     <h3>Email: {{ recruiter.email }}</h3>
-    <h3>Phone Number: {{ recruiter.age }}</h3>
+    <h3>Phone Number: {{ recruiter.phone_number }}</h3>
     <h3>City: {{ recruiter.city }}</h3>
     <h3>Age: {{ recruiter.age }}</h3>
-    <h3>Summary: {{recruiter.summary}}</h3>
-    <h3>Company: {{recruiter.company}}<h3>
+    <h3>Summary: {{ recruiter.summary }}</h3>
+    <h3>Company: {{ recruiter.company }}</h3>
+
+    <button id="edit-profile-button">Edit Profile</button>
+
+    <div id="edit-profile-section" style="display:none;">
+        <h2>Edit Profile</h2>
+        <form method="POST" enctype="multipart/form-data">
+            {% csrf_token %}
+          
+            <label for="id_full_name">Full Name:</label>
+            <input type="text" name="full_name" value="{{ recruiter.full_name }}"><br>
+            <label for="id_email">Email:</label>
+            <input type="email" name="email" value="{{ recruiter.email }}"><br>
+            <label for="id_phone_number">Phone Number:</label>
+            <input type="text" name="phone_number" value="{{ recruiter.phone_number }}"><br>
+            <label for="id_city">City:</label>
+            <input type="text" name="city" value="{{ recruiter.city }}"><br>
+            <label for="id_age">Age:</label>
+            <input type="text" name="age" value="{{ recruiter.age }}"><br>
+            <label for="id_summary">Summary:</label>
+            <textarea name="summary">{{ recruiter.summary }}</textarea><br>
+            <label for="id_company">Company:</label>
+            <input type="text" name="company" value="{{ recruiter.company }}"><br>
+            <input type="submit" value="Save Changes">
+        </form>
+    </div>
 </div>
 
+<script>
+    var editButton = document.getElementById("edit-profile-button");
+    var editSection = document.getElementById("edit-profile-section");
+
+    editButton.addEventListener("click", function() {
+        if (editSection.style.display === "none") {
+            editSection.style.display = "block";
+        } else {
+            editSection.style.display = "none";
+        }
+    });
+</script>
 {% endblock %}
