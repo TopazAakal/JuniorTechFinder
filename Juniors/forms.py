@@ -1,8 +1,12 @@
 from django import forms
 from .models import Juniors
+from django.contrib.auth.forms import UserCreationForm
+from django.contrib.auth.models import User
 
 
 class JuniorForm(forms.ModelForm):
+    # Add a hidden input field for the user ID to the form
+    user = forms.IntegerField(widget=forms.HiddenInput(), required=True)
 
     class Meta:
         model = Juniors
@@ -21,6 +25,7 @@ class JuniorForm(forms.ModelForm):
         }
 
     def __init__(self, *args, **kwargs):
+        user = kwargs.pop('user', None)
         super().__init__(*args, **kwargs)
-        self.fields['cv_file'].required = False
-        self.fields['photo'].required = False
+        if user:
+            self.fields['user'].initial = user.id

@@ -5,7 +5,11 @@
 
 <div class="profile-candidate">
     <h1>My Profile</h1>
+    {% if junior.photo %}
     <img class="profile-pic" src="{{ junior.photo.url }}" alt="{{ junior.name }}'s profile picture ">
+    {% else %}
+    <img class="profile-pic" src="{{ default_photo_url }}" alt="Default photo">
+    {% endif %}
     <h3>Full Name: {{ junior.full_name }}</h3>
     <h3>Email: {{ junior.email }}</h3>
     <h3>Phone Number: {{ junior.age }}</h3>
@@ -13,6 +17,11 @@
     <h3>Age: {{ junior.age }}</h3>
     <h3>Skills: {{junior.skills}}</h3>
     <h3>Summary: {{junior.summary}}</h3>
+    {% if junior.cv_file %}
+    <a style="background-color:#15396c; color:white; padding: 1em 1.5em; text-decoration: none;text-transform: uppercase; border-radius: 10px; display: inline-block; margin-top: 10px; margin-bottom: 10px;"
+        href="{{ junior.cv_file.url }}" target="_blank">View my CV</a>
+
+    {% endif %}
 </div>
 
 {% endblock %}
