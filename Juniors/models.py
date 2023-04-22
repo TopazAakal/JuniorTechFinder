@@ -1,8 +1,10 @@
 from django.db import models
 from django.core.validators import RegexValidator, FileExtensionValidator, MinValueValidator
+from django.contrib.auth.models import User
 
 
 class Juniors(models.Model):
+    user = models.OneToOneField(User, on_delete=models.CASCADE)
     full_name = models.CharField(max_length=100, validators=[
         RegexValidator(r'^[a-zA-Z ]*$', 'Only letters and spaces are allowed.')
     ])

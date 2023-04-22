@@ -27,7 +27,7 @@
                 {% if user.is_authenticated %}
 
                 {% if request.user|user_in_group:"Junior" %}
-                <li><a href="{% url 'createProfile' %}">Create profile</a></li>
+                <li><a href="{% url 'checkProfile' %}">Profile</a></li>
                 {% elif request.user|user_in_group:"Recruiter" %}
                 <li><a href="{% url 'createProfileRecruiters' %}">Create profile</a></li>
                 {% endif %}
