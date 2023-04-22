@@ -50,9 +50,9 @@ def signup_view(request):
                     'email', 'A user with that email already exists.')
                 return render(request, 'signup.html', {'form': form})
             user.username = email
-            group = form.cleaned_data.get('group')
+            role = form.cleaned_data.get('role')
             user.save()
-            user.groups.add(group)
+            user.groups.add(role)
             raw_password = form.cleaned_data.get('password1')
             user = authenticate(username=user.username, password=raw_password)
             # Log the user in and redirect to home page
