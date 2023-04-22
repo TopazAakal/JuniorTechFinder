@@ -23,13 +23,13 @@ class SignUpForm(UserCreationForm):
         max_length=30, required=True, help_text='Required.')
     last_name = forms.CharField(
         max_length=30, required=True, help_text='Required.')
-    group = forms.ModelChoiceField(queryset=Group.objects.all(), required=True)
+    role = forms.ModelChoiceField(queryset=Group.objects.all(), required=True)
 
     class Meta:
         # Set model as User and include required fields
         model = User
         fields = ('email', 'first_name', 'last_name',
-                  'group', 'password1', 'password2')
+                  'role', 'password1', 'password2')
         # Set widgets for each field for class styling
         widgets = {
             'email': forms.EmailInput(attrs={'class': 'form-control'}),
@@ -37,7 +37,7 @@ class SignUpForm(UserCreationForm):
             'last_name': forms.TextInput(attrs={'class': 'form-control'}),
             'password1': forms.PasswordInput(attrs={'class': 'form-control'}),
             'password2': forms.PasswordInput(attrs={'class': 'form-control'}),
-            'group': forms.Select(attrs={'class': 'form-control'}),
+            'role': forms.Select(attrs={'class': 'form-control'}),
         }
 
     def clean(self):
