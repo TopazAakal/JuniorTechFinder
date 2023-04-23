@@ -31,6 +31,7 @@
                 {% elif request.user|user_in_group:"Recruiter" %}
                 <li><a href="{% url 'createProfileRecruiters' %}">Create profile</a></li>
                 {% endif %}
+                
                 <li>
                     <form method="POST" action="{% url 'logout' %}">
                         {% csrf_token %}
