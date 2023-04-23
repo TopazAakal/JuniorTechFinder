@@ -3,11 +3,13 @@ from django.test import RequestFactory, TestCase
 from django.contrib.messages.storage.fallback import FallbackStorage
 from Recruiters.views import createProfileRecruiters
 from Recruiters.forms import RecruitersForm
+import json
 
 
 class CreateProfileTestCase(TestCase):
     def setUp(self):
         self.factory = RequestFactory()
+
     def test_create_profile_valid_form(self):
         data = {
             'full_name': 'mr smile',
@@ -41,7 +43,7 @@ class CreateProfileTestCase(TestCase):
             'phone_number': '123',  # invalid
             'city': 'Tel Aviv',
             'age': '-1',  # invalid
-            'company':'del',
+            'company': 'del',
             'summary': 'lets test it',
             'photo': 'path/to/photo.pdf',  # invalid
         }
@@ -55,7 +57,7 @@ class CreateProfileTestCase(TestCase):
         messages = FallbackStorage(request)
         setattr(request, '_messages', messages)
         # call the createProfile view with the request object and store the response object
-        response =  createProfileRecruiters(request)
+        response = createProfileRecruiters(request)
         # expect to stay on the same page
         self.assertEqual(response.status_code, 200)
         # assert that the response contains the error message "Form is not valid."
@@ -66,5 +68,5 @@ class CreateProfileTestCase(TestCase):
         response = createProfileRecruiters(request)
         # expect successful GET request
         self.assertEqual(response.status_code, 200)
-        # expect form instance in the response context
+        # # expect form instance in the response context
         self.assertIsInstance(response.context['form'], RecruitersForm)

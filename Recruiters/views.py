@@ -5,6 +5,7 @@ from .forms import RecruitersForm
 
 
 def createProfileRecruiters(request):
+
     if request.method == 'POST':
         form = RecruitersForm(request.POST, request.FILES)
         if form.is_valid():
@@ -15,11 +16,14 @@ def createProfileRecruiters(request):
             except Exception as e:
                 messages.error(request, f"Error saving form: {e}")
         else:
-            print(form.errors)
-            messages.error(request, "Form is not valid.")
+            form.add_error(
+                'email', "Form is not valid.")
+            # print(form.errors)
+            # messages.error(request, "Form is not valid.")
     else:
         form = RecruitersForm()
     return render(request, 'createProfileRecruiters.html', {'form': form})
+
 
 def showProfileRecruiter(request, pk):
     recruiter = get_object_or_404(Recruiters, pk=pk)
@@ -33,7 +37,7 @@ def showProfileRecruiter(request, pk):
         recruiter.summary = request.POST.get('summary')
         recruiter.company = request.POST.get('company')
         if request.FILES.get('photo'):
-            recruiter.photo = request.FILES.get('photo')       
+            recruiter.photo = request.FILES.get('photo')
         recruiter.save()
 
     return render(request, 'showProfileRecruiter.html', {'recruiter': recruiter})
