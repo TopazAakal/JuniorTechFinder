@@ -36,9 +36,9 @@ pipeline {
 
         stage('Deploy') {
             steps {
-                sh 'source venv/bin/activate' // Activate the virtual environment
+                sh 'pipenv shell' // Activate the pipenv virtual environment
                 sh 'python manage.py migrate' // Apply database migrations
-                sh 'python manage.py runserver & sleep 5' // Start Django server in the background
+                sh 'nohup python manage.py runserver & sleep 5' // Start Django server in the background using nohup
                 sh 'python manage.py test' // Run functional tests
                 script {
                     def pid = sh(script: 'ps aux | grep "python manage.py runserver" | grep -v grep | awk \'{print $2}\'', returnStdout: true).trim()
@@ -48,10 +48,9 @@ pipeline {
         }
 
         
-    post {
+       post {
         always {
-            sh 'pipenv --rm' // Remove pipenv virtual environment
-            sh 'python manage.py clean_pyc' // Clean up compiled Python files
+            sh 'find . -name "*.pyc" -delete' // Remove compiled Python files
             junit 'reports/**/*.xml' // Publish JUnit test reports
         }
 
