@@ -46,21 +46,20 @@ pipeline {
                 }
             }
         }
-
         
-       post {
-        always {
-            sh 'find . -name "*.pyc" -delete' // Remove compiled Python files
-            junit 'reports/**/*.xml' // Publish JUnit test reports
-        }
+        post {
+            always {
+                sh 'find . -name "*.pyc" -delete' // Remove compiled Python files
+                junit 'reports/**/*.xml' // Publish JUnit test reports
+            }
 
-        success {
-            echo 'Build successful!' // Display success message
-        }
+            success {
+                echo 'Build successful!' // Display success message
+            }
 
-        failure {
-            echo 'Build failed!' // Display failure message
+            failure {
+                echo 'Build failed!' // Display failure message
+            }
         }
     }
 }
-
