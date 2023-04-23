@@ -36,23 +36,18 @@ pipeline {
 
         stage('Deploy') {
             steps {
-                sh 'pipenv run python manage.py migrate' // Apply database migrations
-                sh 'pipenv run python manage.py runserver & sleep 5' // Start Django server in the background
-                sh 'pipenv run python manage.py test' // Run functional tests
-                sh 'kill $(ps aux | grep "python manage.py runserver" | awk "{print $2}")' // Stop Django server
+                sh 'source venv/bin/activate' // Activate the virtual environment
+                sh 'python manage.py migrate' // Apply database migrations
+                sh 'python manage.py runserver & sleep 5' // Start Django server in the background
+                sh 'python manage.py test' // Run functional tests
+                script {
+                    def pid = sh(script: 'ps aux | grep "python manage.py runserver" | grep -v grep | awk \'{print $2}\'', returnStdout: true).trim()
+                    sh "kill $pid" // Stop Django server
+                }
             }
         }
 
-        stage('Publish') {
-            steps {
-                sh 'pipenv run python manage.py collectstatic --noinput' // Collect static files
-                sh 'pipenv run python manage.py compress --force' // Compress static files
-                sh 'pipenv run python manage.py check --deploy' // Run Django deployment checks
-                sh 'pipenv run python manage.py s3_sync' // Sync static files to S3 or other storage
-            }
-        }
-    }
-
+        
     post {
         always {
             sh 'pipenv --rm' // Remove pipenv virtual environment
