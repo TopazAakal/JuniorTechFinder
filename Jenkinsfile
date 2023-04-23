@@ -26,7 +26,7 @@ pipeline {
             steps {
                 sh 'pipenv run python manage.py migrate' // Apply database migrations
                 sh 'pipenv run python manage.py runserver & sleep 5' // Start Django server in the background
-                sh 'pipenv run python manage.py test  // Run functional tests
+                sh 'pipenv run python manage.py test'  // Run functional tests
                 sh 'kill $(ps aux | grep "python manage.py runserver" | awk "{print $2}")' // Stop Django server
             }
         }
