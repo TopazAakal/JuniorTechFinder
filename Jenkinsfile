@@ -36,13 +36,12 @@ pipeline {
 
         stage('Deploy') {
             steps {
-                sh 'pipenv shell' // Activate the pipenv virtual environment
-                sh 'python manage.py migrate' // Apply database migrations
-                sh 'nohup python manage.py runserver & sleep 5' // Start Django server in the background using nohup
-                sh 'python manage.py test' // Run functional tests
+                sh 'pipenv run python manage.py migrate' // Use pipenv run instead of pipenv shell
+                sh 'nohup pipenv run python manage.py runserver & sleep 5' // Use pipenv run instead of pipenv shell
+                sh 'pipenv run python manage.py test' // Use pipenv run instead of pipenv shell
                 script {
                     def pid = sh(script: 'ps aux | grep "python manage.py runserver" | grep -v grep | awk \'{print $2}\'', returnStdout: true).trim()
-                    sh "kill $pid" // Stop Django server
+                    sh "kill $pid"
                 }
             }
         }
