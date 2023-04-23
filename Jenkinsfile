@@ -43,6 +43,7 @@ pipeline {
                     def processIds = sh(script: 'pgrep -f "python manage.py runserver"', returnStdout: true).trim()
                     if (processIds) {
                         sh "pkill -F <(echo '${processIds}')"
+                    }
                 }
             }
         }
