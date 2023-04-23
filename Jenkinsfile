@@ -1,8 +1,8 @@
 pipeline {
     agent {
         docker {
-            image 'ubuntu:latest'
-            label 'docker-ubuntu'
+            image 'ubuntu:latest' // Use the Ubuntu Docker image provided by Jenkins
+            label 'docker-ubuntu' // Assign a label to the agent for easy reference
         }
     }
 
@@ -12,16 +12,17 @@ pipeline {
                 checkout scm
             }
         }
-        
-       stage('Install virtualenv') {
+
+        stage('Install virtualenv') {
             steps {
-                sh 'pip install virtualenv' // Install virtualenv
+                sh 'apt-get update' // Update package lists
+                sh 'apt-get install -y python3-venv' // Install virtualenv
             }
         }
 
         stage('Build') {
             steps {
-                sh 'virtualenv venv' // Create a virtual environment
+                sh 'python3 -m venv venv' // Create a virtual environment
                 sh 'source venv/bin/activate' // Activate the virtual environment
                 sh 'pip install -r requirements.txt' // Install dependencies from requirements.txt
                 sh 'python manage.py collectstatic --noinput' // Collect static files
