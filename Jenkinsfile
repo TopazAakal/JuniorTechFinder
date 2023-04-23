@@ -2,7 +2,7 @@ pipeline {
     agent {
         docker {
             image 'python:3.9' // Specify the Docker image to use
-            args '-v /var/run/docker.sock:/var/run/docker.sock' // Additional Docker-related configuration
+            args '-v /var/run/docker.sock:/var/run/docker.sock -u root' // Add -u root option for elevated permissions // Additional Docker-related configuration
         }
     }
 
