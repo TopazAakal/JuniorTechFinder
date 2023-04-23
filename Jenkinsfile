@@ -10,6 +10,7 @@ pipeline {
 
         stage('Build') {
             steps {
+                sh 'pip install pipenv' // Install pipenv
                 sh 'pipenv install' // Install dependencies using pipenv
                 sh 'pipenv run pip install -r requirements.txt' // Install dependencies from requirements.txt
                 sh 'pipenv run python manage.py collectstatic --noinput' // Collect static files
