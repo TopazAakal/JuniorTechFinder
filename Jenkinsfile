@@ -10,7 +10,7 @@ pipeline {
 
         stage('Build') {
             steps {
-                sh 'apt-get update && apt-get install -y python3-pip' // Install pip
+                sh 'sudo apt-get update && sudo apt-get install -y python3-pip' // Install pip
                 sh 'pip install pipenv' // Install pipenv
                 sh 'pipenv install' // Install dependencies using pipenv
                 sh 'pipenv run pip install -r requirements.txt' // Install dependencies from requirements.txt
