@@ -1,8 +1,8 @@
 pipeline {
     agent {
         docker {
-            image 'ubuntu:latest' // Use the Ubuntu Docker image provided by Jenkins
-            label 'docker-ubuntu' // Assign a label to the agent for easy reference
+            image 'python:3.9' // Specify the Docker image to use
+            args '-v /var/run/docker.sock:/var/run/docker.sock' // Additional Docker-related configuration
         }
     }
 
