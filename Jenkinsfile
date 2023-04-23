@@ -24,7 +24,7 @@ pipeline {
         stage('Build') {
             steps {
                 sh 'pipenv install' // Create and activate virtual environment, install dependencies
-                sh 'pipenv run python manage.py collectstatic --noinput' // Collect static files
+                sh 'pipenv install -r requirements.txt' // Install dependencies from requirements.txt
             }
         }
 
