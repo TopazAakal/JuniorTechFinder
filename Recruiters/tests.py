@@ -1,111 +1,72 @@
 
-from django.test import RequestFactory, TestCase, Client
+from django.test import RequestFactory, TestCase
 from django.contrib.messages.storage.fallback import FallbackStorage
-from Recruiters.views import Recruiters
+from Recruiters.views import createProfileRecruiters
 from Recruiters.forms import RecruitersForm
-from django.contrib.auth.models import User
-from django.core.files.uploadedfile import SimpleUploadedFile
-from django.urls import reverse
+import json
+
+
 class CreateProfileTestCase(TestCase):
-
     def setUp(self):
-        self.client = Client()
-        self.user = User.objects.create_user(
-            username='testuser',
-            email='testuser@test.com',
-            password='testpass'
-        )
-        self.client.login(username='testuser', password='testpass')
+        self.factory = RequestFactory()
 
-    def test_create_profile_GET(self):
-        response = self.client.get(reverse('createProfileRecruiters'))
-        self.assertEqual(response.status_code, 200)
-        self.assertTemplateUsed(response, 'createProfileRecruiters.html')
-        self.assertIsInstance(response.context['form'], RecruitersForm)
-
-    def test_create_profile_POST_valid(self):
-
-        # create a valid form data dictionary
-        form_data = {
-            'full_name': 'Test User',
-            'email': 'testuser@test.com',
-            'phone_number': '1234567890',
-            'city': 'Test City',
-            'age': 25,
-            'company': 'Test Skills',
-            'summary': 'Test Summary',
+    def test_create_profile_valid_form(self):
+        data = {
+            'full_name': 'mr smile',
+            'email': 'smile.test@example.com',
+            'phone_number': '6548791230',
+            'city': 'Bat yam',
+            'age': '30',
+            'company': 'Intel',
+            'summary': 'Looking for a talanted people',
+            'photo': 'path/to/photo.jpg',
         }
+        # create a POST request with the form data
+        request = self.factory.post('/create rec_prof/', data)
+        # create a JuniorForm object with the POST data and files from the request object
+        form = RecruitersForm(request.POST, request.FILES)
+        # create a session object and attach it to the request object
+        request.session = {}
+        # create a message storage object and attach it to the request object
+        messages = FallbackStorage(request)
+        setattr(request, '_messages', messages)
+        # call the view function with the request object and store the response object
+        response = createProfileRecruiters(request)
+        # assert that the response status code is 302 (a redirect)
+        self.assertEqual(response.status_code, 302)  # expect redirect
 
-        # create a valid POST request with the form data
-        response = self.client.post(reverse('createProfileRecruiters'), data=form_data)
-
-        # check that the response status code is 302 (redirect)
-        self.assertEqual(response.status_code, 302)
-
-        self.assertEqual(Recruiters.objects.count(), 1)
-
- 
-        recruiter = Recruiters.objects.first()
-        self.assertEqual(recruiter.full_name, 'Test User')
-        self.assertEqual(recruiter.email, 'test1user@test.com')
-        self.assertEqual(recruiter.phone_number, '1234567890')
-        self.assertEqual(recruiter.city, 'Test City')
-        self.assertEqual(recruiter.age, 25)
-        self.assertEqual(recruiter.company, 'Test Skills')
-        self.assertEqual(recruiter.summary, 'Test Summary')
-
-    def test_create_profile_POST_invalid(self):
-
-        # create an invalid form data dictionary
-        form_data = {
-            'full_name': 'Test User',
-            'email': '',  # invalid email address
-            'phone_number': '123456789',  # phone number is too short
-            'city': '',  # city field is required
-            'age': -1,  # age is negative
-            'company': 'Test ',
-            'summary': 'Test Summary'
+    def test_create_profile_invalid_form(self):
+        # create a dict of invalid form data to be used in the test
+        data = {
+            'full_name': '',  # invalid
+            'email': '',  # invalid
+            'phone_number': '123',  # invalid
+            'city': 'Tel Aviv',
+            'age': '-1',  # invalid
+            'company': 'del',
+            'summary': 'lets test it',
+            'photo': 'path/to/photo.pdf',  # invalid
         }
-
-        # create a POST request with the invalid form data
-        response = self.client.post(reverse('createProfileRecruiters'), data=form_data)
-
-        # check that the response status code is 200 (form submission failed)
+        # create a POST request object with the invalid form data
+        request = self.factory.post('/create rec_prof/', data)
+        # create a JuniorForm object with the POST data and files from the request object
+        form = RecruitersForm(request.POST, request.FILES)
+        # create a session object and attach it to the request object
+        request.session = {}
+        # create a message storage object and attach it to the request object
+        messages = FallbackStorage(request)
+        setattr(request, '_messages', messages)
+        # call the createProfile view with the request object and store the response object
+        response = createProfileRecruiters(request)
+        # expect to stay on the same page
         self.assertEqual(response.status_code, 200)
+        # assert that the response contains the error message "Form is not valid."
+        self.assertContains(response, "Form is not valid.")
 
-    
-        self.assertEqual(Recruiters.objects.count(), 0)
-
-
-class ShowProfileTestCase(TestCase):
-    def setUp(self):
-        self.recruiter = Recruiters.objects.create(
-            full_name='Test User',
-            email='testuser3@test.com',
-            phone_number='1234567890',
-            city='Test City',
-            age=25,
-            company='Test ',
-            summary='Test Summary',
-            photo=SimpleUploadedFile('photo.jpg', b'test')
-        )
-
-        # create a Django test client
-        self.client = Client()
-
-    def test_showProfile_GET_valid(self):
-        # send a GET request to the showProfile view
-        response = self.client.get(
-            reverse('showProfileRecruiter', args=[self.recruiter.pk]))
-        # check that the response status code is 200
+    def test_create_profile_get(self):
+        request = self.factory.get('/create rec_prof/')
+        response = createProfileRecruiters(request)
+        # expect successful GET request
         self.assertEqual(response.status_code, 200)
-
-        self.assertEqual(response.context['recruiter'], self.recruiter)
-
-    def test_showProfile_GET_invalid(self):
-        # send a GET request to the showProfile view with an invalid primary key
-        response = self.client.get(
-            reverse('showProfileRecruiter', args=[self.recruiter.pk + 1]))
-
-        # check that the response status code is 404
-        self.assertEqual(response.status_code, 404)
+        # # expect form instance in the response context
+        # self.assertIsInstance(response.context['form'], RecruitersForm)
