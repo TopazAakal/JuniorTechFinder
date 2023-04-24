@@ -34,6 +34,7 @@ urlpatterns = [
          Recruiters.views.showProfileRecruiter, name='showProfileRecruiter'),
     path('createProfileRecruiters/', Recruiters.views.createProfileRecruiters,
          name='createProfileRecruiters'),
+    path('checkProf/', Recruiters.views.checkProf, name='checkProf'),
     path('admin/', admin.site.urls),
     path('login/', Authentication.views.login_view, name='login'),
     path('signup/', Authentication.views.signup_view, name='signup'),
