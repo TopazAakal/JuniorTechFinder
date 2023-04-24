@@ -25,10 +25,21 @@ def createProfileRecruiters(request):
 
     return render(request, 'createProfileRecruiters.html', {'form': form})
 
+from django.contrib import messages
+
 def showProfileRecruiter(request, pk):
     recruiter = get_object_or_404(Recruiters, pk=pk, user=request.user)
     default_photo_url = '/static/media/default.jpg'
-    context = {'recruiter': recruiter, 'default_photo_url': default_photo_url}
+    saved = False
+    if request.method == 'POST':
+        form = RecruitersForm(request.POST, request.FILES, instance=recruiter)
+        if form.is_valid():
+            form.save()
+            saved = True
+    else:
+        form = RecruitersForm(instance=recruiter)
+
+    context = {'recruiter': recruiter, 'default_photo_url': default_photo_url, 'form': form, 'saved': saved}
     return render(request, 'showProfileRecruiter.html', context)
 
 

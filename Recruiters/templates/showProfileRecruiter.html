@@ -44,6 +44,8 @@
       <input type="text" name="company" value="{{ recruiter.company }}"><br>
       <label for="id_photo">Profile Picture:</label>
       <input type="file" name="photo"><br>
+      <input type="hidden" name="user" value="{{ request.user.id }}">
+
       <input type="submit" value="Save Changes">
     </form>
   </div>
