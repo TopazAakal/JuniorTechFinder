@@ -3,8 +3,12 @@
 
 {% block content %}
 
-<div class="profile-candidate">
-    <h1>My Profile</h1>
+<div class="profile-candidate" style="text-align: center;">
+    <div style="display: flex; justify-content: space-between; align-items: center;">
+        <h1 style="margin-left: 115px; flex: 1;">My Profile</h1>
+        <a style="background-color:#040b15; color:white; padding: 1em 1.5em; text-decoration: none;text-transform: uppercase; border-radius: 10px; display: inline-block; margin-top: 10px; margin-bottom: 10px; font-size: 14px; margin-right: 15px;"
+            href="{% url 'editProfile' pk=junior.pk %}">Edit Profile</a>
+    </div>
     {% if junior.photo %}
     <img class="profile-pic" src="{{ junior.photo.url }}" alt="{{ junior.name }}'s profile picture ">
     {% else %}
@@ -22,6 +26,8 @@
         href="{{ junior.cv_file.url }}" target="_blank">View my CV</a>
 
     {% endif %}
+
+
 </div>
 
 {% endblock %}

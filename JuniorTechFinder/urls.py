@@ -30,6 +30,7 @@ urlpatterns = [
     path('createProfile/', Juniors.views.createProfile, name='createProfile'),
     path('showProfile/<int:pk>', Juniors.views.showProfile, name='showProfile'),
     path('checkProfile/', Juniors.views.checkProfile, name='checkProfile'),
+    path('editProfile/<int:pk>', Juniors.views.editProfile, name='editProfile'),
     path('showProfileRecruiter/<int:pk>',
          Recruiters.views.showProfileRecruiter, name='showProfileRecruiter'),
     path('createProfileRecruiters/', Recruiters.views.createProfileRecruiters,
