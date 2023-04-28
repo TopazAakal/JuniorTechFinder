@@ -1,32 +1,66 @@
 {% extends 'base.html' %}
 {% load static %}
+
+
 {% block content %}
 
-<head>
-	<title>Contact Us</title>
-	<style>
-		.container {
-			max-width: 600px;
-			/* Set a maximum width for the container element */
-			margin: 0 auto;
-			/* Center-align the container element within the body element */
-			padding: 20px;
-			/* Add some padding to the container element */
-			text-align: center;
-			/* Center-align the contents of the container element */
-		}
-	</style>
-</head>
+<style>
+	.dotted-hr {
+		border: none;
+		border-top: 2px dotted #999;
+		height: 0;
+		margin: 20px auto;
+		width: 40%;
+		align-items: center;
+	}
+</style>
 
-<body>
-	<div class="container">
+{% for message in messages %}
+<div class="alert alert-success" role="alert" style="text-align: center; color:rgb(47, 47, 108); margin-top: 20px;">
+	<strong>{{ message }}</strong>
+</div>
+{% endfor %}
 
-		<h1>Contact Us</h1>
-		<p>If you have any questions or comments, please feel free to contact us.</p>
-		<p>You can reach us at:</p>
+<div class="container" style="text-align: center;">
+	<br><br>
+	<img src="{% static 'media/contactUs.jpg' %}" alt="Contact Us" style="width: 300px; height: 220px;">
+	<h1>Contact Us</h1>
 
-		Email: <a href="mailto:JrTechFinder@gmail.com">JrTechFinder@gmail.com</a>
 
-	</div>
-</body>
+	<p><strong>Address: </strong> 123 Main St USA 12345</p>
+
+
+	<p><strong>Phone: </strong>(555) 555-1234</p>
+
+
+	<p><strong>Email: </strong> info@juniorTechFinder.com</p>
+
+
+	<hr class="dotted-hr">
+
+	<strong>
+		<h4>Have a question or comment?<br> Fill out the form below and we'll get back to you as soon as possible.</h4>
+	</strong>
+
+	<form method="post">
+		{% csrf_token %}
+		<div class="form-group">
+			<strong><label for="name">Name:</label></strong>
+			<input type="text" name="name" class="form-control" required>
+		</div>
+		<div class="form-group">
+			<strong><label for="email">Email:</label></strong>
+			<input type="email" name="email" class="form-control" required>
+		</div>
+		<div class="form-group">
+			<strong><label for="message">Message:</label></strong>
+			<textarea name="message" class="form-control" required></textarea>
+		</div>
+		<button type="submit" class="btn btn-sm btn-primary" style="font-size: 14px; margin: 15px;">Send</button>
+	</form>
+
+</div>
+
+
+
 {% endblock %}
