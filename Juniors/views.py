@@ -38,6 +38,24 @@ def showProfile(request, pk):
     return render(request, 'showProfile.html', context)
 
 
+def editProfile(request, pk):
+
+    junior = get_object_or_404(Juniors, pk=pk, user=request.user)
+
+    if request.method == 'POST':
+        form = JuniorForm(request.POST, request.FILES, instance=junior)
+        if form.is_valid():
+            form.save()
+            messages.success(request, 'Profile updated successfully!')
+            return redirect('showProfile', pk=pk)
+    else:
+        form = JuniorForm(instance=junior)
+        form.fields['user'].widget = forms.HiddenInput()
+        form.fields['user'].initial = request.user.id
+
+    return render(request, 'editProfile.html', {'form': form})
+
+
 def checkProfile(request):
     try:
         junior = request.user.juniors
