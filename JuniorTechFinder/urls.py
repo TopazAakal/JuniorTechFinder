@@ -36,9 +36,12 @@ urlpatterns = [
     path('createProfileRecruiters/', Recruiters.views.createProfileRecruiters,
          name='createProfileRecruiters'),
     path('checkProf/', Recruiters.views.checkProf, name='checkProf'),
-    path('admin/', admin.site.urls),
+    path('jobs/', Recruiters.views.jobListings, name='jobListings'),
+    path('postJob/', Recruiters.views.postJob, name='postJob'),
+    path('jobs/<int:job_id>/', Recruiters.views.jobDetail, name='jobDetail'),
     path('login/', Authentication.views.login_view, name='login'),
     path('signup/', Authentication.views.signup_view, name='signup'),
     path('logout/', Authentication.views.logout_view, name='logout'),
+    path('admin/', admin.site.urls),
 
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
