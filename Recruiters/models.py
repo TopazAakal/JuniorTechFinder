@@ -1,6 +1,8 @@
 from django.db import models
+from django.utils import timezone
 from django.core.validators import RegexValidator, FileExtensionValidator, MinValueValidator
 from django.contrib.auth.models import User
+
 
 class Recruiters(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE)
@@ -24,3 +26,19 @@ class Recruiters(models.Model):
         FileExtensionValidator(['jpg', 'jpeg', 'png', 'gif'],
                                'Only jpg, jpeg, png and gif files are allowed.')
     ])
+
+
+class JobListing(models.Model):
+    title = models.CharField(max_length=100)
+    description = models.TextField()
+    requirements = models.TextField()
+    date_posted = models.DateTimeField(default=timezone.now)
+    company = models.CharField(max_length=100)
+    location = models.CharField(max_length=100)
+    recruiter = models.ForeignKey(User, on_delete=models.CASCADE)
+    application_link = models.URLField(max_length=200)
+    company_name = models.CharField(max_length=100)
+    salary = models.PositiveIntegerField()
+
+    def __str__(self):
+        return self.title

@@ -1,7 +1,8 @@
 from django import forms
-from .models import Recruiters
+from .models import Recruiters, JobListing
 from django.contrib.auth.forms import UserCreationForm
 from django.contrib.auth.models import User
+
 
 
 class RecruitersForm(forms.ModelForm):
@@ -26,3 +27,17 @@ class RecruitersForm(forms.ModelForm):
         super().__init__(*args, **arg)
         if user:
             self.fields['user'].initial = user.id
+
+
+
+
+
+class JobListingForm(forms.ModelForm):
+    class Meta:
+        model = JobListing
+        fields = ['title', 'company_name', 'location', 'description', 'requirements', 'application_link', 'salary']
+
+        widgets = {
+            'description': forms.Textarea(attrs={'rows': 10}),
+            'requirements': forms.Textarea(attrs={'rows': 5}),
+        }

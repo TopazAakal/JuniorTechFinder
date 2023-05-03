@@ -1,8 +1,10 @@
 from django.shortcuts import get_object_or_404, render, redirect
 from django.contrib import messages
-from .models import Recruiters
+from .models import Recruiters, JobListing
 from .forms import RecruitersForm
 from django import forms
+from .forms import JobListingForm
+
 
 def createProfileRecruiters(request):
     user = request.user
@@ -10,8 +12,8 @@ def createProfileRecruiters(request):
         return redirect('checkProf')
 
     if request.method == 'POST':
-        form_data = request.POST.copy()  
-        form_data['user'] = request.user.id  
+        form_data = request.POST.copy()
+        form_data['user'] = request.user.id
         form = RecruitersForm(form_data, request.FILES)
         if form.is_valid():
             recruiter = form.save(commit=False)
@@ -25,7 +27,6 @@ def createProfileRecruiters(request):
 
     return render(request, 'createProfileRecruiters.html', {'form': form})
 
-from django.contrib import messages
 
 def showProfileRecruiter(request, pk):
     recruiter = get_object_or_404(Recruiters, pk=pk, user=request.user)
@@ -39,7 +40,8 @@ def showProfileRecruiter(request, pk):
     else:
         form = RecruitersForm(instance=recruiter)
 
-    context = {'recruiter': recruiter, 'default_photo_url': default_photo_url, 'form': form, 'saved': saved}
+    context = {'recruiter': recruiter,
+               'default_photo_url': default_photo_url, 'form': form, 'saved': saved}
     return render(request, 'showProfileRecruiter.html', context)
 
 
@@ -49,3 +51,29 @@ def checkProf(request):
         return redirect('showProfileRecruiter', pk=recruiter.pk)
     except Recruiters.DoesNotExist:
         return redirect('createProfileRecruiters')
+
+
+def postJob(request):
+    if request.method == 'POST':
+        form = JobListingForm(request.POST)
+        if form.is_valid():
+            job_listing = form.save(commit=False)
+            job_listing.recruiter = request.user
+            job_listing.save()
+            return redirect('jobListings')
+    else:
+        form = JobListingForm()
+
+    return render(request, 'postJob.html', {'form': form})
+
+
+def jobListings(request):
+    jobListings = JobListing.objects.all()
+    context = {'jobListings': jobListings}
+    return render(request, 'jobListings.html', context)
+
+
+def jobDetail(request, job_id):
+    job = get_object_or_404(JobListing, id=job_id)
+    context = {'job': job}
+    return render(request, 'jobDetail.html', context)
