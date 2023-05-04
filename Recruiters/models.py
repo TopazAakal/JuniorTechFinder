@@ -38,7 +38,7 @@ class JobListing(models.Model):
     recruiter = models.ForeignKey(User, on_delete=models.CASCADE)
     application_link = models.URLField(max_length=200)
     company_name = models.CharField(max_length=100)
-    salary = models.PositiveIntegerField()
+    salary = models.PositiveIntegerField(blank=True, null=True)
 
     def __str__(self):
         return self.title

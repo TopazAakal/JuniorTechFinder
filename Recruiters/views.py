@@ -60,20 +60,8 @@ def postJob(request):
             job_listing = form.save(commit=False)
             job_listing.recruiter = request.user
             job_listing.save()
-            return redirect('jobListings')
+            return redirect('home')
     else:
         form = JobListingForm()
 
     return render(request, 'postJob.html', {'form': form})
-
-
-def jobListings(request):
-    jobListings = JobListing.objects.all()
-    context = {'jobListings': jobListings}
-    return render(request, 'jobListings.html', context)
-
-
-def jobDetail(request, job_id):
-    job = get_object_or_404(JobListing, id=job_id)
-    context = {'job': job}
-    return render(request, 'jobDetail.html', context)

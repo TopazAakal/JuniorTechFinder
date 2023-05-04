@@ -4,9 +4,9 @@ from django.contrib.auth.forms import UserCreationForm
 from django.contrib.auth.models import User
 
 
-
 class RecruitersForm(forms.ModelForm):
     user = forms.IntegerField(widget=forms.HiddenInput(), required=True)
+
     class Meta:
         model = Recruiters
         fields = ['full_name', 'email', 'phone_number', 'city',
@@ -29,13 +29,11 @@ class RecruitersForm(forms.ModelForm):
             self.fields['user'].initial = user.id
 
 
-
-
-
 class JobListingForm(forms.ModelForm):
     class Meta:
         model = JobListing
-        fields = ['title', 'company_name', 'location', 'description', 'requirements', 'application_link', 'salary']
+        fields = ['title', 'company_name', 'location', 'description',
+                  'requirements', 'application_link', 'salary']
 
         widgets = {
             'description': forms.Textarea(attrs={'rows': 10}),
