@@ -2,7 +2,7 @@ from django.http import HttpResponseRedirect
 from django.shortcuts import get_object_or_404, render, redirect
 from django.contrib import messages
 from .models import Juniors
-from django.contrib.auth.decorators import login_required
+
 from .forms import JuniorForm
 from django import forms
 
@@ -36,6 +36,24 @@ def showProfile(request, pk):
     default_photo_url = '/static/media/default.jpg'
     context = {'junior': junior, 'default_photo_url': default_photo_url}
     return render(request, 'showProfile.html', context)
+
+
+def editProfile(request, pk):
+
+    junior = get_object_or_404(Juniors, pk=pk, user=request.user)
+
+    if request.method == 'POST':
+        form = JuniorForm(request.POST, request.FILES, instance=junior)
+        if form.is_valid():
+            form.save()
+            messages.success(request, 'Profile updated successfully!')
+            return redirect('showProfile', pk=pk)
+    else:
+        form = JuniorForm(instance=junior)
+        form.fields['user'].widget = forms.HiddenInput()
+        form.fields['user'].initial = request.user.id
+
+    return render(request, 'editProfile.html', {'form': form})
 
 
 def checkProfile(request):

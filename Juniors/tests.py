@@ -81,8 +81,17 @@ class CreateProfileTestCase(TestCase):
 
 class ShowProfileTestCase(TestCase):
     def setUp(self):
-        # create a Junior instance
+        # create a user
+        self.user = User.objects.create_user(
+            username='testuser',
+            email='testuser@test.com',
+            password='testpass'
+        )
+
+        # create a Junior instance associated with the User
         self.junior = Juniors.objects.create(
+            # set the user_id field to the ID of the User instance
+            user_id=self.user.id,
             full_name='Test User',
             email='testuser@test.com',
             phone_number='1234567890',
@@ -90,19 +99,19 @@ class ShowProfileTestCase(TestCase):
             age=25,
             skills='Test Skills',
             summary='Test Summary',
-            cv_file=SimpleUploadedFile('cv.pdf', b'test'),
-            photo=SimpleUploadedFile('photo.jpg', b'test')
         )
 
-        # create a Django test client
-        self.client = Client()
+        # log in as the user
+        self.client.login(username='testuser', password='testpass')
 
     def test_showProfile_GET_valid(self):
         # send a GET request to the showProfile view
         response = self.client.get(
             reverse('showProfile', args=[self.junior.pk]))
+
         # check that the response status code is 200
         self.assertEqual(response.status_code, 200)
+
         # check that the response contains the correct Junior instance
         self.assertEqual(response.context['junior'], self.junior)
 
@@ -113,3 +122,55 @@ class ShowProfileTestCase(TestCase):
 
         # check that the response status code is 404
         self.assertEqual(response.status_code, 404)
+
+
+class EditProfileTestCase(TestCase):
+    def setUp(self):
+        self.client = Client()
+        self.user = User.objects.create_user(
+            username='testuser',
+            email='testuser@test.com',
+            password='testpass'
+        )
+        self.client.login(username='testuser', password='testpass')
+        self.junior = Juniors.objects.create(
+            user_id=self.user.id,
+            full_name='Test User',
+            email='testuser@test.com',
+            phone_number='1234567890',
+            city='Test City',
+            age=25,
+            skills='Test Skills',
+            summary='Test Summary',
+        )
+        self.url = reverse('editProfile', args=[self.junior.pk])
+
+    def test_editProfile_GET(self):
+        response = self.client.get(self.url)
+        self.assertEqual(response.status_code, 200)
+        self.assertTemplateUsed(response, 'editProfile.html')
+        self.assertIsInstance(response.context['form'], JuniorForm)
+        self.assertEqual(response.context['form'].instance, self.junior)
+
+    def test_editProfile_POST_invalid(self):
+        data = {
+            'full_name': 'New Name',
+            'email': 'newemail@test.com',
+            'phone_number': 'invalid_number',
+            'city': 'New City',
+            'age': 26,
+            'skills': 'New Skills',
+            'summary': 'New Summary',
+        }
+
+        response = self.client.post(self.url, data=data)
+        self.assertEqual(response.status_code, 200)
+        self.assertFalse(response.context['form'].is_valid())
+        self.junior.refresh_from_db()
+        self.assertNotEqual(self.junior.full_name, data['full_name'])
+        self.assertNotEqual(self.junior.email, data['email'])
+        self.assertNotEqual(self.junior.phone_number, data['phone_number'])
+        self.assertNotEqual(self.junior.city, data['city'])
+        self.assertNotEqual(self.junior.age, data['age'])
+        self.assertNotEqual(self.junior.skills, data['skills'])
+        self.assertNotEqual(self.junior.summary, data['summary'])

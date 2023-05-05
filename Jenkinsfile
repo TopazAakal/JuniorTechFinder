@@ -1,8 +1,8 @@
 pipeline {
     agent {
         docker {
-            image 'ubuntu:latest' // Use the Ubuntu Docker image provided by Jenkins
-            label 'docker-ubuntu' // Assign a label to the agent for easy reference
+            image 'python:3.9' // Specify the Docker image to use
+            args '-v /var/run/docker.sock:/var/run/docker.sock -u root' // Add -u root option for elevated permissions // Additional Docker-related configuration
         }
     }
 
@@ -13,54 +13,45 @@ pipeline {
             }
         }
 
-        stage('Install virtualenv') {
+        stage('Install pipenv') {
             steps {
                 sh 'apt-get update' // Update package lists
-                sh 'apt-get install -y python3-venv' // Install virtualenv
+                sh 'apt-get install -y python3-dev python3-pip' // Install Python and pip
+                sh 'pip install pipenv' // Install pipenv
             }
         }
 
         stage('Build') {
             steps {
-                sh 'python3 -m venv venv' // Create a virtual environment
-                sh 'source venv/bin/activate' // Activate the virtual environment
-                sh 'pip install -r requirements.txt' // Install dependencies from requirements.txt
-                sh 'python manage.py collectstatic --noinput' // Collect static files
+                sh 'pipenv install' // Create and activate virtual environment, install dependencies
+                sh 'pipenv install -r requirements.txt' // Install dependencies from requirements.txt
             }
         }
 
         stage('Test') {
             steps {
-                sh 'source venv/bin/activate' // Activate the virtual environment
-                sh 'python manage.py test' // Run Django tests
+                sh 'pipenv run python manage.py test' // Run Django tests
             }
         }
 
         stage('Deploy') {
             steps {
-                sh 'source venv/bin/activate' // Activate the virtual environment
-                sh 'python manage.py migrate' // Apply database migrations
-                sh 'python manage.py runserver & sleep 5' // Start Django server in the background
-                sh 'python manage.py test' // Run functional tests
-                sh 'kill $(ps aux | grep "python manage.py runserver" | awk "{print $2}")' // Stop Django server
-            }
-        }
-
-        stage('Publish') {
-            steps {
-                sh 'source venv/bin/activate' // Activate the virtual environment
-                sh 'python manage.py collectstatic --noinput' // Collect static files
-                sh 'python manage.py compress --force' // Compress static files
-                sh 'python manage.py check --deploy' // Run Django deployment checks
-                sh 'python manage.py s3_sync' // Sync static files to S3 or other storage
+                sh 'pipenv run python manage.py migrate' // Use pipenv run instead of pipenv shell
+                sh 'nohup pipenv run python manage.py runserver & sleep 5' // Use pipenv run instead of pipenv shell
+                sh 'pipenv run python manage.py test' // Use pipenv run instead of pipenv shell
+                script {
+                    def processIds = sh(script: 'pgrep -f "python manage.py runserver"', returnStdout: true).trim()
+                    if (processIds) {
+                        sh "pkill -F <(echo '${processIds}')"
+                    }
+                }
             }
         }
     }
 
     post {
         always {
-            sh 'deactivate' // Deactivate the virtual environment
-            sh 'python manage.py clean_pyc' // Clean up compiled Python files
+            sh 'find . -name "*.pyc" -delete' // Remove compiled Python files
             junit 'reports/**/*.xml' // Publish JUnit test reports
         }
 
