@@ -26,6 +26,7 @@ from django.conf.urls.static import static
 urlpatterns = [
     path('', Core.views.homePage, name='home'),
     path('aboutUs/', Core.views.aboutUsPage, name='aboutUs'),
+    path('siteRules/', Core.views.siteRulesPage, name='siteRules'),
     path('contactUs/', Core.views.contactUsPage, name='contactUs'),
     path('createProfile/', Juniors.views.createProfile, name='createProfile'),
     path('showProfile/<int:pk>', Juniors.views.showProfile, name='showProfile'),
