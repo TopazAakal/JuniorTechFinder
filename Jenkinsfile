@@ -40,9 +40,9 @@ pipeline {
                 sh 'nohup pipenv run python manage.py runserver & sleep 5' // Use pipenv run instead of pipenv shell
                 sh 'pipenv run python manage.py test' // Use pipenv run instead of pipenv shell
                 script {
-                    def processIds = sh(script: 'pgrep -f "python manage.py runserver"', returnStdout: true).trim()
+                    def processIds = sh(script: "ps aux | grep 'python manage.py runserver' | grep -v grep | awk '{print \$2}'", returnStdout: true).trim()
                     if (processIds) {
-                        sh "echo '${processIds}' | xargs -I {} pkill -F {}"
+                        sh "echo '${processIds}' | xargs -r kill -9"
                     }
                 }
             }
