@@ -11,5 +11,3 @@ sqlparse==0.4.3
 tomli==2.0.1
 typing_extensions==4.5.0
 tzdata==2023.3
-xmlrunner==1.7.7
-
