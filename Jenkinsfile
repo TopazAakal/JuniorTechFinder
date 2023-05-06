@@ -1,8 +1,8 @@
 pipeline {
     agent {
         docker {
-            image 'python:3.9' // Specify the Docker image to use
-            args '-v /var/run/docker.sock:/var/run/docker.sock -u root' // Add -u root option for elevated permissions // Additional Docker-related configuration
+            image 'python:3.9' // Docker image to use
+            args '-v /var/run/docker.sock:/var/run/docker.sock -u root' // Add -u root option for elevated permissions
         }
     }
 
@@ -32,13 +32,18 @@ pipeline {
             steps {
                 sh 'pipenv run python manage.py test' // Run Django tests
             }
+             post {
+               always {
+                    junit 'test-reports/*.xml'  
+                   }
+            }
         }
 
         stage('Deploy') {
             steps {
-                sh 'pipenv run python manage.py migrate' // Use pipenv run instead of pipenv shell
-                sh 'nohup pipenv run python manage.py runserver & sleep 5' // Use pipenv run instead of pipenv shell
-                sh 'pipenv run python manage.py test' // Use pipenv run instead of pipenv shell
+                sh 'pipenv run python manage.py migrate' 
+                sh 'nohup pipenv run python manage.py runserver & sleep 5' 
+                sh 'pipenv run python manage.py test' 
                 script {
                     def processIds = sh(script: "ps aux | grep 'python manage.py runserver' | grep -v grep | awk '{print \$2}'", returnStdout: true).trim()
                     if (processIds) {
