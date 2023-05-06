@@ -31,11 +31,7 @@ pipeline {
         stage('Test') {
             steps {
                 sh 'pipenv run python manage.py test' // Run Django tests
-            }
-             post {
-               always {
-                    junit 'test-reports/*.xml'  
-                   }
+                sh './gradlew check'
             }
         }
 
@@ -57,7 +53,7 @@ pipeline {
     post {
         always {
             sh 'find . -name "*.pyc" -delete' // Remove compiled Python files
-            junit 'reports/**/*.xml' // Publish JUnit test reports
+            junit 'build/reports/**/*.xml'
         }
 
         success {
