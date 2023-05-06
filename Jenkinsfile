@@ -34,11 +34,8 @@ pipeline {
                 sh 'mkdir -p build/reports' // Create the build/reports directory
 
                 // Discover and run all tests in the Django project
-                sh 'pipenv run python manage.py test --noinput --verbosity=2 --output-dir=build/reports'
-
-                // Generate XML reports for all test.py files
-                sh 'pipenv run python -m xmlrunner discover --pattern="test_*.py" --output-dir=build/reports'
-            }
+                sh 'pipenv run python manage.py test --noinput --verbosity=2 --testrunner=xmlrunner.extra.djangotestrunner.XMLTestRunner --output-dir=build/reports'
+              }
         }
 
         stage('Deploy') {
