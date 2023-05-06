@@ -34,7 +34,7 @@ pipeline {
                 sh 'mkdir -p build/reports' // Create the build/reports directory
 
                 // Run tests and generate XML reports
-                sh 'pipenv run python -m unittest discover -s . -p "test_*.py" -t build/reports'
+            sh 'pipenv run python -m unittest discover -s $WORKSPACE -p "test_*.py" -t build/reports'
             }
         }
 
