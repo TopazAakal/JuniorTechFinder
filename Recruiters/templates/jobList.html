@@ -1,0 +1,73 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<br>
+<h1>Jobs</h1>
+<br><br>
+{% if all_jobs %}
+<div class="table-responsive">
+    <table class="table table-striped" style="margin: 0 auto;">
+        <thead>
+            <tr>
+                <th>Title</th>
+                <th>Company</th>
+                <th>Location</th>
+                <th>Description</th>
+                <th>Requirements</th>
+                <th>Salary</th>
+                <th>Link</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for job in all_jobs %}
+            <tr>
+                <td>{{ job.title }}</td>
+                <td>{{ job.company_name }}</td>
+                <td>{{ job.location }}</td>
+                <td>{{ job.description }}</td>
+                <td>{{ job.requirements }}</td>
+                <td>{{ job.salary }}</td>
+                <td><a href="{{ job.application_link }}">{{ job.application_link }}</a></td>
+
+            </tr>
+            {% empty %}
+            <tr>
+                <td colspan="6">No job listings yet.</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+
+<style>
+    body {
+        text-align: center;
+    }
+
+    table {
+        text-align: center;
+        border-collapse: collapse;
+        width: 90%;
+    }
+
+    .table-responsive {
+        text-align: center;
+        margin-bottom: 80px;
+    }
+
+    th,
+    td {
+        padding: 8px;
+        text-align: left;
+        border-bottom: 1px solid #ddd;
+    }
+
+    tr:hover {
+        background-color: #f5f5f5;
+    }
+</style>
+
+{% else %}
+<p>No job listings yet.</p>
+{% endif %}
+{% endblock %}
