@@ -65,3 +65,8 @@ def postJob(request):
         form = JobListingForm()
 
     return render(request, 'postJob.html', {'form': form})
+
+
+def jobList(request):
+    all_jobs = JobListing.objects.all()
+    return render(request, 'jobList.html', {'all_jobs': all_jobs})

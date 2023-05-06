@@ -39,7 +39,7 @@ urlpatterns = [
     # path('checkProfileUser/', Authentication.views.checkProfileUser,
     # name='checkProfileUser'),
     path('checkProf/', Recruiters.views.checkProf, name='checkProf'),
-    # path('jobs/', Recruiters.views.jobListings, name='jobListings'),
+    path('jobs/', Recruiters.views.jobList, name='jobList'),
     path('postJob/', Recruiters.views.postJob, name='postJob'),
     # path('jobs/<int:job_id>/', Recruiters.views.jobDetail, name='jobDetail'),
     path('login/', Authentication.views.login_view, name='login'),
