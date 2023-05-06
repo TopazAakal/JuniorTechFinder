@@ -15,6 +15,7 @@ pipeline {
 
         stage('Install pipenv') {
             steps {
+                sh 'pip cache purge'
                 sh 'apt-get update' // Update package lists
                 sh 'apt-get install -y python3-dev python3-pip' // Install Python and pip
                 sh 'pip install pipenv' // Install pipenv
