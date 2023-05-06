@@ -1,0 +1,30 @@
+{% extends 'base.html' %}
+
+{% block content %}
+
+<h1>{{ job.title }}</h1>
+<p>{{ job.description }}</p>
+
+<p><strong>Posted:</strong> {{ job.date_posted }}</p>
+<p><strong>Company Name:</strong> {{ job.company_name }}</p>
+<p><strong>Location:</strong> {{ job.location }}</p>
+<p><strong>Contact email:</strong> {{ job.recruiter }}</p>
+<p><strong>Link to the site:</strong> <a href="{{ job.application_link }}">{{ job.application_link }}</a></p>
+<p><strong>Requirements:</strong> {{ job.requirements }}</p>
+{% if job.salary %}
+<p><strong>Salary:</strong> {{ job.salary }}$</p>
+{%else%}
+<p><strong>Salary:</strong> Not specified</p>
+{% endif %}
+
+<a href=" " class="btn btn-primary" style=" background-color:#405677; color:white; padding: 1em 1.5em; text-decoration:
+    none; border-radius: 10px; display: inline-block; margin-top: 10px; margin-bottom: 10px;
+    font-size: 14px;">Apply for this position</a>
+
+<style>
+    body {
+        text-align: center;
+    }
+</style>
+
+{% endblock %}

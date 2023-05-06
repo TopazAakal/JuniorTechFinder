@@ -70,3 +70,9 @@ def postJob(request):
 def jobList(request):
     all_jobs = JobListing.objects.all()
     return render(request, 'jobList.html', {'all_jobs': all_jobs})
+
+
+def jobDetail(request, job_id):
+    job = get_object_or_404(JobListing, id=job_id)
+    context = {'job': job}
+    return render(request, 'jobDetail.html', context)
