@@ -60,6 +60,7 @@ pipeline {
         always {
             sh 'find . -name "*.pyc" -delete' // Remove compiled Python files
             junit 'build/reports/**/*.xml'
+            cleanWs(cleanWhenNotBuilt: false, deleteDirs: true, disableDeferredWipeout: true, notFailBuild: true, patterns: [[pattern: '.gitignore', type: 'INCLUDE'],  [pattern: '.propsfile', type: 'EXCLUDE']])
         }
 
         success {
