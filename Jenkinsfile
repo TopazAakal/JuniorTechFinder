@@ -31,11 +31,7 @@ pipeline {
 
         stage('Test') {
             steps {
-                sh 'mkdir -p build/reports' // Create the build/reports directory
-
-                // Discover and run all tests in the Django project
-                //sh 'pipenv run python manage.py test --noinput --verbosity=2 --testrunner=xmlrunner.extra.djangotestrunner.XMLTestRunner --output-dir=build/reports'
-                sh 'pipenv run python -m xmlrunner discover --output-dir=build/reports --pattern=test_*.py'  
+                sh 'pipenv run python manage.py test'  
             }
         }
 
@@ -57,7 +53,7 @@ pipeline {
     post {
         always {
             sh 'find . -name "*.pyc" -delete' // Remove compiled Python files
-            junit 'build/reports/**/*.xml'
+            junit allowEmptyResults: true, testResults: '**/test-results/*.xml'
             cleanWs(cleanWhenNotBuilt: false, deleteDirs: true, disableDeferredWipeout: true, notFailBuild: true, patterns: [[pattern: '.gitignore', type: 'INCLUDE'],  [pattern: '.propsfile', type: 'EXCLUDE']])
         }
 
