@@ -15,7 +15,6 @@ pipeline {
 
         stage('Install pipenv') {
             steps {
-                
                 sh 'apt-get update' // Update package lists
                 sh 'apt-get install -y python3-dev python3-pip' // Install Python and pip
                 sh 'pip install pipenv' // Install pipenv
@@ -26,6 +25,7 @@ pipeline {
             steps {
                 sh 'pipenv install' // Create and activate virtual environment, install dependencies
                 sh 'pipenv install -r requirements.txt' // Install dependencies from requirements.txt
+                sh 'pipenv run pip install xmlrunner==1.7.7' // Install xmlrunner==1.7.7 specifically
             }
         }
 
@@ -71,3 +71,4 @@ pipeline {
         }
     }
 }
+
