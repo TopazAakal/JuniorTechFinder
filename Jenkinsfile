@@ -33,6 +33,9 @@ pipeline {
             steps {
                 sh 'mkdir -p build/reports' // Create the build/reports directory
 
+                 // Install xmlrunner package
+                sh 'pipenv run pip install xmlrunner==1.7.7'
+
                 // Discover and run all tests in the Django project
                 sh 'pipenv run python -m xmlrunner discover --output-dir=build/reports --pattern="test_*.py"'
 
