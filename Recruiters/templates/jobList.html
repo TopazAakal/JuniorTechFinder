@@ -11,11 +11,11 @@
             <tr>
                 <th>Title</th>
                 <th>Company</th>
+                <th>Link</th>
                 <th>Location</th>
                 <th>Description</th>
                 <th>Requirements</th>
                 <th>Salary</th>
-                <th>Link</th>
             </tr>
         </thead>
         <tbody>
@@ -23,11 +23,12 @@
             <tr>
                 <td>{{ job.title }}</td>
                 <td>{{ job.company_name }}</td>
+                <td><a href="{{ job.application_link }}">{{ job.application_link }}</a></td>
                 <td>{{ job.location }}</td>
                 <td>{{ job.description }}</td>
                 <td>{{ job.requirements }}</td>
                 <td>{{ job.salary }}</td>
-                <td><a href="{{ job.application_link }}">{{ job.application_link }}</a></td>
+                <td><button type="button" class="btn btn-primary" style="font-size: 14px;">More Details</button></td>
 
             </tr>
             {% empty %}
