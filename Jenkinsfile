@@ -2,7 +2,7 @@ pipeline {
     agent {
         docker {
             image 'python:3.9' // Docker image to use
-             args '-v /var/run/docker.sock:/var/run/docker.sock -v $WORKSPACE:$WORKSPACE -u root' // Mount Jenkins workspace as a volume
+            args '-v /var/run/docker.sock:/var/run/docker.sock -u root' // Add -u root option for elevated permissions
         }
     }
 
@@ -25,7 +25,7 @@ pipeline {
             steps {
                 sh 'pipenv install --skip-lock' // Create and activate virtual environment, install dependencies (skip lock)
                 sh 'pipenv install -r requirements.txt' // Install dependencies from requirements.txt
-                //sh 'pipenv run pip install xmlrunner==1.7.7' // Install xmlrunner==1.7.7 specifically
+                sh 'pipenv run pip install xmlrunner==1.7.7' // Install xmlrunner==1.7.7 specifically
             }
         }
 
@@ -33,8 +33,11 @@ pipeline {
             steps {
                 sh 'mkdir -p build/reports' // Create the build/reports directory
 
-                 // Run tests and generate XML reports
-                sh "pipenv run python -m unittest discover -s $WORKSPACE -p 'test_*.py' -t $WORKSPACE/build/reports"
+                // Discover and run all tests in the Django project
+                sh 'pipenv run python manage.py test --noinput --verbosity=2 --output-dir=build/reports'
+
+                // Generate XML reports for all test.py files
+                sh 'pipenv run python -m xmlrunner discover --pattern="test_*.py" --output-dir=build/reports'
             }
         }
 
