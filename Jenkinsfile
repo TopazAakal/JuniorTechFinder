@@ -25,7 +25,7 @@ pipeline {
             steps {
                 sh 'pipenv install --skip-lock' // Create and activate virtual environment, install dependencies (skip lock)
                 sh 'pipenv install -r requirements.txt' // Install dependencies from requirements.txt
-                sh 'pipenv run pip install xmlrunner==1.7.7' // Install xmlrunner==1.7.7 specifically
+                //sh 'pipenv run pip install xmlrunner==1.7.7' // Install xmlrunner==1.7.7 specifically
             }
         }
 
