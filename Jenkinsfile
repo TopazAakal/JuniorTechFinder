@@ -1,8 +1,8 @@
 pipeline {
     agent {
         docker {
-            image 'python:3.9' // Specify the Docker image to use
-            args '-v /var/run/docker.sock:/var/run/docker.sock -u root' // Add -u root option for elevated permissions // Additional Docker-related configuration
+            image 'python:3.9' // Docker image to use
+            args '-v /var/run/docker.sock:/var/run/docker.sock -u root' // Add -u root option for elevated permissions
         }
     }
 
@@ -15,6 +15,7 @@ pipeline {
 
         stage('Install pipenv') {
             steps {
+                
                 sh 'apt-get update' // Update package lists
                 sh 'apt-get install -y python3-dev python3-pip' // Install Python and pip
                 sh 'pip install pipenv' // Install pipenv
@@ -30,19 +31,25 @@ pipeline {
 
         stage('Test') {
             steps {
-                sh 'pipenv run python manage.py test' // Run Django tests
+                sh 'mkdir -p build/reports' // Create the build/reports directory
+
+                // Discover and run all tests in the Django project
+                sh 'pipenv run python manage.py test --noinput --verbosity=2 --output-dir=build/reports'
+
+                // Generate XML reports for all test.py files
+                sh 'pipenv run python -m xmlrunner discover --pattern="test_*.py" --output-dir=build/reports'
             }
         }
 
         stage('Deploy') {
             steps {
-                sh 'pipenv run python manage.py migrate' // Use pipenv run instead of pipenv shell
-                sh 'nohup pipenv run python manage.py runserver & sleep 5' // Use pipenv run instead of pipenv shell
-                sh 'pipenv run python manage.py test' // Use pipenv run instead of pipenv shell
+                sh 'pipenv run python manage.py migrate' 
+                sh 'nohup pipenv run python manage.py runserver & sleep 5' 
+                sh 'pipenv run python manage.py test' 
                 script {
-                    def processIds = sh(script: 'pgrep -f "python manage.py runserver"', returnStdout: true).trim()
+                    def processIds = sh(script: "ps aux | grep 'python manage.py runserver' | grep -v grep | awk '{print \$2}'", returnStdout: true).trim()
                     if (processIds) {
-                        sh "pkill -F <(echo '${processIds}')"
+                        sh "echo '${processIds}' | xargs -r kill -9"
                     }
                 }
             }
@@ -52,7 +59,7 @@ pipeline {
     post {
         always {
             sh 'find . -name "*.pyc" -delete' // Remove compiled Python files
-            junit 'reports/**/*.xml' // Publish JUnit test reports
+            junit 'build/reports/**/*.xml'
         }
 
         success {
