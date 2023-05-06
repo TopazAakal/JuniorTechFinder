@@ -3,7 +3,6 @@ from django.contrib.auth.models import Group
 
 register = template.Library()
 
-
 @register.filter(name='user_in_group')
 def user_in_group(user, group_name):
     try:
