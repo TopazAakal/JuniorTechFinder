@@ -2,7 +2,7 @@ pipeline {
     agent {
         docker {
             image 'python:3.9' // Docker image to use
-            args '-v /var/run/docker.sock:/var/run/docker.sock -u root' // Add -u root option for elevated permissions
+             args '-v /var/run/docker.sock:/var/run/docker.sock -v $WORKSPACE:$WORKSPACE -u root' // Mount Jenkins workspace as a volume
         }
     }
 
@@ -33,8 +33,8 @@ pipeline {
             steps {
                 sh 'mkdir -p build/reports' // Create the build/reports directory
 
-                // Run tests and generate XML reports
-            sh 'pipenv run python -m unittest discover -s $WORKSPACE -p "test_*.py" -t build/reports'
+                 // Run tests and generate XML reports
+                sh "pipenv run python -m unittest discover -s $WORKSPACE -p 'test_*.py' -t $WORKSPACE/build/reports"
             }
         }
 
