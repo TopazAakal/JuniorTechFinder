@@ -36,6 +36,8 @@ urlpatterns = [
          Recruiters.views.showProfileRecruiter, name='showProfileRecruiter'),
     path('createProfileRecruiters/', Recruiters.views.createProfileRecruiters,
          name='createProfileRecruiters'),
+    # path('checkProfileUser/', Authentication.views.checkProfileUser,
+    # name='checkProfileUser'),
     path('checkProf/', Recruiters.views.checkProf, name='checkProf'),
     # path('jobs/', Recruiters.views.jobListings, name='jobListings'),
     path('postJob/', Recruiters.views.postJob, name='postJob'),

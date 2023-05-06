@@ -1,5 +1,5 @@
 {% load static %}
-{% load auth_extras %}
+{% load my_tags %}
 
 <!DOCTYPE html>
 <html lang="en">
@@ -27,9 +27,10 @@
                 <li><a href="{% url 'siteRules' %}">Site Rules</a></li>
 
                 {% if user.is_authenticated %}
-
-                <li><a href="checkProfile/">Profile</a></li>
-                {% if request.user|belongsToGroup:"Recruiter" %}
+                {% if request.user|user_in_group:"Junior" %}
+                <li><a href="{% url 'checkProfile' %}">Profile</a></li>
+                {% elif request.user|user_in_group:"Recruiter" %}
+                <li><a href="{% url 'checkProf' %}">Profile</a></li>
                 <li><a href="{% url 'postJob' %}">Post Job</a></li>
                 {% endif %}
 
@@ -39,7 +40,6 @@
                 <li><a href="{% url 'logout' %}">Logout</a></li>
                 </form>
                 </li>
-
 
                 <li style="font-weight: bold; font-size: 13px; color:bisque">
                     You are logged in as : {{ user.username }}
