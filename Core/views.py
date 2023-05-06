@@ -12,6 +12,9 @@ def homePage(request):
 def aboutUsPage(request):
     return render(request, 'aboutUs.html')
 
+def siteRulesPage(request):
+    return render(request, 'siteRules.html')
+
 
 def contactUsPage(request):
     if request.method == 'POST':

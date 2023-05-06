@@ -26,6 +26,7 @@ from django.conf.urls.static import static
 urlpatterns = [
     path('', Core.views.homePage, name='home'),
     path('aboutUs/', Core.views.aboutUsPage, name='aboutUs'),
+    path('siteRules/', Core.views.siteRulesPage, name='siteRules'),
     path('contactUs/', Core.views.contactUsPage, name='contactUs'),
     path('createProfile/', Juniors.views.createProfile, name='createProfile'),
     path('showProfile/<int:pk>', Juniors.views.showProfile, name='showProfile'),
@@ -36,9 +37,12 @@ urlpatterns = [
     path('createProfileRecruiters/', Recruiters.views.createProfileRecruiters,
          name='createProfileRecruiters'),
     path('checkProf/', Recruiters.views.checkProf, name='checkProf'),
-    path('admin/', admin.site.urls),
+    # path('jobs/', Recruiters.views.jobListings, name='jobListings'),
+    path('postJob/', Recruiters.views.postJob, name='postJob'),
+    # path('jobs/<int:job_id>/', Recruiters.views.jobDetail, name='jobDetail'),
     path('login/', Authentication.views.login_view, name='login'),
     path('signup/', Authentication.views.signup_view, name='signup'),
     path('logout/', Authentication.views.logout_view, name='logout'),
+    path('admin/', admin.site.urls),
 
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
