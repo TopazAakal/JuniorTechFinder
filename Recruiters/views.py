@@ -105,10 +105,25 @@ def deleteJob(request, job_id):
 
 def jobList(request):
     all_jobs = JobListing.objects.all()
-    return render(request, 'jobList.html', {'all_jobs': all_jobs})
-
-
+    
+    # create a list of all available locations
+    locations = list(set([job.location for job in all_jobs]))
+    
+    # get the selected location from the URL query parameters
+    selected_location = request.GET.get('location')
+    
+    if selected_location:
+        all_jobs = all_jobs.filter(location=selected_location)
+    
+    return render(request, 'jobList.html', {'all_jobs': all_jobs, 'locations': locations})
 def jobDetail(request, job_id):
     job = get_object_or_404(JobListing, id=job_id)
     context = {'job': job}
     return render(request, 'jobDetail.html', context)
+
+
+def job_list(request):
+    all_jobs = JobListing.objects.all()
+    locations = JobListing.objects.values_list('location', flat=True).distinct()
+    context = {'all_jobs': all_jobs, 'locations': locations}
+    return render(request, 'job_list.html', context)
