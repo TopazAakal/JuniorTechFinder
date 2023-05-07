@@ -1,8 +1,8 @@
 {% extends 'base.html' %}
 
 {% block content %}
-<h1>Post a New Job</h1>
-<form method="post">
+<h1 style="text-align: center;">Post a New Job</h1>
+<form method="post" style="text-align: center; margin: 23px;">
   {% csrf_token %}
   {{ form.as_p }}
   <button type="submit">Post Job</button>
