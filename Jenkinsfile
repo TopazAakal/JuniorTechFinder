@@ -15,7 +15,6 @@ pipeline {
 
         stage('Install pipenv') {
             steps {
-                
                 sh 'apt-get update' // Update package lists
                 sh 'apt-get install -y python3-dev python3-pip' // Install Python and pip
                 sh 'pip install pipenv' // Install pipenv
@@ -24,20 +23,15 @@ pipeline {
 
         stage('Build') {
             steps {
-                sh 'pipenv install' // Create and activate virtual environment, install dependencies
+                sh 'pipenv install --skip-lock' // Create and activate virtual environment, install dependencies (skip lock)
                 sh 'pipenv install -r requirements.txt' // Install dependencies from requirements.txt
+                sh 'pipenv run pip install xmlrunner==1.7.7' // Install xmlrunner==1.7.7 specifically
             }
         }
 
         stage('Test') {
             steps {
-                sh 'mkdir -p build/reports' // Create the build/reports directory
-
-                // Discover and run all tests in the Django project
-                sh 'pipenv run python manage.py test --noinput --verbosity=2 --output-dir=build/reports'
-
-                // Generate XML reports for all test.py files
-                sh 'pipenv run python -m xmlrunner discover --pattern="test_*.py" --output-dir=build/reports'
+                sh 'pipenv run python manage.py test'  
             }
         }
 
@@ -59,7 +53,8 @@ pipeline {
     post {
         always {
             sh 'find . -name "*.pyc" -delete' // Remove compiled Python files
-            junit 'build/reports/**/*.xml'
+            junit allowEmptyResults: true, testResults: '**/test-results/*.xml'
+            cleanWs(cleanWhenNotBuilt: false, deleteDirs: true, disableDeferredWipeout: true, notFailBuild: true, patterns: [[pattern: '.gitignore', type: 'INCLUDE'],  [pattern: '.propsfile', type: 'EXCLUDE']])
         }
 
         success {
