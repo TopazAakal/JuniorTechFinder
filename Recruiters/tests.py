@@ -147,10 +147,10 @@ class JobListTestCase(TestCase):
         )
         JobListing.objects.create(title='Job 1', company_name='Company 1', location='Location 1',
                                   description='Description 1', requirements='Requirements 1',
-                                  application_link='https://www.example.com/job1', salary='5000', recruiter=self.user)
+                                  application_link='https://www.example.com/job1', salary='5000', recruiter=self.user.recruiters)
         JobListing.objects.create(title='Job 2', company_name='Company 2', location='Location 2',
                                   description='Description 2', requirements='Requirements 2',
-                                  application_link='https://www.example.com/job2', salary='1000', recruiter=self.user)
+                                  application_link='https://www.example.com/job2', salary='1000', recruiter=self.user.recruiters)
 
     def test_job_list(self):
         response = self.client.get(reverse('jobList'))
