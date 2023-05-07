@@ -105,21 +105,19 @@ def deleteJob(request, job_id):
 
 def jobList(request):
     all_jobs = JobListing.objects.all()
-    
-    # create a list of all available locations
     locations = list(set([job.location for job in all_jobs]))
-    
-    # get the selected location and title from the URL query parameters
+    job_types = list(set([job.job_type for job in all_jobs]))
     selected_location = request.GET.get('location')
     selected_title = request.GET.get('title')
-    
-    # apply filters for selected location and title
+    selected_job_type = request.GET.get('job_type')
+
     if selected_location:
         all_jobs = all_jobs.filter(location=selected_location)
     if selected_title:
         all_jobs = all_jobs.filter(title__icontains=selected_title)
-    
-    return render(request, 'jobList.html', {'all_jobs': all_jobs, 'locations': locations})
+    if selected_job_type:
+        all_jobs = all_jobs.filter(job_type=selected_job_type) 
+    return render(request, 'jobList.html', {'all_jobs': all_jobs, 'locations': locations, 'job_types': job_types})
 
 def jobDetail(request, job_id):
     job = get_object_or_404(JobListing, id=job_id)
