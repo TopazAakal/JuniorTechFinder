@@ -29,6 +29,16 @@ class Recruiters(models.Model):
 
 
 class JobListing(models.Model):
+    FULL_TIME = 'FT'
+    PART_TIME = 'PT'
+    STUDENT = 'ST'
+    INTERN = 'IN'
+    JOB_TYPE_CHOICES = [
+        (FULL_TIME, 'Full-time'),
+        (PART_TIME, 'Part-time'),
+        (STUDENT, 'Student'),
+        (INTERN, 'Intern'),
+    ]
     title = models.CharField(max_length=100)
     description = models.TextField()
     requirements = models.TextField()
@@ -39,6 +49,7 @@ class JobListing(models.Model):
     application_link = models.URLField(max_length=200)
     company_name = models.CharField(max_length=100)
     salary = models.PositiveIntegerField(blank=True, null=True)
+    job_type = models.CharField(max_length=2, choices=JOB_TYPE_CHOICES)
 
     def __str__(self):
         return self.title
