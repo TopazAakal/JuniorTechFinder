@@ -1,3 +1,4 @@
+from django.contrib.auth.decorators import login_required
 from django.http import HttpResponseRedirect
 from django.shortcuts import get_object_or_404, render, redirect
 from django.contrib import messages
@@ -6,7 +7,7 @@ from .models import Juniors
 from .forms import JuniorForm
 from django import forms
 
-
+@login_required
 def createProfile(request):
     user = request.user
     if hasattr(user, 'juniors'):
@@ -31,29 +32,30 @@ def createProfile(request):
 
 
 def showProfile(request, pk):
-    # retrieve the Junior instance with the given primary key and the current user's ID, or return a 404 error
-    junior = get_object_or_404(Juniors, pk=pk, user=request.user)
+    # retrieve the Junior instance with the given primary key, or return a 404 error
+    junior = get_object_or_404(Juniors, pk=pk)
     default_photo_url = '/static/media/default.jpg'
     context = {'junior': junior, 'default_photo_url': default_photo_url}
     return render(request, 'showProfile.html', context)
 
-
+@login_required
 def editProfile(request, pk):
+    junior = get_object_or_404(Juniors, pk=pk)
 
-    junior = get_object_or_404(Juniors, pk=pk, user=request.user)
-
-    if request.method == 'POST':
-        form = JuniorForm(request.POST, request.FILES, instance=junior)
-        if form.is_valid():
-            form.save()
-            messages.success(request, 'Profile updated successfully!')
-            return redirect('showProfile', pk=pk)
+    if junior.user == request.user or request.user.is_staff:
+        if request.method == 'POST':
+            form = JuniorForm(request.POST, request.FILES, instance=junior)
+            if form.is_valid():
+                form.save()
+                messages.success(request, 'Profile updated successfully!')
+                return redirect('showProfile', pk=pk)
+        else:
+            form = JuniorForm(instance=junior)
+            form.fields['user'].widget = forms.HiddenInput()
+            form.fields['user'].initial = request.user.id
+        return render(request, 'editProfile.html', {'form': form})
     else:
-        form = JuniorForm(instance=junior)
-        form.fields['user'].widget = forms.HiddenInput()
-        form.fields['user'].initial = request.user.id
-
-    return render(request, 'editProfile.html', {'form': form})
+        return redirect("showProfile", pk=pk)
 
 
 def checkProfile(request):

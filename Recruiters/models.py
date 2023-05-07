@@ -35,7 +35,7 @@ class JobListing(models.Model):
     date_posted = models.DateTimeField(default=timezone.now)
     company = models.CharField(max_length=100)
     location = models.CharField(max_length=100)
-    recruiter = models.ForeignKey(User, on_delete=models.CASCADE)
+    recruiter = models.ForeignKey(Recruiters, on_delete=models.CASCADE)
     application_link = models.URLField(max_length=200)
     company_name = models.CharField(max_length=100)
     salary = models.PositiveIntegerField(blank=True, null=True)
