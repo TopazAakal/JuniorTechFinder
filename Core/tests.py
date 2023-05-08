@@ -9,6 +9,11 @@ class AboutUsPageTestCase(TestCase):
         self.assertEqual(response.status_code, 200)
         self.assertTemplateUsed(response, 'aboutUs.html')
 
+class SiteRulesTestCase(TestCase):
+    def test_site_rules_page(self):
+        response = self.client.get('/siteRules/')
+        self.assertEqual(response.status_code, 200)
+        self.assertTemplateUsed(response, 'siteRules.html')
 
 class ContactUsPageTestCase(TestCase):
     def setUp(self):
