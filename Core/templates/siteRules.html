@@ -2,12 +2,39 @@
 {% load static %}
 {% block content %}
 
-<h1>Rules of our site:</h1>
-<ol>
-  <li>Be respectful and professional in all communication with employers and other users of the site.</li>
-  <li>Do not post false or misleading information in your job applications or on your profile.</li>
-  <li>Only apply for jobs that you are qualified for and genuinely interested in.</li>
-  <li>Do not attempt to solicit or accept payments outside of the platform.</li>
-</ol>
-<p>By using our site, you agree to abide by these rules. Failure to comply may result in account suspension or termination.</p>
+<div class="rules">
+  <img src="{% static 'media/rules.jpg' %}" alt="rules-pic" style="width: 500px; height: 300px;">
+  <h1><strong>Rules of our site:</strong></h1>
+  <ol>
+    <li> Be respectful and professional in all communication with employers and other users of the site.</li>
+    <li> Do not post false or misleading information in your job applications or on your profile.</li>
+    <li> Only apply for jobs that you are qualified for and genuinely interested in.</li>
+    <li> Do not attempt to solicit or accept payments outside of the platform.</li>
+  </ol>
+  <p>By using our site, you agree to abide by these rules. Failure to comply may result in account suspension or
+    termination.</p>
+
+</div>
+
+<style>
+  body {
+    text-align: center;
+  }
+
+  .rules {
+    margin-bottom: 100px;
+  }
+
+  ol {
+    margin-left: auto;
+    margin-right: auto;
+    text-align: left;
+    max-width: 700px;
+  }
+
+  li {
+    margin-bottom: 10px;
+  }
+</style>
+
 {% endblock %}

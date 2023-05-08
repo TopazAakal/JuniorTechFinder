@@ -1,70 +1,9 @@
 {% extends 'base.html' %}
 
 {% block content %}
-<br>
-<h1>Jobs</h1>
-<br><br>
-
-<!-- add a dropdown menu for selecting a location -->
-<form method="GET">
-    <select name="location">
-        <option value="">All Locations</option>
-        {% for location in locations %}
-            <option value="{{ location }}">{{ location }}</option>
-        {% endfor %}
-    </select>
-    <select name="job_type">
-        <option value="">All Job Types</option>
-        {% for job_type in job_types %}
-            <option value="{{ job_type }}">{{ job_type }}</option>
-        {% endfor %}
-    </select>
-    <input type="text" name="title" placeholder="Search by title">
-    <button type="submit">Filter</button>
-</form>
-
-{% if all_jobs %}
-<div class="table-responsive">
-    <table class="table table-striped" style="margin: 0 auto;">
-        <thead>
-            <tr>
-                <th>Title</th>
-                <th>Company</th>
-                <th>Job Type</th>
-                <th>Link</th>
-                <th>Location</th>
-                <th>Description</th>
-                <th>Requirements</th>
-                <th>Salary</th>
-            </tr>
-        </thead>
-        <tbody>
-            {% for job in all_jobs %}
-            <tr>
-                <td>{{ job.title }}</td>
-                <td>{{ job.company_name }}</td>
-                <td>{{ job.job_type }}</td>
-                <td><a href="{{ job.application_link }}">{{ job.application_link }}</a></td>
-                <td>{{ job.location }}</td>
-                <td>{{ job.description }}</td>
-                <td>{{ job.requirements }}</td>
-                <td>{% if job.salary %}{{ job.salary }}${% else %}Not specified{% endif %}</td>
-                <td><a href="{% url 'jobDetail' job.id %}" class="btn btn-primary"
-                        style="background-color:#465c7e; color:white; padding: 1em 1.5em; text-decoration: none; border-radius: 10px; display: inline-block; margin-top: 10px; margin-bottom: 10px; font-size: 12px;">View
-                        Details</a></td>
-
-            </tr>
-            {% empty %}
-            <tr>
-                <td colspan="6">No job listings yet.</td>
-            </tr>
-            {% endfor %}
-        </tbody>
-    </table>
-</div>
 
 <style>
-    body {
+    .job-list {
         text-align: center;
     }
 
@@ -89,9 +28,116 @@
     tr:hover {
         background-color: #f5f5f5;
     }
+
+    form {
+        display: flex;
+        flex-direction: row;
+        justify-content: center;
+        align-items: center;
+        margin-bottom: 20px;
+    }
+
+    select,
+    input[type="text"],
+    button {
+        height: 40px;
+        font-size: 16px;
+        border: none;
+        border-radius: 20px;
+        margin: 0 5px;
+        padding: 0 20px;
+    }
+
+    select {
+        background-color: #f2f2f2;
+        font-family: 'Lato', sans-serif;
+        font-weight: bold;
+    }
+
+    input[type="text"] {
+        background-color: #fff;
+        box-shadow: 0 0 5px rgba(0, 0, 0, 0.2);
+        font-family: 'Lato', sans-serif;
+        font-weight: bold;
+    }
+
+    button {
+        background-color: #465c7e;
+        color: #fff;
+        cursor: pointer;
+    }
+
+    button:hover {
+        background-color: #34445b;
+    }
 </style>
 
-{% else %}
-<p>No job listings yet.</p>
-{% endif %}
+<div class="job-list">
+    <br>
+    <h1>Jobs</h1>
+    <br><br>
+
+    <!-- add a dropdown menu for selecting a location -->
+    <form method="GET">
+        <select name="location">
+            <option value="">All Locations</option>
+            {% for location in locations %}
+            <option value="{{ location }}">{{ location }}</option>
+            {% endfor %}
+        </select>
+        <select name="job_type">
+            <option value="">All Job Types</option>
+            {% for job_type in job_types %}
+            <option value="{{ job_type }}">{{ job_type }}</option>
+            {% endfor %}
+        </select>
+        <input type="text" name="title" placeholder="Search by title">
+        <button type="submit">Filter</button>
+    </form>
+
+    <br><br>
+    {% if all_jobs %}
+    <div class="table-responsive">
+        <table class="table table-striped" style="margin: 0 auto;">
+            <thead>
+                <tr>
+                    <th>Title</th>
+                    <th>Company</th>
+                    <th>Job Type</th>
+                    <th>Link</th>
+                    <th>Location</th>
+                    <th>Description</th>
+                    <th>Requirements</th>
+                    <th>Salary</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for job in all_jobs %}
+                <tr>
+                    <td><strong>{{ job.title }}</strong></td>
+                    <td>{{ job.company_name }}</td>
+                    <td>{{ job.job_type }}</td>
+                    <td><a href="{{ job.application_link }}">{{ job.application_link }}</a></td>
+                    <td>{{ job.location }}</td>
+                    <td>{{ job.description|truncatechars:100 }}</td>
+                    <td>{{ job.requirements|truncatechars:80 }}</td>
+                    <td>{% if job.salary %}{{ job.salary }}${% else %}Not specified{% endif %}</td>
+                    <td><a href="{% url 'jobDetail' job.id %}" class="btn btn-primary"
+                            style="background-color:#465c7e; color:white; padding: 1em 1.5em; text-decoration: none; border-radius: 10px; display: inline-block; margin-top: 10px; margin-bottom: 10px; font-size: 12px;">View
+                            Details</a></td>
+
+                </tr>
+                {% empty %}
+                <tr>
+                    <td colspan="6">No job listings yet.</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+
+    {% else %}
+    <p>No job listings yet.</p>
+    {% endif %}
+</div>
 {% endblock %}

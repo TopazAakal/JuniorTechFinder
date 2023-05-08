@@ -11,29 +11,25 @@
     </div>
     {% endif %}
     <div style="display: flex; justify-content: space-between; align-items: center;">
-      <h1 style="margin-left: 115px; flex: 1;">My Profile</h1>
+      <h1 style="margin-left: 240px; flex: 1; font-family: 'Righteous', cursive;">My Profile</h1>
       {% if request.user == recruiter.user or request.user.is_staff %}
-      <a style="background-color:#040b15; color:white; padding: 1em 1.5em; text-decoration: none;text-transform: uppercase; border-radius: 10px; display: inline-block; margin-top: 10px; margin-bottom: 10px; font-size: 14px; margin-right: 15px;"
+      <a style="background-color:#040b15; color:white; padding: 1em 1.5em; text-decoration: none; border-radius: 10px; display: inline-block; margin-top: 10px; margin-bottom: 10px; font-size: 14px; margin-right: 15px;"
         href="{% url 'editProfileRecruiter' pk=recruiter.pk %}">Edit Profile</a><br>
-      <a style="background-color:#040b15; color:white; padding: 1em 1.5em; text-decoration: none;text-transform: uppercase; border-radius: 10px; display: inline-block; margin-top: 10px; margin-bottom: 10px; font-size: 14px; margin-right: 15px;"
+      <a style="background-color:#2e4668; color:white; padding: 1em 1.5em; text-decoration: none; border-radius: 10px; display: inline-block; margin-top: 10px; margin-bottom: 10px; font-size: 14px; margin-right: 15px;"
         href="{% url 'postJob' %}">Post Job</a>
       {% endif %}
 
     </div>
 
     <img class="profile-pic" src="{{ recruiter.photo.url }}" alt="{{ recruiter.name }}'s profile picture ">
-    <h3>Full Name: {{ recruiter.full_name }}</h3>
-    <h3>Email: {{ recruiter.email }}</h3>
-    <h3>Phone Number: {{ recruiter.phone_number }}</h3>
-    <h3>City: {{ recruiter.city }}</h3>
-    <h3>Age: {{ recruiter.age }}</h3>
-    <h3>Summary: {{ recruiter.summary }}</h3>
-    <h3>Company: {{ recruiter.company }}</h3>
+    <h3><strong>Full Name: </strong> {{ recruiter.full_name }}</h3>
+    <h3><strong>Company: </strong> {{ recruiter.company }} , {{ recruiter.city }}</h3>
+    <h3><strong>Email: </strong> {{ recruiter.email }}</h3>
 
   </div>
   <br>
-  <h1>Jobs</h1>
-  <br><br>
+  <h2 style="color: #23416b; font-family: 'Righteous', cursive; margin-right: 1020px;"><strong>My Jobs:</strong></h2>
+  <br>
   {% if all_jobs %}
   <div class="table-responsive">
     <table class="table table-striped" style="margin: 0 auto;">
@@ -55,11 +51,11 @@
           <td>{{ job.company_name }}</td>
           <td><a href="{{ job.application_link }}">{{ job.application_link }}</a></td>
           <td>{{ job.location }}</td>
-          <td>{{ job.description }}</td>
-          <td>{{ job.requirements }}</td>
+          <td>{{ job.description|truncatechars:50 }}</td>
+          <td>{{ job.requirements|truncatechars:50 }}</td>
           <td>{% if job.salary %}{{ job.salary }}${% else %}Not specified{% endif %}</td>
           <td><a href="{% url 'deleteJob' job.id %}" class="btn btn-primary"
-              style="background-color:#ba261b; color:rgb(0, 0, 0); padding: 1em 1.5em; text-decoration: none; border-radius: 10px; display: inline-block; margin-top: 10px; margin-bottom: 10px; font-size: 12px;">Delete</a>
+              style="background-color:#6d100a; color:rgb(255, 255, 255); padding: 1em 1.5em; text-decoration: none; border-radius: 10px; display: inline-block; margin-top: 10px; margin-bottom: 10px; font-size: 12px;">Delete</a>
           </td>
 
         </tr>
