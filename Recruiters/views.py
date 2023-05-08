@@ -124,4 +124,23 @@ def jobDetail(request, job_id):
     context = {'job': job}
     return render(request, 'jobDetail.html', context)
 
+@login_required
+def editJob(request,job_id):
+    job = get_object_or_404(JobListing, id=job_id)
+
+    if job.recruiter.user == request.user or request.user.is_staff:
+        if request.method == 'POST':
+            form = JobListingForm(
+                request.POST ,instance=job)
+            if form.is_valid():
+                form.save()
+                messages.success(request, 'Job updated successfully!')
+                return redirect('showProfileRecruiter', pk=request.user.recruiters.pk)
+        else:
+            form = JobListingForm(instance=job)
+            #form.fields['user'].widget = forms.HiddenInput()
+           # form.fields['user'].initial = request.user.id
+        return render(request, 'editJob.html', {'form': form})
+    else:
+        return redirect("showProfileRecruiter", pk=request.user.recruiters.pk)
 

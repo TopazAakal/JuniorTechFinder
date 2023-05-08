@@ -45,6 +45,7 @@ urlpatterns = [
     path('postJob/', Recruiters.views.postJob, name='postJob'),
     path('deleteJob/<int:job_id>/', Recruiters.views.deleteJob, name='deleteJob'),
     path('jobs/<int:job_id>/', Recruiters.views.jobDetail, name='jobDetail'),
+    path('editJob/ <int:job_id>', Recruiters.views.editJob, name='editJob'),
     path('login/', Authentication.views.login_view, name='login'),
     path('signup/', Authentication.views.signup_view, name='signup'),
     path('logout/', Authentication.views.logout_view, name='logout'),

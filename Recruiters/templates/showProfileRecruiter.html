@@ -57,6 +57,9 @@
           <td><a href="{% url 'deleteJob' job.id %}" class="btn btn-primary"
               style="background-color:#6d100a; color:rgb(255, 255, 255); padding: 1em 1.5em; text-decoration: none; border-radius: 10px; display: inline-block; margin-top: 10px; margin-bottom: 10px; font-size: 12px;">Delete</a>
           </td>
+          <td><a href="{% url 'editJob' job.id %}" class="btn btn-primary"
+            style="background-color:#3f7cad; color:rgb(255, 255, 255); padding: 1em 1.5em; text-decoration: none; border-radius: 10px; display: inline-block; margin-top: 10px; margin-bottom: 10px; font-size: 12px;">Edit</a>
+        </td>
 
         </tr>
         {% empty %}
