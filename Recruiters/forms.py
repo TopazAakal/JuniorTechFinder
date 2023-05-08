@@ -32,7 +32,7 @@ class RecruitersForm(forms.ModelForm):
 class JobListingForm(forms.ModelForm):
     class Meta:
         model = JobListing
-        fields = ['title', 'company_name', 'location', 'description',
+        fields = ['title', 'company_name', 'job_type','location', 'description',
                   'requirements', 'application_link', 'salary']
 
         widgets = {

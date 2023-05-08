@@ -29,16 +29,30 @@ class Recruiters(models.Model):
 
 
 class JobListing(models.Model):
+
+    FULL_TIME = 'Full-time'
+    PART_TIME = 'Part-time'
+    STUDENT = 'Student'
+    INTERN = 'Intern'
+
+    JOB_TYPE_CHOICES = [
+        (FULL_TIME, 'Full-time'),
+        (PART_TIME, 'Part-time'),
+        (STUDENT, 'Student'),
+        (INTERN, 'Intern'),
+    ]
     title = models.CharField(max_length=100)
     description = models.TextField()
     requirements = models.TextField()
     date_posted = models.DateTimeField(default=timezone.now)
     company = models.CharField(max_length=100)
     location = models.CharField(max_length=100)
-    recruiter = models.ForeignKey(User, on_delete=models.CASCADE)
+    recruiter = models.ForeignKey(Recruiters, on_delete=models.CASCADE)
     application_link = models.URLField(max_length=200)
     company_name = models.CharField(max_length=100)
     salary = models.PositiveIntegerField(blank=True, null=True)
+    job_type = models.CharField(max_length=20, choices=JOB_TYPE_CHOICES)
+
 
     def __str__(self):
         return self.title

@@ -1,0 +1,17 @@
+{% extends 'base.html' %}
+
+{% block content %}
+
+<div class="container my-4" style="text-align: center;">
+
+    <h1>Edit Profile</h1>
+
+    <form method="POST" enctype="multipart/form-data">
+        {% csrf_token %}
+        {{ form.as_p }}
+        <button type="submit" class="btn btn-primary btn-sm" style="font-size: 14px; margin-bottom: 20px;">Save
+            Changes</button>
+    </form>
+</div>
+
+{% endblock %}
