@@ -5,8 +5,6 @@ from django.contrib.auth.models import User
 from django.contrib import auth, messages
 
 # This view is responsible for handling the user login functionality
-
-
 def login_view(request):
     # If user is already authenticated, redirect them to the home page
     if request.user.is_authenticated:
@@ -30,7 +28,6 @@ def login_view(request):
 
     # Render the login page with the form object
     return render(request, 'login.html', {'form': form})
-
 
 # This view is responsible for handling the user signup functionality
 def signup_view(request):
@@ -68,14 +65,8 @@ def signup_view(request):
     # Render the signup page with the form object
     return render(request, 'signup.html', {'form': form})
 
-
+# This view is responsible for handling the user logout functionality
 def logout_view(request):
     logout(request)
     # messages.success(request, 'You have been logged out successfully.')
     return redirect('home')
-
-# def checkProfileUser(request):
-#     if request.user.groups.filter(name='Junior').exists():
-#         return redirect('createProfile')
-#     else:
-#         return redirect('createProfileRecruiters')

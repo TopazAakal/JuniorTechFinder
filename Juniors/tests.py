@@ -1,10 +1,10 @@
-
 from django.test import TestCase, Client
 from django.urls import reverse
 from Juniors.models import Juniors
 from Juniors.forms import JuniorForm
-from django.contrib.auth.models import User
+from django.contrib.auth.models import User, Group
 from django.core.files.uploadedfile import SimpleUploadedFile
+from django.shortcuts import resolve_url
 
 
 class CreateProfileTestCase(TestCase):
@@ -57,7 +57,6 @@ class CreateProfileTestCase(TestCase):
         self.assertEqual(junior.summary, 'Test Summary')
 
     def test_create_profile_POST_invalid(self):
-
         # create an invalid form data dictionary
         form_data = {
             'full_name': 'Test User',
@@ -132,7 +131,12 @@ class EditProfileTestCase(TestCase):
             email='testuser@test.com',
             password='testpass'
         )
+
+        # Fetch the existing "Junior" group
+        junior_group = Group.objects.create(name='Junior')
+        self.user.groups.add(junior_group)
         self.client.login(username='testuser', password='testpass')
+
         self.junior = Juniors.objects.create(
             user_id=self.user.id,
             full_name='Test User',
@@ -174,3 +178,34 @@ class EditProfileTestCase(TestCase):
         self.assertNotEqual(self.junior.age, data['age'])
         self.assertNotEqual(self.junior.skills, data['skills'])
         self.assertNotEqual(self.junior.summary, data['summary'])
+
+
+class CheckProfileTestCase(TestCase):
+    def setUp(self):
+        self.client = Client()
+        self.user = User.objects.create_user(
+            username='testuser',
+            email='testuser@test.com',
+            password='testpass'
+        )
+        self.junior = Juniors.objects.create(
+            user_id=self.user.id,
+            full_name='Test User',
+            email='testuser@test.com',
+            phone_number='1234567890',
+            city='Test City',
+            age=25,
+            skills='Test Skills',
+            summary='Test Summary',
+        )
+        self.client.login(username='testuser', password='testpass')
+
+    def test_checkProfile_GET_existing_profile(self):
+        response = self.client.get(reverse('checkProfile'))
+        self.assertRedirects(response, reverse(
+            'showProfile', args=[self.junior.pk]))
+
+    def test_checkProfile_GET_no_profile(self):
+        self.junior.delete()  # Delete the existing profile
+        response = self.client.get(reverse('checkProfile'))
+        self.assertRedirects(response, reverse('createProfile'))

@@ -6,6 +6,8 @@ from .forms import SignUpForm
 from .views import signup_view
 from django.contrib.auth import get_user_model
 
+# Test case for the LoginView
+
 
 class LoginViewTestCase(TestCase):
     def setUp(self):
@@ -54,8 +56,9 @@ class LoginViewTestCase(TestCase):
         response = self.client.post(self.login_url, {})
         self.assertContains(response, 'This field is required.')
 
-
 # Test case for the SignUpForm
+
+
 class SignUpFormTest(TestCase):
 
     # Test that email is a required field
@@ -137,6 +140,8 @@ class SignUpViewTest(TestCase):
 
         # Assert that the error message is displayed in the form
         # self.assertContains(response, "A user with that email already exists.")
+
+# Test case for the LogoutView
 
 
 class LogoutViewTest(TestCase):
