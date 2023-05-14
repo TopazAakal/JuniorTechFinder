@@ -1,25 +1,30 @@
-from django.test import TestCase, Client
+from django.test import TestCase, Client, tag
 from django.urls import reverse
 import logging
 
 
 class AboutUsPageTestCase(TestCase):
+    @tag('unit-test')
     def test_about_us_page(self):
         response = self.client.get('/aboutUs/')
         self.assertEqual(response.status_code, 200)
         self.assertTemplateUsed(response, 'aboutUs.html')
 
+
 class SiteRulesTestCase(TestCase):
+    @tag('unit-test')
     def test_site_rules_page(self):
         response = self.client.get('/siteRules/')
         self.assertEqual(response.status_code, 200)
         self.assertTemplateUsed(response, 'siteRules.html')
+
 
 class ContactUsPageTestCase(TestCase):
     def setUp(self):
         self.client = Client()
         self.url = reverse('contactUs')
 
+    @tag('unit-test')
     def test_contact_us_page(self):
         response = self.client.post(self.url, {
             'name': 'Test Test',
