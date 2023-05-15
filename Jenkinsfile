@@ -2,7 +2,7 @@ pipeline {
     agent {
         docker {
             image 'python:3.9' // Docker image to use
-            args '-v /var/run/docker.sock:/var/run/docker.sock -u root' // Add -u root option for elevated permissions
+            args '-v /var/run/docker.sock:/var/run/docker.sock -u root' 
         }
     }
 
@@ -15,7 +15,7 @@ pipeline {
 
         stage('Install pipenv') {
             steps {
-                sh 'apt-get update' // Update package lists
+                sh 'apt-get update' 
                 sh 'apt-get install -y python3-dev python3-pip' // Install Python and pip
                 sh 'pip install pipenv' // Install pipenv
             }
@@ -25,13 +25,14 @@ pipeline {
             steps {
                 sh 'pipenv install --skip-lock' // Create and activate virtual environment, install dependencies (skip lock)
                 sh 'pipenv install -r requirements.txt' // Install dependencies from requirements.txt
-                sh 'pipenv run pip install xmlrunner==1.7.7' // Install xmlrunner==1.7.7 specifically
+                
             }
         }
 
         stage('Test') {
             steps {
-                sh 'pipenv run python manage.py test'  
+                sh 'pipenv run python manage.py test --tag=unit-test ' 
+                sh 'pipenv run python manage.py test --tag=integrationTest '  
             }
         }
 

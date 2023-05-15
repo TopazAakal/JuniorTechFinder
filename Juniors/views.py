@@ -1,11 +1,13 @@
+
 from django.contrib.auth.decorators import login_required
-from django.http import HttpResponseRedirect
+from Core.decorators import group_required
 from django.shortcuts import get_object_or_404, render, redirect
 from django.contrib import messages
 from .models import Juniors
 
 from .forms import JuniorForm
 from django import forms
+
 
 @login_required
 def createProfile(request):
@@ -38,7 +40,8 @@ def showProfile(request, pk):
     context = {'junior': junior, 'default_photo_url': default_photo_url}
     return render(request, 'showProfile.html', context)
 
-@login_required
+
+@group_required('Junior')
 def editProfile(request, pk):
     junior = get_object_or_404(Juniors, pk=pk)
 
@@ -58,6 +61,7 @@ def editProfile(request, pk):
         return redirect("showProfile", pk=pk)
 
 
+@login_required
 def checkProfile(request):
     try:
         junior = request.user.juniors
