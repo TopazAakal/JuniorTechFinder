@@ -71,10 +71,16 @@ def checkProfile(request):
 
 def juniorList(request):
     juniors = Juniors.objects.all()
+    cities = list(set([junior.city for junior in juniors]))
 
     if request.method == 'GET':
         skills = request.GET.get('skills')
+        city = request.GET.get('city')
+
         if skills:
             juniors = juniors.filter(skills__icontains=skills)
 
-    return render(request, 'JuniorList.html', {'juniors': juniors})
+        if city:
+            juniors = juniors.filter(city=city)
+
+    return render(request, 'JuniorList.html', {'juniors': juniors, 'cities': cities})

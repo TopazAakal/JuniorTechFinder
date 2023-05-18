@@ -5,15 +5,23 @@
 
 <div class="list"></div>
 
-<h1 style="text-align: center;">Junior profiles</h1>
+<h1 style="text-align: center; font-weight: bold;">Junior profiles</h1>
 <br>
 
 <div class="search">
     <form method="GET" action="{% url 'juniorList' %}">
         <input type="text" name="skills" placeholder="Search by skills...">
+        <select name="city">
+            <option value="">All Cities</option>
+            {% for city in cities %}
+            <option value="{{ city }}">{{ city }}</option>
+            {% endfor %}
+        </select>
         <button type="submit">Search</button>
     </form>
 </div>
+
+<br><br>
 
 
 {% if juniors %}
@@ -34,7 +42,7 @@
                 <strong>Phone:</strong> {{ junior.phone_number }}<br>
                 <strong>City:</strong> {{ junior.city }}<br>
                 <strong>Age:</strong> {{ junior.age }}<br>
-                <strong>Skills:</strong> {{ junior.skills }}<br>
+                <strong>Skills:</strong> {{ junior.skills | truncatechars:30}}<br>
                 <strong>Summary:</strong> {{ junior.summary | truncatechars:60 }}<br>
             </p>
         </div>
@@ -88,14 +96,15 @@
     }
 
     .card__image img {
-        margin-top: 2rem;
-        margin-left: 2rem;
-        margin-bottom: 1rem;
-        margin-right: 2rem;
-        height: 12rem;
-        width: 12rem;
+        margin: 1rem auto;
+        display: block;
+        width: calc(100% - 4rem);
+        height: auto;
+        aspect-ratio: 1/1;
         border-radius: 5px;
     }
+
+
 
     .card__footer {
         background-color: white;
@@ -112,29 +121,39 @@
         margin-bottom: 20px;
     }
 
-    .search input[type="text"] {
+
+    select,
+    input[type="text"],
+    button {
         height: 40px;
         font-size: 16px;
         border: none;
         border-radius: 20px;
+        margin: 0 5px;
         padding: 0 20px;
-        width: 300px;
-        margin-right: 10px;
     }
 
-    .search button {
-        height: 40px;
-        font-size: 16px;
-        border: none;
-        border-radius: 20px;
-        padding: 0 20px;
-        background-color: #000000;
+    select {
+        background-color: #f2f2f2;
+        font-family: 'Lato', sans-serif;
+        font-weight: bold;
+    }
+
+    input[type="text"] {
+        background-color: #fff;
+        box-shadow: 0 0 5px rgba(0, 0, 0, 0.2);
+        font-family: 'Lato', sans-serif;
+        font-weight: bold;
+    }
+
+    button {
+        background-color: #5e0404;
         color: #fff;
         cursor: pointer;
     }
 
-    .search button:hover {
-        background-color: #34445b;
+    button:hover {
+        background-color: #000000;
     }
 </style>
 
