@@ -1,0 +1,141 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block content %}
+
+<div class="list"></div>
+
+<h1 style="text-align: center;">Junior profiles</h1>
+<br>
+
+<div class="search">
+    <form method="GET" action="{% url 'juniorList' %}">
+        <input type="text" name="skills" placeholder="Search by skills...">
+        <button type="submit">Search</button>
+    </form>
+</div>
+
+
+{% if juniors %}
+<div class="grid">
+    {% for junior in juniors %}
+    <article class="card junior-item">
+        <header class="card__header">
+            <h3 class="junior__name">
+                {{ junior.full_name }}
+            </h3>
+        </header>
+        <div class="card__image">
+            <img src="{{ junior.photo.url }}" alt="Junior Photo">
+        </div>
+        <div class="card__content">
+            <p class="junior__description">
+                <strong>Email:</strong> {{ junior.email }}<br>
+                <strong>Phone:</strong> {{ junior.phone_number }}<br>
+                <strong>City:</strong> {{ junior.city }}<br>
+                <strong>Age:</strong> {{ junior.age }}<br>
+                <strong>Skills:</strong> {{ junior.skills }}<br>
+                <strong>Summary:</strong> {{ junior.summary | truncatechars:60 }}<br>
+            </p>
+        </div>
+        <div class="card__footer">
+            <a href="{% url 'showProfile' pk=junior.pk %}" class="btn btn-primary"
+                style="background-color:#000000; color:white; padding: 1em 1.5em; text-decoration: none; border-radius: 10px; display: inline-block; margin-top: 10px; margin-bottom: 10px; font-size: 14px;">View
+                Profile</a>
+        </div>
+    </article>
+    {% endfor %}
+</div>
+{% else %}
+<h2>No juniors found!</h2>
+{% endif %}
+</div>
+
+<style>
+    .list {
+        text-align: center;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+    }
+
+    .grid {
+        display: grid;
+        grid-template-columns: repeat(4, 1fr);
+        justify-items: center;
+        grid-row-gap: 2rem;
+        margin-bottom: 50px;
+        margin-left: 10px;
+        margin-right: 10px;
+    }
+
+    .card {
+        display: flex;
+        flex-direction: column;
+        justify-content: space-between;
+        height: 100%;
+        box-shadow: 0 20px 18px rgba(0, 0, 0, 0.26);
+        width: 85%;
+        border-radius: 10px;
+        overflow: hidden;
+    }
+
+    .card__header,
+    .card__content {
+        padding: 0.2rem;
+        text-align: center;
+    }
+
+    .card__image img {
+        margin-top: 2rem;
+        margin-left: 2rem;
+        margin-bottom: 1rem;
+        margin-right: 2rem;
+        height: 12rem;
+        width: 12rem;
+        border-radius: 5px;
+    }
+
+    .card__footer {
+        background-color: white;
+        padding-bottom: 0.5rem;
+        text-align: center;
+
+    }
+
+    .search {
+        display: flex;
+        flex-direction: row;
+        justify-content: center;
+        align-items: center;
+        margin-bottom: 20px;
+    }
+
+    .search input[type="text"] {
+        height: 40px;
+        font-size: 16px;
+        border: none;
+        border-radius: 20px;
+        padding: 0 20px;
+        width: 300px;
+        margin-right: 10px;
+    }
+
+    .search button {
+        height: 40px;
+        font-size: 16px;
+        border: none;
+        border-radius: 20px;
+        padding: 0 20px;
+        background-color: #000000;
+        color: #fff;
+        cursor: pointer;
+    }
+
+    .search button:hover {
+        background-color: #34445b;
+    }
+</style>
+
+{% endblock %}

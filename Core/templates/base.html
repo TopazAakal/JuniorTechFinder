@@ -41,10 +41,10 @@
 
                 {% if user.is_authenticated %}
                 {% if request.user|user_in_group:"Junior" %}
-                <li><a href="{% url 'checkProfile' %}">Profile</a></li>
+                <li><a href="{% url 'checkProfile' %}">My Profile</a></li>
                 {% elif request.user|user_in_group:"Recruiter" %}
-                <li><a href="{% url 'checkProf' %}">Profile</a></li>
-
+                <li><a href="{% url 'checkProf' %}">My Profile</a></li>
+                <li><a href="{% url 'juniorList' %}">Juniors</a></li>
                 {% endif %}
 
                 <li>
