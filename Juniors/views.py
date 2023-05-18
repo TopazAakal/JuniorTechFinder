@@ -4,7 +4,6 @@ from Core.decorators import group_required
 from django.shortcuts import get_object_or_404, render, redirect
 from django.contrib import messages
 from .models import Juniors
-
 from .forms import JuniorForm
 from django import forms
 
@@ -68,3 +67,14 @@ def checkProfile(request):
         return redirect('showProfile', pk=junior.pk)
     except Juniors.DoesNotExist:
         return redirect('createProfile')
+
+
+def juniorList(request):
+    juniors = Juniors.objects.all()
+
+    if request.method == 'GET':
+        skills = request.GET.get('skills')
+        if skills:
+            juniors = juniors.filter(skills__icontains=skills)
+
+    return render(request, 'JuniorList.html', {'juniors': juniors})
