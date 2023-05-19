@@ -1,0 +1,64 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block content %}
+
+
+{% if junior.cv_file %}
+
+<div class="response">
+  <h1>Suggested Text</h1>
+  <P>{% autoescape off %}
+    {{ generated_text|linebreaksbr }}</li>
+    {% endautoescape %}</P>
+
+  <a href="{% url 'generate_new_suggestions' %}" class="btn btn-primary"
+    style="background-color:#000000; color:white; padding: 1em 1.5em; text-decoration: none; border-radius: 10px; display: inline-block; margin-top: 10px; margin-bottom: 10px; font-size: 14px; align-self: center;">New
+    Suggestions</a>
+
+</div>
+
+
+
+{% else %}
+<div class="file-upload">
+  <h1>Upload CV File</h1>
+  <form method="post" enctype="multipart/form-data">
+    {% csrf_token %}
+    <input type="file" name="cv_file" accept=".pdf" required>
+    <br>
+    <input type="submit" value="Submit">
+  </form>
+</div>
+{% endif %}
+
+<style>
+  .response {
+    text-align: center;
+  }
+
+  .file-upload {
+    margin-bottom: 20px;
+  }
+
+  button {
+    height: 40px;
+    font-size: 16px;
+    border: none;
+    border-radius: 20px;
+    margin: 0 5px;
+    padding: 0 20px;
+  }
+
+  button {
+    background-color: #5e0404;
+    color: #fff;
+    cursor: pointer;
+  }
+
+  button:hover {
+    background-color: #000000;
+  }
+</style>
+
+{% endblock %}

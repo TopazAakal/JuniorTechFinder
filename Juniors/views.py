@@ -1,4 +1,8 @@
 
+import os
+from django.http import HttpResponse
+from django.shortcuts import render
+import openai
 from django.contrib.auth.decorators import login_required
 from Core.decorators import group_required
 from django.shortcuts import get_object_or_404, render, redirect
@@ -6,6 +10,11 @@ from django.contrib import messages
 from .models import Juniors
 from .forms import JuniorForm
 from django import forms
+import environ
+from PyPDF2 import PdfReader
+
+env = environ.Env()
+environ.Env.read_env()
 
 
 @login_required
@@ -84,3 +93,101 @@ def juniorList(request):
             juniors = juniors.filter(city=city)
 
     return render(request, 'JuniorList.html', {'juniors': juniors, 'cities': cities})
+
+
+def PDF2Text(pdfFile):
+    # creating a pdf reader object
+    reader = PdfReader(pdfFile)
+
+    # printing number of pages in pdf file
+    doc = len(reader.pages)
+    text = []
+    # getting a specific page from the pdf file
+    for i in range(doc):
+        page = reader.pages[i]
+        text.append(page.extract_text())
+
+    string = ""
+    for i in text:
+        string += i
+
+    return string
+
+
+@group_required('Junior')
+def suggestions(request):
+    user = request.user
+
+    # Set the API key for the OpenAI package
+    openai.api_key = env('OPENAI_API_KEY')
+
+    # Check if the user has a Juniors profile
+    try:
+        junior = Juniors.objects.get(user=user)
+    except Juniors.DoesNotExist:
+        # Handle the case when the user doesn't have a Juniors profile
+        return HttpResponse("Juniors profile not found for the user.")
+
+    generated_text = "Upload your CV to get suggestions"
+
+    if request.method == 'GET' and junior.cv_file:
+        if not junior.generated_text:  # Check if generated_text already exists
+            cv = PDF2Text(junior.cv_file)
+            # Make an API call
+            response = openai.ChatCompletion.create(
+                model="gpt-3.5-turbo",
+                messages=[
+                    {"role": "system", "content": "You are a professional HR recruiter that helps people to write great resumes."},
+                    {"role": "user", "content": f"Task: write 4 or more suggestions on how to improve the following resume:\n {cv}"}
+                ],
+                n=1
+            )
+           # Extract the generated text from the API response
+            generated_text = "\n".join(
+                choice.message.content.strip() for choice in response.choices)
+            junior.generated_text = generated_text  # Save generated_text to the database
+            junior.save()
+        else:
+            generated_text = junior.generated_text  # Use the existing generated_text
+
+    if request.method == 'POST':
+        junior.cv_file = request.FILES['cv_file']
+        junior.generated_text = None  # Reset generated_text when CV is updated
+        junior.save()
+        cv = PDF2Text(junior.cv_file)
+
+        # Make an API call
+        response = openai.ChatCompletion.create(
+            model="gpt-3.5-turbo",
+            messages=[
+                {"role": "system", "content": "You are a professional HR recruiter that helps people to write great resumes."},
+                {"role": "user", "content": f"Task: write 4 or more suggestions on how to improve the following resume:\n {cv}"}
+            ],
+            n=1
+        )
+        # Extract the generated text from the API response
+        generated_text = "\n".join(choice.message.content.strip()
+                                   for choice in response.choices)
+        junior.generated_text = generated_text  # Save generated_text to the database
+        junior.save()
+    return render(request, 'suggestions.html', {'junior': junior, 'generated_text': generated_text})
+
+@group_required('Junior')
+def generate_new_suggestions(request):
+
+    user = request.user
+
+    # Set the API key for the OpenAI package
+    openai.api_key = env('OPENAI_API_KEY')
+
+    # Check if the user has a Juniors profile
+    try:
+        junior = Juniors.objects.get(user=user)
+    except Juniors.DoesNotExist:
+        # Handle the case when the user doesn't have a Juniors profile
+        return HttpResponse("Juniors profile not found for the user.")
+
+    junior.generated_text = None  # Reset generated_text
+    junior.save()
+
+    return redirect('suggestions')
