@@ -2,10 +2,10 @@ from django.shortcuts import get_object_or_404, render, redirect
 from django.contrib.auth.decorators import login_required
 from Core.decorators import group_required
 from django.contrib import messages
-from .models import Recruiters, JobListing
+from .models import Recruiters, JobListing , Interest
 from .forms import RecruitersForm
 from django import forms
-from .forms import JobListingForm
+from .forms import JobListingForm 
 
 
 @login_required
@@ -153,3 +153,24 @@ def apply_job(request, job_id):
     # Additional logic for handling the application form submission and details
     context = {'job': job}
     return render(request, 'applyJob.html', context)
+
+def submit_interest(request):
+    if request.method == 'POST':
+        # Retrieve form data
+        name = request.POST.get('name')
+        email = request.POST.get('email')
+        phone = request.POST.get('phone')
+        resume = request.FILES.get('resume')
+
+        # Save the form data or perform any other necessary actions
+        # For example, you can save the form data to a model
+        # Create a new object and save it
+        interest = Interest(name=name, email=email, phone=phone, resume=resume)
+        interest.save()
+
+        # Redirect to the success page
+        return redirect('home')
+
+    # If the request method is not POST, redirect to the error page
+    return redirect('home')
+

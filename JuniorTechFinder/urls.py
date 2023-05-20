@@ -26,6 +26,7 @@ urlpatterns = [
          name='generate_new_suggestions'),
     path('apply/<int:job_id>/', Recruiters.views.apply_job, name='apply_job'),
     # Recruiters
+    path('submit_interest/', Recruiters.views.submit_interest, name='submit_interest'),
     path('showProfileRecruiter/<int:pk>',
          Recruiters.views.showProfileRecruiter, name='showProfileRecruiter'),
     path('editProfileRecruiter/<int:pk>',
