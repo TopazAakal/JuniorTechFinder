@@ -61,7 +61,10 @@ class Interest(models.Model):
     name = models.CharField(max_length=100)
     email = models.EmailField()
     phone = models.CharField(max_length=20)
-    resume = models.FileField(upload_to='resumes/')
+    resume = models.FileField(upload_to='resumes/', blank=True, null=True, validators=[
+        FileExtensionValidator(allowed_extensions=['pdf'], message='Only PDF files are allowed.')
+    ])
+    job = models.ForeignKey(JobListing, on_delete=models.CASCADE)
 
     def __str__(self):
         return self.name

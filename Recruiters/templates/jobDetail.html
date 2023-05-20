@@ -1,4 +1,5 @@
 {% extends 'base.html' %}
+{% load static %}
 
 {% block content %}
 <div class="job-detail">
@@ -20,23 +21,26 @@
     <a href="#" class="btn btn-primary show-form" style="background-color:#405677; color:white; padding: 1em 1.5em; text-decoration: none; border-radius: 10px; display: inline-block; margin-top: 10px; margin-bottom: 10px; font-size: 14px;">I'm interested!</a>
 
     <div class="form-window">
-        <form id="interest-form" method="POST" action="{% url 'submit_interest' %}">
+        <form id="interest-form" method="POST" action="{% url 'submit_interest' job_id=job.id %}" enctype="multipart/form-data">
             {% csrf_token %}
             <label for="name">Name:</label>
             <input type="text" id="name" name="name" required>
-
+            <br>
             <label for="email">Email:</label>
             <input type="email" id="email" name="email" required>
-
+            <br>
             <label for="phone">Phone Number:</label>
             <input type="tel" id="phone" name="phone" required>
-
+            <br>
             <label for="resume">Resume:</label>
             <input type="file" id="resume" name="resume" accept=".pdf,.doc,.docx" required>
-
+            <br>
             <button type="submit">Submit</button>
         </form>
+        <button class="close-form">Close</button>
     </div>
+    
+    
 
     <br><br>
 </div>
@@ -75,10 +79,16 @@
     document.addEventListener('DOMContentLoaded', function () {
         const showFormButton = document.querySelector('.show-form');
         const formWindow = document.querySelector('.form-window');
+        const closeFormButton = document.querySelector('.close-form');
 
         showFormButton.addEventListener('click', function (e) {
             e.preventDefault();
             formWindow.style.display = 'block';
+        });
+
+        closeFormButton.addEventListener('click', function (e) {
+            e.preventDefault();
+            formWindow.style.display = 'none';
         });
     });
 </script>

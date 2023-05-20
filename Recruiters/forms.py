@@ -1,5 +1,5 @@
 from django import forms
-from .models import Recruiters, JobListing
+from .models import Recruiters, JobListing,Interest
 from django.contrib.auth.forms import UserCreationForm
 from django.contrib.auth.models import User
 
@@ -38,4 +38,12 @@ class JobListingForm(forms.ModelForm):
         widgets = {
             'description': forms.Textarea(attrs={'rows': 10}),
             'requirements': forms.Textarea(attrs={'rows': 5}),
+        }
+
+class InterestForm(forms.ModelForm):
+    class Meta:
+        model = Interest
+        fields = ['name', 'email', 'phone', 'resume']
+        widgets = {
+            'resume': forms.FileInput(attrs={'accept': '.pdf,.doc,.docx'}),
         }

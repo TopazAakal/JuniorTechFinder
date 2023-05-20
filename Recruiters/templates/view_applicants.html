@@ -1,0 +1,27 @@
+<!-- view_applicants.html -->
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="applicants-list">
+    <h1>Applicants for Job: {{ job.title }}</h1>
+    <ul>
+        {% for applicant in applicants %}
+        <li>
+            {{ applicant.name }} - {{ applicant.email }} - {{ applicant.phone }}
+            {% if applicant.resume %}
+            <a href="{{ applicant.resume.url }}" target="_blank">View Resume</a>
+            {% else %}
+            No resume available
+            {% endif %}
+        </li>
+        {% endfor %}
+    </ul>
+</div>
+
+<style>
+    .applicants-list {
+        margin-left: 50px;
+        margin-right: 50px;
+    }
+</style>
+{% endblock %}
