@@ -5,7 +5,7 @@ from django.contrib import messages
 from .models import Recruiters, JobListing , Interest
 from .forms import RecruitersForm
 from django import forms
-from .forms import JobListingForm 
+from .forms import JobListingForm , InterestForm
 
 
 @login_required
@@ -154,23 +154,28 @@ def apply_job(request, job_id):
     context = {'job': job}
     return render(request, 'applyJob.html', context)
 
-def submit_interest(request):
+from django.shortcuts import get_object_or_404
+
+from .forms import InterestForm
+
+from .forms import InterestForm
+
+def submit_interest(request, job_id):
     if request.method == 'POST':
-        # Retrieve form data
-        name = request.POST.get('name')
-        email = request.POST.get('email')
-        phone = request.POST.get('phone')
-        resume = request.FILES.get('resume')
+        form = InterestForm(request.POST, request.FILES)
+        if form.is_valid():
+            interest = form.save(commit=False)
+            interest.job_id = job_id
+            interest.save()
+            return redirect('home')
+    else:
+        form = InterestForm()
+    
+    return render(request, 'submit_interest.html', {'form': form})
 
-        # Save the form data or perform any other necessary actions
-        # For example, you can save the form data to a model
-        # Create a new object and save it
-        interest = Interest(name=name, email=email, phone=phone, resume=resume)
-        interest.save()
 
-        # Redirect to the success page
-        return redirect('home')
-
-    # If the request method is not POST, redirect to the error page
-    return redirect('home')
-
+def view_applicants(request, job_id):
+    job = get_object_or_404(JobListing, id=job_id)
+    applicants = Interest.objects.filter(job_id=job.id)
+    context = {'job': job, 'applicants': applicants}
+    return render(request, 'view_applicants.html', context)

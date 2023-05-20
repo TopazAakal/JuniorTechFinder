@@ -26,7 +26,8 @@ urlpatterns = [
          name='generate_new_suggestions'),
     path('apply/<int:job_id>/', Recruiters.views.apply_job, name='apply_job'),
     # Recruiters
-    path('submit_interest/', Recruiters.views.submit_interest, name='submit_interest'),
+    path('submit_interest/<int:job_id>/', Recruiters.views.submit_interest, name='submit_interest'),
+    path('view_applicants/<int:job_id>/', Recruiters.views.view_applicants, name='view_applicants'),
     path('showProfileRecruiter/<int:pk>',
          Recruiters.views.showProfileRecruiter, name='showProfileRecruiter'),
     path('editProfileRecruiter/<int:pk>',
@@ -38,7 +39,7 @@ urlpatterns = [
     path('postJob/', Recruiters.views.postJob, name='postJob'),
     path('deleteJob/<int:job_id>/', Recruiters.views.deleteJob, name='deleteJob'),
     path('jobs/<int:job_id>/', Recruiters.views.jobDetail, name='jobDetail'),
-    path('editJob/ <int:job_id>', Recruiters.views.editJob, name='editJob'),
+    path('editJob/<int:job_id>', Recruiters.views.editJob, name='editJob'),
     # Authentication
     path('login/', Authentication.views.login_view, name='login'),
     path('signup/', Authentication.views.signup_view, name='signup'),
