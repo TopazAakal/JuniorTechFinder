@@ -41,9 +41,20 @@ class JobListingForm(forms.ModelForm):
         }
 
 class InterestForm(forms.ModelForm):
+    STATUS_CHOICES = [
+        ('in process', 'In Process'),
+        ('hired', 'Hired'),
+        ('rejected', 'Rejected'),
+        ('qualified', 'Qualified'),
+        ('awaiting decision', 'Awaiting Decision'),
+        ('new applicant', 'New Applicant')
+    ]
+    
+    status = forms.ChoiceField(choices=STATUS_CHOICES)
+    
     class Meta:
         model = Interest
-        fields = ['name', 'email', 'phone', 'resume']
+        fields = ['name', 'email', 'phone', 'resume', 'status']
         widgets = {
             'resume': forms.FileInput(attrs={'accept': '.pdf,.doc,.docx'}),
         }
