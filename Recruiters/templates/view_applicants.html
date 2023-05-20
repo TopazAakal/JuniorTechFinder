@@ -11,6 +11,7 @@
                 <th>Phone</th>
                 <th>Resume</th>
                 <th>Status</th>
+                <th>Action</th>
             </tr>
         </thead>
         <tbody>
@@ -27,11 +28,23 @@
                     {% endif %}
                 </td>
                 <td>
-                    <select name="status" id="status">
-                        <option value="hired" {% if applicant.status == 'hired' %}selected{% endif %}>Hired</option>
-                        <option value="interview" {% if applicant.status == 'interview' %}selected{% endif %}>Interview</option>
-                        <option value="unskilled" {% if applicant.status == 'unskilled' %}selected{% endif %}>Unskilled</option>
-                    </select>
+                    <div id="status-{{ applicant.id }}">{{ applicant.status }}</div>
+                </td>
+                <td>
+                    <form method="POST" action="{% url 'update_status' %}">
+                        {% csrf_token %}
+                        <input type="hidden" name="applicant_id" value="{{ applicant.id }}">
+                        <td>
+                            <select name="status" id="status">
+                                {% for choice in status_choices %}
+                                <option value="{{ choice }}" {% if applicant.status == choice %}selected{% endif %}>{{ choice }}</option>
+                                {% endfor %}
+                            </select>
+                        </td>
+                        <td>
+                            <button type="submit">Update</button>
+                        </td>
+                    </form>
                 </td>
             </tr>
             {% endfor %}
@@ -39,10 +52,64 @@
     </table>
 </div>
 
+<script>
+    function updateStatus(applicantId) {
+        const statusDiv = document.getElementById(`status-${applicantId}`);
+        const select = document.getElementById(`status-select-${applicantId}`);
+        const newStatus = select.value;
+        statusDiv.textContent = newStatus;
+        
+        const applicantIdInput = document.querySelector(`#status-select-${applicantId} [name="applicant_id"]`);
+        
+        const formData = new FormData();
+        formData.append('applicant_id', applicantIdInput.value);
+        formData.append('status', newStatus);
+        
+        fetch('/update_status/', {
+            method: 'POST',
+            body: formData
+        })
+        .then(response => {
+            if (response.ok) {
+                // Status updated successfully
+            } else {
+                // Handle error
+            }
+        })
+        .catch(error => {
+            // Handle error
+        });
+    }
+</script>
+
 <style>
     .applicants-list {
         margin-left: 50px;
         margin-right: 50px;
+    }
+    
+    table {
+        width: 100%;
+        border-collapse: collapse;
+    }
+    
+    th, td {
+        padding: 8px;
+        text-align: left;
+        border-bottom: 1px solid #ddd;
+    }
+    
+    th {
+        background-color: #f2f2f2;
+    }
+    
+    select {
+        padding: 5px;
+    }
+    
+    button {
+        padding: 5px 10px;
+        margin-left: 5px;
     }
 </style>
 {% endblock %}

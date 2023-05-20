@@ -177,5 +177,27 @@ def submit_interest(request, job_id):
 def view_applicants(request, job_id):
     job = get_object_or_404(JobListing, id=job_id)
     applicants = Interest.objects.filter(job_id=job.id)
-    context = {'job': job, 'applicants': applicants}
+    status_choices = ['in process', 'hired', 'rejected', 'qualified', 'awaiting decision', 'new applicant']
+
+    if request.method == 'POST':
+        applicant_id = request.POST.get('applicant_id')
+        status = request.POST.get('status')
+        applicant = get_object_or_404(Interest, id=applicant_id)
+        applicant.status = status
+        applicant.save()
+        return redirect('view_applicants', job_id=job_id)
+
+    context = {'job': job, 'applicants': applicants, 'status_choices': status_choices}
     return render(request, 'view_applicants.html', context)
+
+
+def update_status(request):
+    if request.method == 'POST':
+        applicant_id = request.POST.get('applicant_id')
+        new_status = request.POST.get('status')
+        interest = Interest.objects.get(id=applicant_id)
+        interest.status = new_status
+        interest.save()
+        return redirect('view_applicants', job_id=interest.job.id)
+    else:
+        return redirect('home')
