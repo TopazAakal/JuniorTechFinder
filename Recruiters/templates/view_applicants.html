@@ -1,21 +1,42 @@
-<!-- view_applicants.html -->
 {% extends 'base.html' %}
 
 {% block content %}
 <div class="applicants-list">
     <h1>Applicants for Job: {{ job.title }}</h1>
-    <ul>
-        {% for applicant in applicants %}
-        <li>
-            {{ applicant.name }} - {{ applicant.email }} - {{ applicant.phone }}
-            {% if applicant.resume %}
-            <a href="{{ applicant.resume.url }}" target="_blank">View Resume</a>
-            {% else %}
-            No resume available
-            {% endif %}
-        </li>
-        {% endfor %}
-    </ul>
+    <table>
+        <thead>
+            <tr>
+                <th>Name</th>
+                <th>Email</th>
+                <th>Phone</th>
+                <th>Resume</th>
+                <th>Status</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for applicant in applicants %}
+            <tr>
+                <td>{{ applicant.name }}</td>
+                <td>{{ applicant.email }}</td>
+                <td>{{ applicant.phone }}</td>
+                <td>
+                    {% if applicant.resume %}
+                    <a href="{{ applicant.resume.url }}" target="_blank">View Resume</a>
+                    {% else %}
+                    No resume available
+                    {% endif %}
+                </td>
+                <td>
+                    <select name="status" id="status">
+                        <option value="hired" {% if applicant.status == 'hired' %}selected{% endif %}>Hired</option>
+                        <option value="interview" {% if applicant.status == 'interview' %}selected{% endif %}>Interview</option>
+                        <option value="unskilled" {% if applicant.status == 'unskilled' %}selected{% endif %}>Unskilled</option>
+                    </select>
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
 </div>
 
 <style>
