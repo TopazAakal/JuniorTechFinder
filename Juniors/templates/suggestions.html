@@ -3,29 +3,36 @@
 
 {% block content %}
 
-
 {% if junior.cv_file %}
-
-<div class="response">
-  <h1>Suggested Text</h1>
-  <P>{% autoescape off %}
-    {{ generated_text|linebreaksbr }}</li>
-    {% endautoescape %}</P>
-
+<div class="response" style="margin-left: 110px; margin-right: 110px; margin-bottom: 30px;">
+  <h1 style="font-family: 'Courgette', cursive; font-size: 44px; margin-bottom: 0;">Suggestions for improving your
+    resume:</h1>
+  <img src="{% static 'media/tip.jpg' %}" alt="tip" width="100px" height="100px">
+  <strong>
+    <p style="margin-bottom: 20px; line-height: 1.5;">{% autoescape off %}
+      {{ generated_text| linebreaksbr }}
+      {% endautoescape %}
+    </p>
+  </strong>
   <a href="{% url 'generate_new_suggestions' %}" class="btn btn-primary"
-    style="background-color:#000000; color:white; padding: 1em 1.5em; text-decoration: none; border-radius: 10px; display: inline-block; margin-top: 10px; margin-bottom: 10px; font-size: 14px; align-self: center;">New
+    style="background-color:#000000; color:white; padding: 1em 1.5em; text-decoration: none; border-radius: 10px; display: inline-block; margin-top: 10px; margin-bottom: 10px; font-size: 14px; align-self: center;">Other
     Suggestions</a>
-
 </div>
-
-
-
 {% else %}
 <div class="file-upload">
   <h1>Upload CV File</h1>
+  <strong>
+    <p style="color:rgb(18, 18, 105)">You don't have a CV on your profile.<br>
+      To use this feature, you need to upload a resume file.</p>
+  </strong>
+  <br>
   <form method="post" enctype="multipart/form-data">
     {% csrf_token %}
-    <input type="file" name="cv_file" accept=".pdf" required>
+    <label for="images" class="drop-container">
+      <span class="drop-title">Drop files here</span>
+      or
+      <input type="file" id="cv_file" name="cv_file" accept=".pdf" required>
+    </label>
     <br>
     <input type="submit" value="Submit">
   </form>
@@ -38,26 +45,62 @@
   }
 
   .file-upload {
+    text-align: center;
+    margin-bottom: 40px;
+  }
+
+  input[type="file"] {
     margin-bottom: 20px;
   }
 
-  button {
-    height: 40px;
+  input[type="submit"] {
+    background-color: #000000;
+    font-family: 'Sofia Sans Condensed', sans-serif;
+    color: #ffffff;
     font-size: 16px;
+    padding: 10px 20px;
     border: none;
-    border-radius: 20px;
-    margin: 0 5px;
-    padding: 0 20px;
-  }
-
-  button {
-    background-color: #5e0404;
-    color: #fff;
+    border-radius: 5px;
     cursor: pointer;
   }
 
-  button:hover {
-    background-color: #000000;
+  input[type="submit"]:hover {
+    background-color: #1a1a1a;
+  }
+
+  .drop-container {
+    margin-left: 80px;
+    margin-right: 80px;
+    position: relative;
+    display: flex;
+    gap: 10px;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    height: 200px;
+    padding: 20px;
+    border-radius: 10px;
+    border: 2px dashed #555;
+    color: #444;
+    cursor: pointer;
+    transition: background .2s ease-in-out, border .2s ease-in-out;
+  }
+
+  .drop-container:hover {
+    background: #eee;
+    border-color: #111;
+  }
+
+  .drop-container:hover .drop-title {
+    color: #222;
+  }
+
+  .drop-title {
+    color: #444;
+    font-size: 20px;
+    font-weight: bold;
+    text-align: center;
+    transition: color .2s ease-in-out;
   }
 </style>
 
