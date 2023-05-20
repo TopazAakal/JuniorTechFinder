@@ -146,3 +146,10 @@ def editJob(request, job_id):
         return render(request, 'editJob.html', {'form': form})
     else:
         return redirect("showProfileRecruiter", pk=request.user.recruiters.pk)
+
+
+def apply_job(request, job_id):
+    job = get_object_or_404(JobListing, id=job_id)
+    # Additional logic for handling the application form submission and details
+    context = {'job': job}
+    return render(request, 'applyJob.html', context)
