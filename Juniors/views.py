@@ -172,6 +172,7 @@ def suggestions(request):
         junior.save()
     return render(request, 'suggestions.html', {'junior': junior, 'generated_text': generated_text})
 
+
 @group_required('Junior')
 def generate_new_suggestions(request):
 

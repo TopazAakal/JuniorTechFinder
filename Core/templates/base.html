@@ -27,6 +27,9 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Righteous&display=swap" rel="stylesheet">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Courgette&display=swap" rel="stylesheet">
 </head>
 
 <body>
@@ -42,7 +45,7 @@
                 {% if user.is_authenticated %}
                 {% if request.user|user_in_group:"Junior" %}
                 <li><a href="{% url 'checkProfile' %}">My Profile</a></li>
-                <li><a href="{% url 'suggestions' %}">suggestions</a></li>
+                <li><a href="{% url 'suggestions' %}">Improve Your CV</a></li>
                 {% elif request.user|user_in_group:"Recruiter" %}
                 <li><a href="{% url 'checkProf' %}">My Profile</a></li>
                 <li><a href="{% url 'juniorList' %}">Juniors</a></li>
