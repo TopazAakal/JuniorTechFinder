@@ -58,6 +58,15 @@ class JobListing(models.Model):
         return self.title
 
 class Interest(models.Model):
+    STATUS_CHOICES = (
+        ('in_process', 'In Process'),
+        ('hired', 'Hired'),
+        ('rejected', 'Rejected'),
+        ('qualified', 'Qualified'),
+        ('awaiting_decision', 'Awaiting Decision'),
+        ('new_applicant', 'New Applicant'),
+    )
+
     name = models.CharField(max_length=100)
     email = models.EmailField()
     phone = models.CharField(max_length=20)
