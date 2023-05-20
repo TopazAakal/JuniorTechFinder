@@ -1,4 +1,5 @@
 {% extends 'base.html' %}
+{% load static %}
 
 {% block content %}
 <div class="job-detail">
@@ -7,19 +8,40 @@
 
     <p><strong>Posted:</strong> {{ job.date_posted }}</p>
     <p><strong>Company Name:</strong> {{ job.company_name }}</p>
-    <p><strong>Job Type:</strong>{{job.job_type }}</p>
+    <p><strong>Job Type:</strong> {{ job.job_type }}</p>
     <p><strong>Location:</strong> {{ job.location }}</p>
     <p><strong>Link to the site:</strong> <a href="{{ job.application_link }}">{{ job.application_link }}</a></p>
     <p><strong>Requirements:</strong> {{ job.requirements }}</p>
     {% if job.salary %}
     <p><strong>Salary:</strong> {{ job.salary }}$</p>
-    {%else%}
+    {% else %}
     <p><strong>Salary:</strong> Not specified</p>
     {% endif %}
 
-    <a href=" " class="btn btn-primary" style=" background-color:#405677; color:white; padding: 1em 1.5em; text-decoration:
-    none; border-radius: 10px; display: inline-block; margin-top: 10px; margin-bottom: 10px;
-    font-size: 14px;">Apply for this position</a>
+    <a href="#" class="btn btn-primary show-form" style="background-color:#405677; color:white; padding: 1em 1.5em; text-decoration: none; border-radius: 10px; display: inline-block; margin-top: 10px; margin-bottom: 10px; font-size: 14px;">I'm interested!</a>
+
+    <div class="form-window">
+        <form id="interest-form" method="POST" action="{% url 'submit_interest' job_id=job.id %}" enctype="multipart/form-data">
+            {% csrf_token %}
+            <label for="name">Name:</label>
+            <input type="text" id="name" name="name" required>
+            <br>
+            <label for="email">Email:</label>
+            <input type="email" id="email" name="email" required>
+            <br>
+            <label for="phone">Phone Number:</label>
+            <input type="tel" id="phone" name="phone" required>
+            <br>
+            <label for="resume">Resume:</label>
+            <input type="file" id="resume" name="resume" accept=".pdf,.doc,.docx" required>
+            <br>
+            <button type="submit">Submit</button>
+        </form>
+        <button class="close-form">Close</button>
+    </div>
+    
+    
+
     <br><br>
 </div>
 
@@ -32,6 +54,43 @@
         margin-left: 50px;
         margin-right: 50px;
     }
+
+    .form-window {
+        display: none;
+        position: fixed;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        width: 400px;
+        padding: 20px;
+        background-color: #f9f9f9;
+        border: 1px solid #ddd;
+        border-radius: 5px;
+        z-index: 9999;
+    }
+
+    .form-window input,
+    .form-window button {
+        margin-bottom: 10px;
+    }
 </style>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        const showFormButton = document.querySelector('.show-form');
+        const formWindow = document.querySelector('.form-window');
+        const closeFormButton = document.querySelector('.close-form');
+
+        showFormButton.addEventListener('click', function (e) {
+            e.preventDefault();
+            formWindow.style.display = 'block';
+        });
+
+        closeFormButton.addEventListener('click', function (e) {
+            e.preventDefault();
+            formWindow.style.display = 'none';
+        });
+    });
+</script>
 
 {% endblock %}

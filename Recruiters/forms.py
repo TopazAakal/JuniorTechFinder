@@ -1,5 +1,5 @@
 from django import forms
-from .models import Recruiters, JobListing
+from .models import Recruiters, JobListing,Interest
 from django.contrib.auth.forms import UserCreationForm
 from django.contrib.auth.models import User
 
@@ -38,4 +38,23 @@ class JobListingForm(forms.ModelForm):
         widgets = {
             'description': forms.Textarea(attrs={'rows': 10}),
             'requirements': forms.Textarea(attrs={'rows': 5}),
+        }
+
+class InterestForm(forms.ModelForm):
+    STATUS_CHOICES = [
+        ('in process', 'In Process'),
+        ('hired', 'Hired'),
+        ('rejected', 'Rejected'),
+        ('qualified', 'Qualified'),
+        ('awaiting decision', 'Awaiting Decision'),
+        ('new applicant', 'New Applicant')
+    ]
+    
+    status = forms.ChoiceField(choices=STATUS_CHOICES)
+    
+    class Meta:
+        model = Interest
+        fields = ['name', 'email', 'phone', 'resume', 'status']
+        widgets = {
+            'resume': forms.FileInput(attrs={'accept': '.pdf,.doc,.docx'}),
         }

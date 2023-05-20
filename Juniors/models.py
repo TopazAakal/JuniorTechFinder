@@ -28,3 +28,4 @@ class Juniors(models.Model):
         FileExtensionValidator(['jpg', 'jpeg', 'png', 'gif'],
                                'Only jpg, jpeg, png and gif files are allowed.')
     ])
+    generated_text = models.TextField(blank=True, null=True)

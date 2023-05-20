@@ -2,10 +2,10 @@ from django.shortcuts import get_object_or_404, render, redirect
 from django.contrib.auth.decorators import login_required
 from Core.decorators import group_required
 from django.contrib import messages
-from .models import Recruiters, JobListing
+from .models import Recruiters, JobListing , Interest
 from .forms import RecruitersForm
 from django import forms
-from .forms import JobListingForm
+from .forms import JobListingForm , InterestForm
 
 
 @login_required
@@ -146,3 +146,58 @@ def editJob(request, job_id):
         return render(request, 'editJob.html', {'form': form})
     else:
         return redirect("showProfileRecruiter", pk=request.user.recruiters.pk)
+
+
+def apply_job(request, job_id):
+    job = get_object_or_404(JobListing, id=job_id)
+    # Additional logic for handling the application form submission and details
+    context = {'job': job}
+    return render(request, 'applyJob.html', context)
+
+from django.shortcuts import get_object_or_404
+
+from .forms import InterestForm
+
+from .forms import InterestForm
+
+def submit_interest(request, job_id):
+    if request.method == 'POST':
+        form = InterestForm(request.POST, request.FILES)
+        if form.is_valid():
+            interest = form.save(commit=False)
+            interest.job_id = job_id
+            interest.save()
+            return redirect('home')
+    else:
+        form = InterestForm()
+    
+    return render(request, 'submit_interest.html', {'form': form})
+
+
+def view_applicants(request, job_id):
+    job = get_object_or_404(JobListing, id=job_id)
+    applicants = Interest.objects.filter(job_id=job.id)
+    status_choices = ['in process', 'hired', 'rejected', 'qualified', 'awaiting decision', 'new applicant']
+
+    if request.method == 'POST':
+        applicant_id = request.POST.get('applicant_id')
+        status = request.POST.get('status')
+        applicant = get_object_or_404(Interest, id=applicant_id)
+        applicant.status = status
+        applicant.save()
+        return redirect('view_applicants', job_id=job_id)
+
+    context = {'job': job, 'applicants': applicants, 'status_choices': status_choices}
+    return render(request, 'view_applicants.html', context)
+
+
+def update_status(request):
+    if request.method == 'POST':
+        applicant_id = request.POST.get('applicant_id')
+        new_status = request.POST.get('status')
+        interest = Interest.objects.get(id=applicant_id)
+        interest.status = new_status
+        interest.save()
+        return redirect('view_applicants', job_id=interest.job.id)
+    else:
+        return redirect('home')
