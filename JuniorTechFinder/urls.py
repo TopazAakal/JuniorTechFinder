@@ -24,6 +24,7 @@ urlpatterns = [
     path('suggestions/', Juniors.views.suggestions, name='suggestions'),
     path('generate_new_suggestions/', Juniors.views.generate_new_suggestions,
          name='generate_new_suggestions'),
+    path('apply/<int:job_id>/', Recruiters.views.apply_job, name='apply_job'),
     # Recruiters
     path('showProfileRecruiter/<int:pk>',
          Recruiters.views.showProfileRecruiter, name='showProfileRecruiter'),
@@ -43,5 +44,6 @@ urlpatterns = [
     path('logout/', Authentication.views.logout_view, name='logout'),
     # Admin
     path('admin/', admin.site.urls),
+
 
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

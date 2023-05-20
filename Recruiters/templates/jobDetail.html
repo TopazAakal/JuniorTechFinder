@@ -17,9 +17,8 @@
     <p><strong>Salary:</strong> Not specified</p>
     {% endif %}
 
-    <a href=" " class="btn btn-primary" style=" background-color:#405677; color:white; padding: 1em 1.5em; text-decoration:
-    none; border-radius: 10px; display: inline-block; margin-top: 10px; margin-bottom: 10px;
-    font-size: 14px;">Apply for this position</a>
+    <a href="{% url 'apply_job' job.id %}" class="btn btn-primary" style="background-color:#405677; color:white; padding: 1em 1.5em; text-decoration: none; border-radius: 10px; display: inline-block; margin-top: 10px; margin-bottom: 10px; font-size: 14px;">I'm interested!</a>
+
     <br><br>
 </div>
 
