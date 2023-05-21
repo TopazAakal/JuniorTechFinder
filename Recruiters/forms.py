@@ -42,16 +42,16 @@ class JobListingForm(forms.ModelForm):
 
 class InterestForm(forms.ModelForm):
     STATUS_CHOICES = [
-        ('in process', 'In Process'),
+        ('in_process', 'In Process'),
         ('hired', 'Hired'),
         ('rejected', 'Rejected'),
         ('qualified', 'Qualified'),
-        ('awaiting decision', 'Awaiting Decision'),
-        ('new applicant', 'New Applicant')
+        ('awaiting_decision', 'Awaiting Decision'),
+        ('new_applicant', 'New Applicant')
     ]
-    
-    status = forms.ChoiceField(choices=STATUS_CHOICES)
-    
+
+    status = forms.ChoiceField(choices=STATUS_CHOICES, initial='new_applicant')  # Set the default value
+
     class Meta:
         model = Interest
         fields = ['name', 'email', 'phone', 'resume', 'status']
