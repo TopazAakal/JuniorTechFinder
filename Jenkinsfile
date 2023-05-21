@@ -22,7 +22,7 @@ pipeline {
 
         stage('Build') {
             steps {
-                sh 'pipenv --rm' // Remove virtual environment if it exists
+               
                 sh 'pipenv install --skip-lock' // Create and activate virtual environment, install dependencies (skip lock)
                 sh 'pipenv install -r requirements.txt' // Install dependencies from requirements.txt
             }
@@ -54,6 +54,7 @@ pipeline {
                 }
             }
         }
+
         stage('Code Complexity') {
             steps {
                 sh 'pipenv run radon cc -a -s -i venv -o radon_report.html .'
@@ -76,28 +77,11 @@ pipeline {
                 ]
             )
 
-            step([
-                $class: 'CoberturaPublisher',
-                autoUpdateHealth: false,
-                autoUpdateStability: false,
-                coberturaReportFile: 'coverage.xml',
-                failUnhealthy: false,
-                failUnstable: false,
-                maxNumberOfBuilds: 0,
-                onlyStable: false,
-                sourceEncoding: 'ASCII',
-                zoomCoverageChart: false
-            ])
+            step([$class: 'CoberturaPublisher', autoUpdateHealth: false, autoUpdateStability: false, coberturaReportFile: 'coverage.xml', failUnhealthy: false, failUnstable: false, maxNumberOfBuilds: 0, onlyStable: false, sourceEncoding: 'ASCII', zoomCoverageChart: false])
 
-            publishHTML([
-                allowMissing: false,
-                alwaysLinkToLastBuild: false,
-                keepAll: true,
-                reportDir: '.',
-                reportFiles: 'radon_report.html',
-                reportName: 'Code Complexity Report'
-            ])
+            publishHTML(allowMissing: false, alwaysLinkToLastBuild: false, keepAll: true, reportDir: '.', reportFiles: 'radon_report.html', reportName: 'Code Complexity Report')
         }
+    
 
         success {
             echo 'Build successful!' // Display success message
