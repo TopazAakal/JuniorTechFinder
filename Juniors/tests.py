@@ -6,6 +6,7 @@ from django.contrib.auth.models import User, Group
 from django.core.files.uploadedfile import SimpleUploadedFile
 from django.shortcuts import resolve_url
 from Recruiters.models import JobListing, Recruiters
+from django.core.files import File
 
 
 class CreateProfileTestCase(TestCase):
@@ -219,6 +220,79 @@ class CheckProfileTestCase(TestCase):
         self.junior.delete()  # Delete the existing profile
         response = self.client.get(reverse('checkProfile'))
         self.assertRedirects(response, reverse('createProfile'))
+
+
+class JuniorListTestCase(TestCase):
+    def setUp(self):
+        self.client = Client()
+        self.junior1 = Juniors.objects.create(
+            user=User.objects.create_user(
+                username='testuser1', password='testpassword1'),
+            city='City1',
+            age=20,
+            skills='Skills1'
+        )
+        self.junior1.photo = File(open('Core/static/media/default.jpg', 'rb'))
+        self.junior1.save()
+
+        self.junior2 = Juniors.objects.create(
+            user=User.objects.create_user(
+                username='testuser2', password='testpassword2'),
+            city='City2',
+            age=21,
+            skills='Skills2'
+        )
+        self.junior2.photo = File(open('Core/static/media/default.jpg', 'rb'))
+        self.junior2.save()
+
+        self.junior3 = Juniors.objects.create(
+            user=User.objects.create_user(
+                username='testuser3', password='testpassword3'),
+            city='City3',
+            age=22,
+            skills='Skills3'
+        )
+        self.junior3.photo = File(open('Core/static/media/default.jpg', 'rb'))
+        self.junior3.save()
+
+    @tag('unit-test')
+    def test_juniorList_GET(self):
+        response = self.client.get(reverse('juniorList'))
+        self.assertEqual(response.status_code, 200)
+        self.assertTemplateUsed(response, 'juniorList.html')
+        self.assertCountEqual(response.context['juniors'], [
+                              self.junior1, self.junior2, self.junior3])
+        self.assertCountEqual(response.context['cities'], [
+                              'City1', 'City2', 'City3'])
+
+    @tag('unit-test')
+    def test_juniorList_GET_with_skills_filter(self):
+        response = self.client.get(
+            reverse('juniorList'), {'skills': 'Skills1'})
+        self.assertEqual(response.status_code, 200)
+        self.assertTemplateUsed(response, 'juniorList.html')
+        self.assertCountEqual(response.context['juniors'], [self.junior1])
+        self.assertCountEqual(response.context['cities'], [
+                              'City1', 'City2', 'City3'])
+
+    @tag('unit-test')
+    def test_juniorList_GET_with_city_filter(self):
+        response = self.client.get(reverse('juniorList'), {'city': 'City2'})
+        self.assertEqual(response.status_code, 200)
+        self.assertTemplateUsed(response, 'juniorList.html')
+        self.assertCountEqual(response.context['juniors'], [self.junior2])
+        self.assertCountEqual(response.context['cities'], [
+                              'City1', 'City2', 'City3'])
+
+    @tag('unit-test')
+    def test_juniorList_GET_with_skills_and_city_filters(self):
+        response = self.client.get(reverse('juniorList'), {
+                                   'skills': 'Skills1', 'city': 'City1'})
+        self.assertEqual(response.status_code, 200)
+        self.assertTemplateUsed(response, 'juniorList.html')
+        self.assertCountEqual(response.context['juniors'], [self.junior1])
+        self.assertCountEqual(response.context['cities'], [
+                              'City1', 'City2', 'City3'])
 
 
 class JuniorIntegrationTest(TestCase):

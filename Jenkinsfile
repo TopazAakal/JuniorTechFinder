@@ -17,21 +17,27 @@ pipeline {
             steps {
                 sh 'apt-get update' 
                 sh 'apt-get install -y python3-dev python3-pip' // Install Python and pip
-                sh 'pip install pipenv' // Install pipenv
+                sh 'pip install pipenv'
             }
         }
 
         stage('Build') {
             steps {
-                sh 'pipenv install --skip-lock' // Create and activate virtual environment, install dependencies (skip lock)
+                sh 'pipenv install --skip-lock'         // Create and activate virtual environment, install dependencies (skip lock)
                 sh 'pipenv install -r requirements.txt' // Install dependencies from requirements.txt
                 
             }
         }
 
-        stage('Test') {
+        stage('Test - Unit') {
             steps {
-                sh 'pipenv run python manage.py test --tag=unit-test ' 
+                    sh 'pipenv run coverage run --source=my_project manage.py test --tag=unit-test'
+                    sh 'pipenv run coverage xml -o coverage.xml'
+            }
+        }
+
+        stage('Test - Integration') {
+            steps {
                 sh 'pipenv run python manage.py test --tag=integrationTest '  
             }
         }
@@ -49,13 +55,24 @@ pipeline {
                 }
             }
         }
+        stage('Code Complexity') {
+            steps {
+                sh 'pipenv run radon cc -a -s -i venv -o radon_report.html .'
+            }
+        }
     }
+
 
     post {
         always {
             sh 'find . -name "*.pyc" -delete' // Remove compiled Python files
             junit allowEmptyResults: true, testResults: '**/test-results/*.xml'
             cleanWs(cleanWhenNotBuilt: false, deleteDirs: true, disableDeferredWipeout: true, notFailBuild: true, patterns: [[pattern: '.gitignore', type: 'INCLUDE'],  [pattern: '.propsfile', type: 'EXCLUDE']])
+            
+            step([$class: 'CoberturaPublisher', autoUpdateHealth: false, autoUpdateStability: false, coberturaReportFile: 'coverage.xml', failUnhealthy: false, failUnstable: false, maxNumberOfBuilds: 0, onlyStable: false, sourceEncoding: 'ASCII', zoomCoverageChart: false])
+
+            publishHTML([allowMissing: false, alwaysLinkToLastBuild: false, keepAll: true, reportDir: '.', reportFiles: 'radon_report.html', reportName: 'Code Complexity Report'])
+    
         }
 
         success {

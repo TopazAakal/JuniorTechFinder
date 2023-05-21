@@ -92,7 +92,7 @@ def juniorList(request):
         if city:
             juniors = juniors.filter(city=city)
 
-    return render(request, 'JuniorList.html', {'juniors': juniors, 'cities': cities})
+    return render(request, 'juniorList.html', {'juniors': juniors, 'cities': cities})
 
 
 def PDF2Text(pdfFile):
@@ -171,6 +171,7 @@ def suggestions(request):
         junior.generated_text = generated_text  # Save generated_text to the database
         junior.save()
     return render(request, 'suggestions.html', {'junior': junior, 'generated_text': generated_text})
+
 
 @group_required('Junior')
 def generate_new_suggestions(request):

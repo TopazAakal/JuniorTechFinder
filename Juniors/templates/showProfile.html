@@ -5,8 +5,9 @@
 
 <div class="profile-candidate" style="text-align: center;">
     <div style="display: flex; justify-content: space-between; align-items: center;">
-        <h1 style="margin-left: 125px; flex: 1;font-family: 'Righteous', cursive;">My Profile</h1>
+        <br>
         {% if request.user == junior.user or request.user.is_staff %}
+        <h1 style="margin-left: 125px; flex: 1;font-family: 'Righteous', cursive;">My Profile</h1>
         <a style="background-color:#040b15; color:white; padding: 1em 1.5em; text-decoration: none; border-radius: 10px; display: inline-block; margin-top: 10px; margin-bottom: 10px; font-size: 14px; margin-right: 15px;"
             href="{% url 'editProfile' pk=junior.pk %}">Edit Profile</a>
         {% endif %}
