@@ -17,12 +17,15 @@ pipeline {
             steps {
                 sh 'apt-get update' 
                 sh 'apt-get install -y python3-dev python3-pip' // Install Python and pip
-                sh 'pip install pipenv'
+                sh 'pip install --upgrade pip'
+                sh 'pip install --upgrade pipenv'
+                // sh 'pip install pipenv'
             }
         }
 
         stage('Build') {
             steps {
+                sh 'pipenv --rm' // Remove virtual environment if it exists
                 sh 'pipenv install --skip-lock'         // Create and activate virtual environment, install dependencies (skip lock)
                 sh 'pipenv install -r requirements.txt' // Install dependencies from requirements.txt
                 
@@ -55,14 +58,12 @@ pipeline {
                 }
             }
         }
-
         stage('Code Complexity') {
             steps {
                 sh 'pipenv run radon cc -a -s -i venv -o radon_report.html .'
             }
         }
     }
-
 
 
     post {
