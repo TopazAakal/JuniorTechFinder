@@ -92,7 +92,7 @@ def juniorList(request):
         if city:
             juniors = juniors.filter(city=city)
 
-    return render(request, 'JuniorList.html', {'juniors': juniors, 'cities': cities})
+    return render(request, 'juniorList.html', {'juniors': juniors, 'cities': cities})
 
 
 def PDF2Text(pdfFile):
