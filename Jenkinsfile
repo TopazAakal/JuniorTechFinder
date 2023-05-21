@@ -62,9 +62,13 @@ pipeline {
         }
     }
 
-    post {
+   post {
         always {
-            sh 'find . -name "*.pyc" -delete' // Remove compiled Python files
+            script {
+                node {
+                    deleteDir() // Delete workspace
+                }
+            }
             junit allowEmptyResults: true, testResults: '**/test-results/*.xml'
             cleanWs(
                 cleanWhenNotBuilt: false,
@@ -77,18 +81,35 @@ pipeline {
                 ]
             )
 
-            step([$class: 'CoberturaPublisher', autoUpdateHealth: false, autoUpdateStability: false, coberturaReportFile: 'coverage.xml', failUnhealthy: false, failUnstable: false, maxNumberOfBuilds: 0, onlyStable: false, sourceEncoding: 'ASCII', zoomCoverageChart: false])
+            step([
+                $class: 'CoberturaPublisher',
+                autoUpdateHealth: false,
+                autoUpdateStability: false,
+                coberturaReportFile: 'coverage.xml',
+                failUnhealthy: false,
+                failUnstable: false,
+                maxNumberOfBuilds: 0,
+                onlyStable: false,
+                sourceEncoding: 'ASCII',
+                zoomCoverageChart: false
+            ])
 
-            publishHTML(allowMissing: false, alwaysLinkToLastBuild: false, keepAll: true, reportDir: '.', reportFiles: 'radon_report.html', reportName: 'Code Complexity Report')
+            publishHTML([
+                allowMissing: false,
+                alwaysLinkToLastBuild: false,
+                keepAll: true,
+                reportDir: '.',
+                reportFiles: 'radon_report.html',
+                reportName: 'Code Complexity Report'
+            ])
         }
-    
 
         success {
-            echo 'Build successful!' // Display success message
+            echo 'Build successful!'
         }
 
         failure {
-            echo 'Build failed!' // Display failure message
+            echo 'Build failed!'
         }
     }
 }
