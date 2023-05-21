@@ -121,11 +121,6 @@ def jobList(request):
     return render(request, 'jobList.html', {'all_jobs': all_jobs, 'locations': locations, 'job_types': job_types})
 
 
-def jobDetail(request, job_id):
-    job = get_object_or_404(JobListing, id=job_id)
-    context = {'job': job}
-    return render(request, 'jobDetail.html', context)
-
 
 @login_required
 def editJob(request, job_id):
@@ -154,24 +149,36 @@ def apply_job(request, job_id):
     context = {'job': job}
     return render(request, 'applyJob.html', context)
 
-from django.shortcuts import get_object_or_404
 
-from .forms import InterestForm
 
-from .forms import InterestForm
+def jobDetail(request, job_id):
+    job = get_object_or_404(JobListing, id=job_id)
+    form = InterestForm()
+    context = {'job': job, 'form': form}
+    return render(request, 'jobDetail.html', context)
+
+from django.contrib import messages
 
 def submit_interest(request, job_id):
+    job = get_object_or_404(JobListing, id=job_id)
+
     if request.method == 'POST':
         form = InterestForm(request.POST, request.FILES)
         if form.is_valid():
             interest = form.save(commit=False)
-            interest.job_id = job_id
+            interest.job = job
+            interest.status = 'new_applicant'  # Set the default value
             interest.save()
             return redirect('home')
+        else:
+            for field, errors in form.errors.items():
+                for error in errors:
+                    messages.error(request, f"{field.capitalize()}: {error}")
     else:
         form = InterestForm()
-    
-    return render(request, 'submit_interest.html', {'form': form})
+
+    context = {'job': job, 'form': form}
+    return render(request, 'jobDetail.html', context)
 
 
 def view_applicants(request, job_id):
