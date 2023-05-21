@@ -259,7 +259,7 @@ class JuniorListTestCase(TestCase):
     def test_juniorList_GET(self):
         response = self.client.get(reverse('juniorList'))
         self.assertEqual(response.status_code, 200)
-        self.assertTemplateUsed(response, 'JuniorList.html')
+        self.assertTemplateUsed(response, 'juniorList.html')
         self.assertCountEqual(response.context['juniors'], [
                               self.junior1, self.junior2, self.junior3])
         self.assertCountEqual(response.context['cities'], [
@@ -270,7 +270,7 @@ class JuniorListTestCase(TestCase):
         response = self.client.get(
             reverse('juniorList'), {'skills': 'Skills1'})
         self.assertEqual(response.status_code, 200)
-        self.assertTemplateUsed(response, 'JuniorList.html')
+        self.assertTemplateUsed(response, 'juniorList.html')
         self.assertCountEqual(response.context['juniors'], [self.junior1])
         self.assertCountEqual(response.context['cities'], [
                               'City1', 'City2', 'City3'])
@@ -279,7 +279,7 @@ class JuniorListTestCase(TestCase):
     def test_juniorList_GET_with_city_filter(self):
         response = self.client.get(reverse('juniorList'), {'city': 'City2'})
         self.assertEqual(response.status_code, 200)
-        self.assertTemplateUsed(response, 'JuniorList.html')
+        self.assertTemplateUsed(response, 'juniorList.html')
         self.assertCountEqual(response.context['juniors'], [self.junior2])
         self.assertCountEqual(response.context['cities'], [
                               'City1', 'City2', 'City3'])
@@ -289,7 +289,7 @@ class JuniorListTestCase(TestCase):
         response = self.client.get(reverse('juniorList'), {
                                    'skills': 'Skills1', 'city': 'City1'})
         self.assertEqual(response.status_code, 200)
-        self.assertTemplateUsed(response, 'JuniorList.html')
+        self.assertTemplateUsed(response, 'juniorList.html')
         self.assertCountEqual(response.context['juniors'], [self.junior1])
         self.assertCountEqual(response.context['cities'], [
                               'City1', 'City2', 'City3'])
