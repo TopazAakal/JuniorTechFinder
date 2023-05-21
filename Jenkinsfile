@@ -17,7 +17,9 @@ pipeline {
             steps {
                 sh 'apt-get update' 
                 sh 'apt-get install -y python3-dev python3-pip' // Install Python and pip
-                sh 'pip install pipenv'
+                sh 'pip install --upgrade pip'
+                sh 'pip install --upgrade pipenv'
+                // sh 'pip install pipenv'
             }
         }
 
