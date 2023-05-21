@@ -55,13 +55,13 @@ pipeline {
                 }
             }
         }
-    }
-
         stage('Code Complexity') {
             steps {
                 sh 'pipenv run radon cc -a -s -i venv -o radon_report.html .'
             }
         }
+    }
+
 
     post {
         always {
