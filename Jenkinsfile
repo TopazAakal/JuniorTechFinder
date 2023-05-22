@@ -22,7 +22,6 @@ pipeline {
 
         stage('Build') {
             steps {
-               
                 sh 'pipenv install --skip-lock' // Create and activate virtual environment, install dependencies (skip lock)
                 sh 'pipenv install -r requirements.txt' // Install dependencies from requirements.txt
             }
