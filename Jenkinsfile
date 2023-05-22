@@ -26,7 +26,7 @@ pipeline {
                 sh 'apt-get install -y python3-dev python3-pip' // Install Python and pip
                 sh 'pip install --upgrade pip'
                 sh 'pip install --upgrade pipenv'
-                // sh 'pip install pipenv'
+
             }
         }
 
@@ -40,8 +40,12 @@ pipeline {
 
         stage('Test - Unit') {
             steps {
-                    sh 'pipenv run coverage run --source=JuniorTechFinder manage.py test --tag=unit-test '
+                    sh 'pipenv run coverage run manage.py test --tag=unit-test'
                     sh 'pipenv run coverage xml -o coverage.xml'
+                    sh 'pipenv run coverage html -d coverage_html'
+                    archiveArtifacts 'coverage_html/**
+                    sh 'pipenv run coverage report'
+                    publishHTML([allowMissing: false, alwaysLinkToLastBuild: false, keepAll: true, reportDir: 'coverage_html', reportFiles: 'index.html', reportName: 'Code Coverage Report'])
             }
         }
 
@@ -67,14 +71,9 @@ pipeline {
         stage('Code Complexity') {
             steps {
                 sh 'pipenv run radon cc -a -s -i venv -o radon_report.html .'
+                publishHTML([allowMissing: false, alwaysLinkToLastBuild: false, keepAll: true, reportDir: '.', reportFiles: 'radon_report.html', reportName: 'Code Complexity Report'])
             }
-        }
-        
-        stage('Clean Workspace') {
-           steps {
-                cleanWs()
-            }
-        }   
+        } 
     }
 
 
@@ -82,12 +81,8 @@ pipeline {
         always {
             sh 'find . -name "*.pyc" -delete' // Remove compiled Python files
             junit allowEmptyResults: true, testResults: '**/test-results/*.xml'
-            cleanWs(cleanWhenNotBuilt: false, deleteDirs: true, disableDeferredWipeout: true, notFailBuild: true, patterns: [[pattern: '.gitignore', type: 'INCLUDE'],  [pattern: '.propsfile', type: 'EXCLUDE']])
-            
-            step([$class: 'CoberturaPublisher', autoUpdateHealth: false, autoUpdateStability: false, coberturaReportFile: 'coverage.xml', failUnhealthy: false, failUnstable: false, maxNumberOfBuilds: 0, onlyStable: false, sourceEncoding: 'ASCII', zoomCoverageChart: false])
-
-            publishHTML([allowMissing: false, alwaysLinkToLastBuild: false, keepAll: true, reportDir: '.', reportFiles: 'radon_report.html', reportName: 'Code Complexity Report'])
-    
+//             cleanWs(cleanWhenNotBuilt: false, deleteDirs: true, disableDeferredWipeout: true, notFailBuild: true, patterns: [[pattern: '.gitignore', type: 'INCLUDE'],  [pattern: '.propsfile', type: 'EXCLUDE']])
+            cleanWs()    
         }
 
         success {
