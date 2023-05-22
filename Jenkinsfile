@@ -43,7 +43,7 @@ pipeline {
                     sh 'pipenv run coverage run manage.py test --tag=unit-test'
                     sh 'pipenv run coverage xml -o coverage.xml'
                     sh 'pipenv run coverage html -d coverage_html'
-                    archiveArtifacts 'coverage_html/**
+                    archiveArtifacts 'coverage_html/**'
                     sh 'pipenv run coverage report'
                     publishHTML([allowMissing: false, alwaysLinkToLastBuild: false, keepAll: true, reportDir: 'coverage_html', reportFiles: 'index.html', reportName: 'Code Coverage Report'])
             }
