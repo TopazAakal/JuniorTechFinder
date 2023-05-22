@@ -40,7 +40,7 @@ pipeline {
 
         stage('Test - Unit') {
             steps {
-                    sh 'pipenv run coverage run --source=my_project manage.py test --tag=unit-test'
+                    sh 'pipenv run coverage run --source=JuniorTechFinder manage.py test --tag=unit-test '
                     sh 'pipenv run coverage xml -o coverage.xml'
             }
         }
