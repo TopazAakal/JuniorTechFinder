@@ -12,6 +12,13 @@ pipeline {
                 checkout scm
             }
         }
+        
+        stage('Print Workspace Content') {
+           steps {
+                sh 'ls -la'
+                sh 'cat requirements.txt'
+            }   
+        }
 
         stage('Install pipenv') {
             steps {
@@ -62,6 +69,12 @@ pipeline {
                 sh 'pipenv run radon cc -a -s -i venv -o radon_report.html .'
             }
         }
+        
+        stage('Clean Workspace') {
+           steps {
+                cleanWs()
+            }
+        }   
     }
 
 
