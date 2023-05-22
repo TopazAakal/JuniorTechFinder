@@ -13,12 +13,6 @@ pipeline {
             }
         }
         
-        stage('Print Workspace Content') {
-           steps {
-                sh 'ls -la'
-                sh 'cat requirements.txt'
-            }   
-        }
 
         stage('Install pipenv') {
             steps {
