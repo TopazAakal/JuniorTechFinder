@@ -4,6 +4,7 @@ from django.urls import path
 import Core.views
 import Juniors.views
 import Recruiters.views
+import Reports.views
 import Authentication.views
 from django.conf import settings
 from django.conf.urls.static import static
@@ -47,6 +48,8 @@ urlpatterns = [
     path('logout/', Authentication.views.logout_view, name='logout'),
     # Admin
     path('admin/', admin.site.urls),
+    path('reports/', Reports.views.reportsPage, name='reports'),
+
 
 
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
