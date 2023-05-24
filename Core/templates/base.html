@@ -50,6 +50,10 @@
                 <li><a href="{% url 'checkProf' %}">My Profile</a></li>
                 <li><a href="{% url 'juniorList' %}">Juniors</a></li>
                 {% endif %}
+                {% if user.is_staff%}
+                <li><a href="{% url 'reports' %}">Reports</a></li>
+                {% endif %}
+
 
                 <li>
                     <form method="POST" action="{% url 'logout' %}">
