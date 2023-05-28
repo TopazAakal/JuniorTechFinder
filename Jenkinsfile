@@ -12,12 +12,15 @@ pipeline {
                 checkout scm
             }
         }
+        
 
         stage('Install pipenv') {
             steps {
                 sh 'apt-get update' 
                 sh 'apt-get install -y python3-dev python3-pip' // Install Python and pip
-                sh 'pip install pipenv' // Install pipenv
+                sh 'pip install --upgrade pip'
+                sh 'pip install --upgrade pipenv'
+
             }
         }
 
@@ -29,9 +32,19 @@ pipeline {
             }
         }
 
-        stage('Test') {
+        stage('Test - Unit') {
             steps {
-                sh 'pipenv run python manage.py test --tag=unit-test ' 
+                    sh 'pipenv run coverage run manage.py test --tag=unit-test'
+                    sh 'pipenv run coverage xml -o coverage.xml'
+                    sh 'pipenv run coverage html -d coverage_html'
+                    archiveArtifacts 'coverage_html/**'
+                    sh 'pipenv run coverage report'
+                    publishHTML([allowMissing: false, alwaysLinkToLastBuild: false, keepAll: true, reportDir: 'coverage_html', reportFiles: 'index.html', reportName: 'Code Coverage Report'])
+            }
+        }
+
+        stage('Test - Integration') {
+            steps {
                 sh 'pipenv run python manage.py test --tag=integrationTest '  
             }
         }
@@ -49,13 +62,21 @@ pipeline {
                 }
             }
         }
+        stage('Code Complexity') {
+            steps {
+                sh 'pipenv run radon cc -a -s -i venv -o radon_report.html .'
+                publishHTML([allowMissing: false, alwaysLinkToLastBuild: false, keepAll: true, reportDir: '.', reportFiles: 'radon_report.html', reportName: 'Code Complexity Report'])
+            }
+        } 
     }
+
 
     post {
         always {
             sh 'find . -name "*.pyc" -delete' // Remove compiled Python files
             junit allowEmptyResults: true, testResults: '**/test-results/*.xml'
-            cleanWs(cleanWhenNotBuilt: false, deleteDirs: true, disableDeferredWipeout: true, notFailBuild: true, patterns: [[pattern: '.gitignore', type: 'INCLUDE'],  [pattern: '.propsfile', type: 'EXCLUDE']])
+//             cleanWs(cleanWhenNotBuilt: false, deleteDirs: true, disableDeferredWipeout: true, notFailBuild: true, patterns: [[pattern: '.gitignore', type: 'INCLUDE'],  [pattern: '.propsfile', type: 'EXCLUDE']])
+            cleanWs()    
         }
 
         success {
