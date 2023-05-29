@@ -62,7 +62,11 @@ pipeline {
 
         stage('Linting') {
             steps {
-                sh 'pipenv run pylint Authentication Core Juniors Recruiters Reports --exit-zero --disable=C,E,R > lint_report.txt' // Run Pylint and save the report as a text file
+                sh 'pipenv run pylint --output-format=parseable Authentication Core Juniors Recruiters Reports --exit-zero --disable=C,E,R --msg-template="{path}:{line}: [{msg_id}({symbol}), {obj}] {msg}" | tee pylint.log' // Run Pylint and save the report as a text file
+
+                // publishHTML([allowMissing: false, alwaysLinkToLastBuild: false, keepAll: true, reportDir: '.', reportFiles: 'lint_report.txt', reportName: 'Code Lint Report'])
+                echo "linting Success, Generating Report"
+                recordIssues enabledForFailure: true, aggregatingResults: true, tool: pyLint(pattern: 'pylint.log')
             }
         }
         
