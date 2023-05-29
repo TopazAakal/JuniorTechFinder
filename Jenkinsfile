@@ -69,7 +69,7 @@ pipeline {
                 // recordIssues enabledForFailure: true, aggregatingResults: true, tool: pyLint(pattern: 'pylint.log')
                 // Publish the linting report using the Warnings Next Generation plugin
                 recordIssues enabledForFailure: true, aggregatingResults: true, tools: [pyLint(pattern: 'pylint.log')]
-    }
+    
             }
         }
         
