@@ -66,7 +66,10 @@ pipeline {
 
                 // publishHTML([allowMissing: false, alwaysLinkToLastBuild: false, keepAll: true, reportDir: '.', reportFiles: 'lint_report.txt', reportName: 'Code Lint Report'])
                 echo "linting Success, Generating Report"
-                recordIssues enabledForFailure: true, aggregatingResults: true, tool: pyLint(pattern: 'pylint.log')
+                // recordIssues enabledForFailure: true, aggregatingResults: true, tool: pyLint(pattern: 'pylint.log')
+                // Publish the linting report using the Warnings Next Generation plugin
+                recordIssues enabledForFailure: true, aggregatingResults: true, tools: [pyLint(pattern: 'pylint.log')]
+    }
             }
         }
         
