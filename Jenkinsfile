@@ -62,16 +62,18 @@ pipeline {
 
         stage('Linting') {
             steps {
-                sh 'pipenv run pylint Authentication Core Juniors Recruiters Reports --exit-zero --disable=C,E,R' // Run Pylint with the desired score threshold
+                sh 'pipenv run pylint Authentication Core Juniors Recruiters Reports --exit-zero --disable=C,E,R > lint_report.txt' // Run Pylint and save the report as a text file
             }
         }
         
         stage('Code Complexity') {
             steps {
-                sh 'pipenv run radon cc . -s --xml -i > complexity.xml' // Run radon cc and generate XML report
-                sh 'pipenv run radon mi . -s -n B' // Check maintainability index with threshold B
+                sh 'pipenv run radon cc Authentication Core Juniors Recruiters Reports -s -j -O complexity.json' // Run radon cc and generate JSON report
+                sh 'pipenv run radon mi Authentication Core Juniors Recruiters Reports -s -j -O MaintainabilityIndex.json' // Check maintainability index with threshold B
 
-                publishHTML([allowMissing: false, alwaysLinkToLastBuild: false, keepAll: true, reportDir: '.', reportFiles: 'complexity.xml', reportName: 'Code Complexity Report'])
+                publishHTML([allowMissing: false, alwaysLinkToLastBuild: false, keepAll: true, reportDir: '.', reportFiles: 'complexity.json', reportName: 'Code Complexity Report'])
+                publishHTML([allowMissing: false, alwaysLinkToLastBuild: false, keepAll: true, reportDir: '.', reportFiles: 'MaintainabilityIndex.json', reportName: 'Maintainability Index Report'])
+                // archiveArtifacts artifacts: 'MaintainabilityIndex.json', allowEmptyArchive: true // Archive the Maintainability Index report
             }
         } 
     }
@@ -80,6 +82,7 @@ pipeline {
         always {
             sh 'find . -name "*.pyc" -delete' // Remove compiled Python files
             junit allowEmptyResults: true, testResults: '**/test-results/*.xml'
+            archiveArtifacts artifacts: 'lint_report.txt', allowEmptyArchive: true // Archive the linting report
             cleanWs()    
         }
 
