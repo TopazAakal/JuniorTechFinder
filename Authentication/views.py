@@ -38,7 +38,6 @@ def signup_view(request):
     # If request method is POST, validate form and attempt user creation
     if request.method == 'POST':
         form = SignUpForm(request.POST)
-
         if form.is_valid():
             user = form.save(commit=False)
             email = form.cleaned_data.get('username')
@@ -56,7 +55,6 @@ def signup_view(request):
             # Log the user in and redirect to home page
             login(request, user)
             return redirect('home')
-            # return redirect('checkProfileUser')
 
     else:
         # If request method is GET, show signup form
