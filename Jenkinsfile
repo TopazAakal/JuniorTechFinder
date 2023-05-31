@@ -17,28 +17,32 @@ pipeline {
             steps {
                 sh 'apt-get update' 
                 sh 'apt-get install -y python3-dev python3-pip' // Install Python and pip
-                sh 'pip install pipenv'
+                sh 'pip install --upgrade pip'
+                sh 'pip install --upgrade pipenv'
             }
         }
 
         stage('Build') {
             steps {
-                sh 'pipenv install --skip-lock'         // Create and activate virtual environment, install dependencies (skip lock)
+                sh 'pipenv install --skip-lock' // Create and activate virtual environment, install dependencies (skip lock)
                 sh 'pipenv install -r requirements.txt' // Install dependencies from requirements.txt
-                
             }
         }
 
         stage('Test - Unit') {
             steps {
-                    sh 'pipenv run coverage run --source=my_project manage.py test --tag=unit-test'
-                    sh 'pipenv run coverage xml -o coverage.xml'
+                sh 'pipenv run coverage run manage.py test --tag=unit-test'
+                sh 'pipenv run coverage xml -o coverage.xml'
+                sh 'pipenv run coverage html -d coverage_html'
+                archiveArtifacts 'coverage_html/**'
+                sh 'pipenv run coverage report'
+                publishHTML([allowMissing: false, alwaysLinkToLastBuild: false, keepAll: true, reportDir: 'coverage_html', reportFiles: 'index.html', reportName: 'Code Coverage Report'])
             }
         }
 
         stage('Test - Integration') {
             steps {
-                sh 'pipenv run python manage.py test --tag=integrationTest '  
+                sh 'pipenv run python manage.py test --tag=integrationTest'  
             }
         }
 
@@ -55,24 +59,34 @@ pipeline {
                 }
             }
         }
-        stage('Code Complexity') {
+
+        stage('Linting') {
             steps {
-                sh 'pipenv run radon cc -a -s -i venv -o radon_report.html .'
+                sh 'pipenv run pylint --output-format=colorized Authentication Core Juniors Recruiters Reports --exit-zero --disable=C,E,R --msg-template="{path}:{line}: [{msg_id}({symbol}), {obj}] {msg}" ' // Run Pylint 
+
+                echo "linting Success, Generating Report"
+    
             }
         }
-    }
+        
+        stage('Code Complexity') {
+            steps {
+                sh 'pipenv run radon cc Authentication Core Juniors Recruiters Reports -s -j -O complexity.json' // Run radon cc and generate JSON report
+                sh 'pipenv run radon mi Authentication Core Juniors Recruiters Reports -s -j -O MaintainabilityIndex.json' // Check maintainability index with threshold B
 
+                publishHTML([allowMissing: false, alwaysLinkToLastBuild: false, keepAll: true, reportDir: '.', reportFiles: 'complexity.json', reportName: 'Code Complexity Report'])
+                publishHTML([allowMissing: false, alwaysLinkToLastBuild: false, keepAll: true, reportDir: '.', reportFiles: 'MaintainabilityIndex.json', reportName: 'Maintainability Index Report'])
+                // archiveArtifacts artifacts: 'MaintainabilityIndex.json', allowEmptyArchive: true // Archive the Maintainability Index report
+            }
+        } 
+    }
 
     post {
         always {
             sh 'find . -name "*.pyc" -delete' // Remove compiled Python files
             junit allowEmptyResults: true, testResults: '**/test-results/*.xml'
-            cleanWs(cleanWhenNotBuilt: false, deleteDirs: true, disableDeferredWipeout: true, notFailBuild: true, patterns: [[pattern: '.gitignore', type: 'INCLUDE'],  [pattern: '.propsfile', type: 'EXCLUDE']])
-            
-            step([$class: 'CoberturaPublisher', autoUpdateHealth: false, autoUpdateStability: false, coberturaReportFile: 'coverage.xml', failUnhealthy: false, failUnstable: false, maxNumberOfBuilds: 0, onlyStable: false, sourceEncoding: 'ASCII', zoomCoverageChart: false])
-
-            publishHTML([allowMissing: false, alwaysLinkToLastBuild: false, keepAll: true, reportDir: '.', reportFiles: 'radon_report.html', reportName: 'Code Complexity Report'])
-    
+            archiveArtifacts artifacts: 'lint_report.txt', allowEmptyArchive: true // Archive the linting report
+            cleanWs()    
         }
 
         success {

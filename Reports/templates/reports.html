@@ -1,0 +1,113 @@
+{% extends 'base.html' %}
+
+{% block content %}
+
+<style>
+    .job-list {
+        text-align: center;
+    }
+
+    table {
+        text-align: center;
+        border-collapse: collapse;
+        width: 90%;
+    }
+
+    .table-responsive {
+        text-align: center;
+        margin-bottom: 60px;
+    }
+
+    th,
+    td {
+        padding: 8px;
+        text-align: left;
+        border-bottom: 1px solid #ddd;
+    }
+
+    tr:hover {
+        background-color: #f5f5f5;
+    }
+
+    form {
+        display: flex;
+        flex-direction: row;
+        justify-content: center;
+        align-items: center;
+        margin-bottom: 20px;
+    }
+
+    select,
+    input[type="text"],
+    button {
+        height: 40px;
+        font-size: 16px;
+        border: none;
+        border-radius: 20px;
+        margin: 0 5px;
+        padding: 0 20px;
+    }
+
+    select {
+        background-color: #f2f2f2;
+        font-family: 'Lato', sans-serif;
+        font-weight: bold;
+    }
+
+    input[type="text"] {
+        background-color: #fff;
+        box-shadow: 0 0 5px rgba(0, 0, 0, 0.2);
+        font-family: 'Lato', sans-serif;
+        font-weight: bold;
+    }
+
+    button {
+        background-color: #465c7e;
+        color: #fff;
+        cursor: pointer;
+    }
+
+    button:hover {
+        background-color: #34445b;
+    }
+</style>
+<div class="job-list">
+<form method="GET">
+    <select name="reportType">
+        <option value="Status">Candidates Status</option>
+        <option value="Hired">Hired Candidates</option>
+    </select>
+        <button type="submit">Show Report</button>
+</form>
+
+{% if all_Status %}
+<div class="table-responsive">
+    <table class="table table-striped" style="margin: 0 auto;">
+        <thead>
+            <tr>
+                <th>Candidate name</th>
+                <th>Status</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for status in all_Status %}
+            <tr>
+                <td>{{ status.name }}</td>
+                <td>{{ status.status }}</td>
+            </tr>
+            {% empty %}
+            <tr>
+                <td colspan="6">No job Status list yet</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+
+{% else %}
+<p>No job Status list yet.</p>
+{% endif %}
+
+</div>
+
+{% endblock %}
