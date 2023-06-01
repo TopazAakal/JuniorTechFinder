@@ -519,7 +519,7 @@ class JuniorIntegrationTest(TestCase):
         self.assertContains(response, job.location)
 
 
-    @tag('integrationTest2')
+    @tag('integrationTest')
     def test_Junior_Workflow_improving_cv(self):
         self.client.logout()
         
