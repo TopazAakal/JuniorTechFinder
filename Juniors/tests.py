@@ -438,8 +438,7 @@ class JuniorIntegrationTest(TestCase):
             summary='Test test test',
             photo='01.jpg'
         )
-        self.client.logout()
-        
+
         self.junior_data = {
             'email': 'testuser@example.com',
             'first_name': 'John',
@@ -448,8 +447,6 @@ class JuniorIntegrationTest(TestCase):
             'password2': 'testpass123',
             'role': Group.objects.create(name='Junior').id
         }
- 
-
         self.profile_data = {
             'full_name': 'Test User',
             'email': 'testuser@test.com',
@@ -473,13 +470,14 @@ class JuniorIntegrationTest(TestCase):
             'company_name': 'Example Company',
         }
         JobListing.objects.create(**self.job_data)
-   
 
     @tag('integrationTest')
     def test_Junior_Workflow(self):
 
-        # Step 1: Signup as a Junior
+        # Signup
         response = self.client.post(self.signup_url, self.junior_data)
+
+        # Redirect after successful signup
         self.assertEqual(response.status_code, 302)
         self.assertRedirects(response, reverse('home'))
 
@@ -491,7 +489,7 @@ class JuniorIntegrationTest(TestCase):
         self.assertEqual(response.status_code, 302)
         self.assertRedirects(response, reverse('home'))
 
-       # Step 2: Create Junior profile
+        # Create Profile
         response = self.client.post(self.createProfileUrl, self.profile_data)
         # Redirect after creating profile
         self.assertEqual(response.status_code, 302)
