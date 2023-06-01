@@ -1,5 +1,5 @@
 from django.contrib.auth.models import User
-from django.test import TestCase, Client
+from django.test import TestCase, Client, tag
 from django.urls import reverse
 from Recruiters.models import Interest,JobListing,Recruiters
 
@@ -53,6 +53,7 @@ class ReportsPageTestCase(TestCase):
         
         self.url = reverse('reports') 
 
+    @tag('unit-test')
     def test_admin_access(self):
         self.client.force_login(self.admin_user)
         response = self.client.get(self.url)
@@ -62,6 +63,7 @@ class ReportsPageTestCase(TestCase):
         all_status = response.context['all_Status']
         self.assertEqual(all_status.count(), 2)
 
+    @tag('unit-test')
     def test_non_admin_access(self):
         self.client.force_login(self.non_admin_user)
         response = self.client.get(self.url)

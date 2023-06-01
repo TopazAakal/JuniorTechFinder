@@ -1,13 +1,11 @@
-from django.test import Client, TestCase, tag
+from django.test import Client, RequestFactory, TestCase, tag
 from django.urls import reverse
-from django.contrib.auth.models import User
+from django.contrib.auth.models import User, Group
 from .forms import SignUpForm
 from .views import signup_view
 from django.contrib.auth import get_user_model
 
 # Test case for the LoginView
-
-
 class LoginViewTestCase(TestCase):
     def setUp(self):
         self.client = Client()
@@ -84,10 +82,11 @@ class SignUpFormTest(TestCase):
                          'The two password fields didn’t match.'])
 
 # Test case for the SignUpView
-
-
 class SignUpViewTest(TestCase):
+    def setUp(self):
+        self.client = Client()  
 
+        
     # Test that the URL for the signup page exists
     @tag('unit-test')
     def test_view_url_exists_at_desired_location(self):
@@ -109,53 +108,46 @@ class SignUpViewTest(TestCase):
 
     # Test that a user can sign up successfully
     @tag('unit-test')
-    def test_view_can_sign_up_user(self):
+    def test_signup_valid_form(self):
+        
+        Group.objects.create(name='Junior')
+        junior = Group.objects.get(name='Junior')
+        # Send a POST request with valid form data
         response = self.client.post(reverse('signup'), {
-            'email': 'test@example.com',
-            'first_name': 'test',
-            'last_name': 'user',
-            'role': 'Junior',
-            'password1': 'Xd5gd@#4',
-            'password2': 'Xd5gd@#4',
+            'email': 'test2444@example.com',
+            'first_name': 'John',
+            'last_name': 'Doe',
+            'password1': 'A123b123',
+            'password2': 'A123b123',
+            'role': junior.id
         })
-        # 302 is redirect status code
-        # self.assertEqual(response.status_code, 302)
-        # Assert that a user object was created
-        # self.assertEqual(User.objects.count(), 1)
-        # Assert that the email is correct
-        # self.assertEqual(User.objects.first().email, 'test@example.com')
 
-    # Test that a user cannot sign up with an email that already exists
+        # Assert that the user is redirected to the home page
+        self.assertEqual(response.status_code, 302)
+
+        # Assert that the user is created with the provided email
+        user = User.objects.get(email='test2444@example.com')
+        self.assertEqual(user.first_name, 'John')
+        self.assertEqual(user.last_name, 'Doe')
+        self.assertEqual(user.username, 'test2444@example.com')
+
+        # Assert that the user is added to the specified role/group
+        self.assertTrue(user.groups.filter(name='Junior').exists())
+
+    # Test redirect authenticated user
     @tag('unit-test')
-    def test_view_prevents_duplicate_email_signup(self):
-        # Create a user with the email that we'll use for signup
-        User.objects.create_user(
-            email='test@example.com',
-            username='test@example.com',
-            password='password',
-            first_name='John',
-            last_name='Doe'
-        )
-
-        # Make a POST request to the signup view with the same email
-        response = self.client.post(reverse('signup'), {
-            'email': 'test@example.com',
-            'first_name': 'test',
-            'last_name': 'user',
-            'role': 'Junior',
-            'password1': 'Xd5gd@#4',
-            'password2': 'Xd5gd@#4',
-        })
-
-        # Assert that the response status code is 200 (i.e. the form is not valid)
-        self.assertEqual(response.status_code, 200)
-
-        # Assert that the error message is displayed in the form
-        # self.assertContains(response, "A user with that email already exists.")
-
+    def test_redirect_authenticated_user(self):
+        # Create an authenticated user
+        user = User.objects.create_user(username='testuser', password='password')
+        # Log in the user using the client
+        self.client.force_login(user)
+        # Call the signup_view
+        response = self.client.get(reverse('signup'))
+        # Assert that the view redirects to the home page
+        self.assertRedirects(response, reverse('home'))
+            
+            
 # Test case for the LogoutView
-
-
 class LogoutViewTest(TestCase):
     def setUp(self):
         # create a test client and a test user and log the user in.
