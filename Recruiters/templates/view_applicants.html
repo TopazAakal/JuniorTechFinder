@@ -32,22 +32,6 @@
                 <td>
                     <div id="status-{{ applicant.id }}">{{ applicant.status }}</div>
                 </td>
-                <td>
-                    <form method="POST" action="{% url 'update_status' %}">
-                        {% csrf_token %}
-                        <input type="hidden" name="applicant_id" value="{{ applicant.id }}">
-                <td>
-                    <select name="status" id="status">
-                        {% for choice in status_choices %}
-                        <option value="{{ choice }}" {% if applicant.status is choice %}selected{% endif %}>{{
-                            choice }}
-                        </option>
-                        {% endfor %}
-                    </select>
-                </td>
-                <td>
-                    <button type="submit">Update</button>
-                </td>
 
                 <form method="POST" action="{% url 'update_status' %}">
                     {% csrf_token %}
