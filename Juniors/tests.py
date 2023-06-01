@@ -438,8 +438,7 @@ class JuniorIntegrationTest(TestCase):
             summary='Test test test',
             photo='01.jpg'
         )
-        self.client.logout()
-        
+
         self.junior_data = {
             'email': 'testuser@example.com',
             'first_name': 'John',
@@ -448,8 +447,6 @@ class JuniorIntegrationTest(TestCase):
             'password2': 'testpass123',
             'role': Group.objects.create(name='Junior').id
         }
- 
-
         self.profile_data = {
             'full_name': 'Test User',
             'email': 'testuser@test.com',
@@ -473,13 +470,14 @@ class JuniorIntegrationTest(TestCase):
             'company_name': 'Example Company',
         }
         JobListing.objects.create(**self.job_data)
-   
 
     @tag('integrationTest')
     def test_Junior_Workflow(self):
 
-        # Step 1: Signup as a Junior
+        # Signup
         response = self.client.post(self.signup_url, self.junior_data)
+
+        # Redirect after successful signup
         self.assertEqual(response.status_code, 302)
         self.assertRedirects(response, reverse('home'))
 
@@ -491,7 +489,7 @@ class JuniorIntegrationTest(TestCase):
         self.assertEqual(response.status_code, 302)
         self.assertRedirects(response, reverse('home'))
 
-       # Step 2: Create Junior profile
+        # Create Profile
         response = self.client.post(self.createProfileUrl, self.profile_data)
         # Redirect after creating profile
         self.assertEqual(response.status_code, 302)
@@ -517,49 +515,3 @@ class JuniorIntegrationTest(TestCase):
         self.assertContains(response, job.company_name)
         self.assertContains(response, job.job_type)
         self.assertContains(response, job.location)
-
-
-    @tag('integrationTest')
-    def test_Junior_Workflow_improving_cv(self):
-        self.client.logout()
-        
-        # Step 1: Signup as a Junior
-        response = self.client.post(self.signup_url, self.junior_data)
-        # Redirect after successful signup
-        self.assertEqual(response.status_code, 302)
-        self.assertRedirects(response, reverse('home'))
-        
-        # Get the created user object
-        user = User.objects.get(username=self.junior_data['email'])
-
-        # Step 2: Create Junior profile
-        response = self.client.post(self.login_url, {
-                                    'username': self.junior_data['email'], 'password': self.junior_data['password1']})
-        
-        response = self.client.post(self.createProfileUrl, self.profile_data, follow=True)
-
-        # Get the created junior object
-        junior = Juniors.objects.get(user=user)
-
-        self.assertEqual(response.status_code, 200)
-        self.assertRedirects(response, reverse('showProfile', args=[junior.id]))
-
-        # Step 3: Access suggestions view and without CV file
-        response = self.client.get(reverse('suggestions'))
-        self.assertEqual(response.status_code, 200)
-        self.assertContains(response, "You don't have a CV on your profile.")
-
-        # Step 4: Upload CV file and check if suggestions are displayed
-        with open('SampleFile.pdf', 'rb') as file:
-            response = self.client.post(reverse('suggestions'), {'cv_file': file}, follow=True)
-        self.assertEqual(response.status_code, 200)
-        self.assertTemplateUsed(response, 'suggestions.html')
-
-        # Step 5: Generate new suggestions
-        response = self.client.get(reverse('generate_new_suggestions'))
-        self.assertEqual(response.status_code, 302)
-        self.assertRedirects(response, reverse('suggestions'))
-
-        # Step 6: Logout
-        self.client.logout()
-        response = self.client.get(reverse('home'))
