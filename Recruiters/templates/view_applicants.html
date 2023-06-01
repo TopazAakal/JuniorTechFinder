@@ -13,6 +13,7 @@
                 <th>Resume</th>
                 <th>Status</th>
                 <th>Change Status</th>
+
             </tr>
         </thead>
         <tbody>
@@ -31,6 +32,7 @@
                 <td>
                     <div id="status-{{ applicant.id }}">{{ applicant.status }}</div>
                 </td>
+
                 <form method="POST" action="{% url 'update_status' %}">
                     {% csrf_token %}
                     <input type="hidden" name="applicant_id" value="{{ applicant.id }}">

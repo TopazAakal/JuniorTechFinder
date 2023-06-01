@@ -761,6 +761,11 @@ class RecruiterIntegrationTest(TestCase):
 
     @tag('integrationTest')
     def test_recruiter_creation_job_posting(self):
+        '''
+            register a user as a recruiter, create a profile, and create a job listing
+        '''
+
+
         # create a valid form data dictionary for creating a profile
         profile_form_data = {
             'full_name': 'Test User',
