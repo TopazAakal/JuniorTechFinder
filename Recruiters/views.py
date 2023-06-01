@@ -2,10 +2,10 @@ from django.shortcuts import get_object_or_404, render, redirect
 from django.contrib.auth.decorators import login_required
 from Core.decorators import group_required
 from django.contrib import messages
-from .models import Recruiters, JobListing , Interest
+from .models import Recruiters, JobListing, Interest
 from .forms import RecruitersForm
 from django import forms
-from .forms import JobListingForm , InterestForm
+from .forms import JobListingForm, InterestForm
 
 
 @login_required
@@ -121,7 +121,6 @@ def jobList(request):
     return render(request, 'jobList.html', {'all_jobs': all_jobs, 'locations': locations, 'job_types': job_types})
 
 
-
 @login_required
 def editJob(request, job_id):
     job = get_object_or_404(JobListing, id=job_id)
@@ -150,14 +149,12 @@ def apply_job(request, job_id):
     return render(request, 'applyJob.html', context)
 
 
-
 def jobDetail(request, job_id):
     job = get_object_or_404(JobListing, id=job_id)
     form = InterestForm()
     context = {'job': job, 'form': form}
     return render(request, 'jobDetail.html', context)
 
-from django.contrib import messages
 
 def submit_interest(request, job_id):
     job = get_object_or_404(JobListing, id=job_id)
@@ -184,7 +181,8 @@ def submit_interest(request, job_id):
 def view_applicants(request, job_id):
     job = get_object_or_404(JobListing, id=job_id)
     applicants = Interest.objects.filter(job_id=job.id)
-    status_choices = ['in process', 'hired', 'rejected', 'qualified', 'awaiting decision', 'new applicant']
+    status_choices = ['in process', 'hired', 'rejected',
+                      'qualified', 'awaiting decision', 'new applicant']
 
     if request.method == 'POST':
         applicant_id = request.POST.get('applicant_id')
@@ -194,7 +192,8 @@ def view_applicants(request, job_id):
         applicant.save()
         return redirect('view_applicants', job_id=job_id)
 
-    context = {'job': job, 'applicants': applicants, 'status_choices': status_choices}
+    context = {'job': job, 'applicants': applicants,
+               'status_choices': status_choices}
     return render(request, 'view_applicants.html', context)
 
 
