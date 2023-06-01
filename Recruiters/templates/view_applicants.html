@@ -1,8 +1,9 @@
 {% extends 'base.html' %}
 
 {% block content %}
-<div class="applicants-list">
-    <h1>Applicants for Job: {{ job.title }}</h1>
+<div class="applicants-list" style="margin-bottom: 70px; margin-top: 30px;">
+    <h2>Applicants for Job: "{{ job.title }}"</h2>
+
     <table>
         <thead>
             <tr>
@@ -11,7 +12,8 @@
                 <th>Phone</th>
                 <th>Resume</th>
                 <th>Status</th>
-                <th>change status</th>
+                <th>Change Status</th>
+
             </tr>
         </thead>
         <tbody>
@@ -30,21 +32,22 @@
                 <td>
                     <div id="status-{{ applicant.id }}">{{ applicant.status }}</div>
                 </td>
-                <td>
-                    <form method="POST" action="{% url 'update_status' %}">
-                        {% csrf_token %}
-                        <input type="hidden" name="applicant_id" value="{{ applicant.id }}">
-                <td>
-                    <select name="status" id="status">
-                        {% for choice in status_choices %}
-                        <option value="{{ choice }}" {% if applicant.status is choice %}selected{% endif %}>{{ choice }}
-                        </option>
-                        {% endfor %}
-                    </select>
-                </td>
-                <td>
-                    <button type="submit">Update</button>
-                </td>
+
+                <form method="POST" action="{% url 'update_status' %}">
+                    {% csrf_token %}
+                    <input type="hidden" name="applicant_id" value="{{ applicant.id }}">
+                    <td>
+                        <select name="status" id="status">
+                            {% for choice in status_choices %}
+                            <option value="{{ choice }}" {% if applicant.status is choice %}selected{% endif %}>
+                                {{ choice }}
+                            </option>
+                            {% endfor %}
+                        </select>
+                    </td>
+                    <td>
+                        <button type="submit">Update</button>
+                    </td>
                 </form>
                 </td>
             </tr>
@@ -52,6 +55,7 @@
         </tbody>
     </table>
 </div>
+
 
 <script>
     function updateStatus(applicantId) {
@@ -106,12 +110,37 @@
     }
 
     select {
-        padding: 5px;
+        padding: 8px;
+        border: 1px solid #ccc;
+        border-radius: 5px;
+        background-color: #fff;
+        font-size: 15px;
+        color: #333;
+        width: 80%;
+        box-sizing: border-box;
+        font-family: 'Lato', sans-serif;
+        font-weight: bold;
+    }
+
+    select:hover {
+        border-color: #999;
+        font-weight: bold;
+    }
+
+    select:focus {
+        outline: none;
+        border-color: #555;
+    }
+
+    option {
+        padding: 8px;
     }
 
     button {
         padding: 5px 10px;
         margin-left: 5px;
+        font-size: 17px;
     }
 </style>
+
 {% endblock %}
