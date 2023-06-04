@@ -30,57 +30,133 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Courgette&display=swap" rel="stylesheet">
+
+    <style>
+       nav ul {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+nav li {
+  font-weight: bold;
+  position: relative;
+  display: inline-block;
+}
+
+nav a {
+  display: block;
+  padding: 10px;
+  text-decoration: none;
+  color: #000;
+}
+
+nav .sub-menu {
+  position: relative;
+}
+
+nav .sub-menu ul {
+  display: none;
+  position: absolute;
+  top: 100%;
+  left: 0;
+  min-width: 160px;
+  padding: 0;
+  margin: 0;
+  background-color: #0c0606;
+  z-index: 1;
+}
+
+nav .sub-menu:hover ul {
+  display: block;
+}
+
+nav .sub-menu ul li {
+  font-weight: normal;
+}
+
+nav .user-info {
+  font-weight: bold;
+  font-size: 13px;
+  color: #aae0fa;
+}
+
+nav .user-info div {
+  display: flex;
+  align-items: center;
+  margin-top: 5px;
+  margin-left: 60px;
+}
+
+nav .user-info img {
+  border-radius: 50%;
+  height: 40px;
+  width: 40px;
+  margin-right: 5px;
+}
+
+
+    </style>
 </head>
 
 <body>
     <header>
         <nav>
-            <ul style="display: flex;">
-                <li style="font-weight: bold;"><a href="/">Home</a></li>
-                <li style="font-weight: bold;"><a href="{% url 'aboutUs' %}">About Us</a></li>
-                <li style="font-weight: bold;"><a href="{% url 'contactUs' %}">Contact Us</a></li>
-                <li style="font-weight: bold;"><a href="{% url 'siteRules' %}">Site Rules</a></li>
-                <li style="font-weight: bold;"><a href="{% url 'jobList' %}">Jobs</a></li>
+            <ul class="main-menu">
+              <li class="sub-menu"><a href="/">Home</a>
+              <ul>
+              <li><a name="About Us" href="{% url 'aboutUs' %}">About Us</a></li>
+              <li><a href="{% url 'contactUs' %}">Contact Us</a></li>
+              <li><a href="{% url 'siteRules' %}">Site Rules</a></li>
+             </ul>
+            </li>
+              <li class="sub-menu"><a  href="{% url 'jobList' %}">Jobs </a>
+                <ul>
+                    {%if request.user|user_in_group:"Recruiter" %}
+                    <li><a href="{% url 'juniorList' %}">Juniors</a></li>
+                    {% endif %}
+                    {%if user.is_staff %}
+                    <li><a href="{% url 'juniorList' %}">Juniors</a></li>
+                    {% endif %}
 
-                {% if user.is_authenticated %}
-                {% if request.user|user_in_group:"Junior" %}
-                <li style="font-weight: bold;"><a href="{% url 'checkProfile' %}">My Profile</a></li>
-                <li style="font-weight: bold;"><a href="{% url 'suggestions' %}">Improve Your CV</a></li>
-                {% elif request.user|user_in_group:"Recruiter" %}
-                <li style="font-weight: bold;"><a href="{% url 'checkProf' %}">My Profile</a></li>
-                <li style="font-weight: bold;"><a href="{% url 'juniorList' %}">Juniors</a></li>
-                {% endif %}
-                {% if user.is_staff%}
-                <li style="font-weight: bold;"><a href="{% url 'reports' %}">Reports</a></li>
-                {% endif %}
-
-
-                <li>
-                    <form method="POST" action="{% url 'logout' %}">
-                        {% csrf_token %}
-                <li style="font-weight: bold;"><a href="{% url 'logout' %}">Logout</a></li>
+                </ul>
+            </li>
+              {% if user.is_authenticated %}
+              {% if request.user|user_in_group:"Junior" %}
+              <li class="sub-menu">
+                <a href="{% url 'checkProfile' %}">My Profile</a>
+                <ul>
+                  <li><a href="{% url 'suggestions' %}">Improve Your CV</a></li>
+                </ul>
+              </li>
+              {% elif request.user|user_in_group:"Recruiter" %}
+              <li><a href="{% url 'checkProf' %}">My Profile</a> </li>
+              {% endif %}
+              {% if user.is_staff%}
+              <li><a href="{% url 'reports' %}">Reports</a></li>
+              {% endif %}
+              <li>
+                <form method="POST" action="{% url 'logout' %}">
+                  {% csrf_token %}
+                  <a href="{% url 'logout' %}">Logout</a>
                 </form>
-                </li>
-
-                <li style="font-weight: bold; font-size: 13px; color:#aae0fa">
-                    <div style="display: flex; align-items: center; margin-top: 5px; margin-left: 60px;">
-                        {% if user.juniors.photo %}
-                        <img src="{{ user.juniors.photo.url }}" alt="Profile Picture"
-                            style="border-radius: 50%; height: 40px; width: 40px; margin-right: 5px;">
-                        {% else %}
-                        <img src="{% static 'media/default.jpg' %}" alt="Default Picture"
-                            style="border-radius: 50%; height: 30px; width: 30px; margin-right: 5px;">
-                        {% endif %}
-                        <span style="display: inline-block;">You are logged in as:
-                            {{ user.username }}</span>
-                    </div>
-                </li>
-
-                {% else %}
-                <li style="font-weight: bold;"><a href="{% url 'login' %}">Login</a></li>
-                {% endif %}
+              </li>
+              <li class="user-info">
+                <div>
+                  {% if user.juniors.photo %}
+                  <img src="{{ user.juniors.photo.url }}" alt="Profile Picture">
+                  {% else %}
+                  <img src="{% static 'media/default.jpg' %}" alt="Default Picture">
+                  {% endif %}
+                  <span>You are logged in as: {{ user.username }}</span>
+                </div>
+              </li>
+              {% else %}
+              <li><a href="{% url 'login' %}">Login</a></li>
+              {% endif %}
             </ul>
-        </nav>
+          </nav>
+          
     </header>
 
     {% block content %}
