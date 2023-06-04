@@ -6,16 +6,18 @@
 <!-- Create Profile form -->
 <div class="container my-4">
     <h1>Create Profile</h1>
-    <form action="{% url 'createProfile' %}" method="POST" enctype="multipart/form-data">
+    <form action="{% url 'createProfile' %}" method="POST" enctype="multipart/form-data" style="text-align: center; margin-bottom: 90px; text-align: left; margin-left:600px;">
         {% csrf_token %}
         <div class="form-group">
             <label for="full_name"><strong>Full Name: </strong></label>
+            <br>
             <input type="text" class="form-control" id="full_name" name="full_name" required pattern="[A-Za-z ]+">
             <span id="nameError" class="text-danger"></span>
         </div>
         <br>
         <div class="form-group">
             <label for="email"><strong>Email:</strong></label>
+            <br>
             <input type="email" class="form-control" id="email" name="email" required>
             <span id="emailError" class="text-danger"></span>
         </div>
@@ -23,6 +25,7 @@
 
         <div class="form-group">
             <label for="phone_number"><strong>Phone Number:</strong></label>
+            <br>
             <input type="tel" class="form-control" id="phone_number" name="phone_number" required pattern="[0-9]{10}">
             <span id="phoneError" class="text-danger"></span>
 
@@ -31,6 +34,7 @@
 
         <div class=" form-group">
             <label for="city"><strong>City:</strong></label>
+            <br>
             <input type="text" class="form-control" id="city" name="city" required pattern="[A-Za-z\s\.\-\,]+">
             <span id="cityError" class="text-danger"></span>
         </div>
@@ -38,6 +42,7 @@
 
         <div class="form-group">
             <label for="age"><strong>Age:</strong></label>
+            <br>
             <input type="number" class="form-control" id="age" name="age" required min="1">
             <span id="ageError" class="text-danger"></span>
         </div>
@@ -45,12 +50,14 @@
 
         <div class="form-group">
             <label for="skills"><strong>Skills:</strong></label>
+            <br>
             <input type="text" class="form-control" id="skills" name="skills">
         </div>
         <br>
 
         <div class="form-group">
             <label for="summary"><strong>Summary:</strong></label>
+            <br>
             <textarea class="form-control" id="summary" name="summary" rows="4"></textarea>
         </div>
         <br>
