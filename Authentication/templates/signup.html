@@ -1,82 +1,109 @@
 {% extends 'base.html' %}
 
 {% block content %}
-<h1 style="text-align: center;">Sign up</h1>
-<br>
-<br>
+  <h1 style="text-align: center;">Sign up</h1>
+  <br>
+  <br>
 
-<div class="signup-container" style="text-align: center; margin-bottom: 90px;">
-  <form method="post">
-    {% csrf_token %}
+  <div class="signup-container" style="text-align: center; margin-bottom: 90px; text-align: left; margin-left:550px;">
+    <form method="post">
+      {% csrf_token %}
 
-    <div class="form-group" style="margin-bottom: 20px;">
-      <strong>{{ form.email.label_tag }}</strong>
-      {{ form.email }}
-      {% if form.email.errors %}
-      <div style="color:red;">{{ form.email.errors.as_text }}</div>
-      {% endif %}
-      <br>
-      <small class="form-text text-muted">{{ form.email.help_text }}</small>
-      <br>
-    </div>
+      <div class="form-group" style="margin-bottom: 20px;">
+        <strong >{{ form.email.label_tag }}</strong>
+        <br>
+        {{ form.email }}
+        {% if form.email.errors %}
+          <div style="color:red;">{{ form.email.errors.as_text }}</div>
+        {% endif %}
+        <br>
+        <small class="form-text text-muted">{{ form.email.help_text }}</small>
+        <br>
+      </div>
 
-    <div class="form-group" style="margin-bottom: 20px;">
-      <strong>{{ form.first_name.label_tag }}</strong>
-      {{ form.first_name }}
-      {% if form.first_name.errors %}
-      <div style="color:red;">{{ form.first_name.errors.as_text }}</div>
-      {% endif %}
-      <br>
+      <div class="form-group" style="margin-bottom: 20px;">
+        <strong>{{ form.first_name.label_tag }}</strong>
+        <br>
+        {{ form.first_name }}
+        {% if form.first_name.errors %}
+          <div style="color:red;">{{ form.first_name.errors.as_text }}</div>
+        {% endif %}
+        <br>
+        <small class="form-text text-muted">{{ form.first_name.help_text }}</small>
+      </div>
 
-      <small class="form-text text-muted">{{ form.first_name.help_text }}</small>
-    </div>
+      <div class="form-group" style="margin-bottom: 20px;">
+        <strong>{{ form.last_name.label_tag }}</strong>
+        <br>
+        {{ form.last_name }}
+        {% if form.last_name.errors %}
+          <div style="color:red;">{{ form.last_name.errors.as_text }}</div>
+        {% endif %}
+        <br>
+        <small class="form-text text-muted">{{ form.last_name.help_text }}</small>
+      </div>
 
-    <div class="form-group" style="margin-bottom: 20px;">
-      <strong>{{ form.last_name.label_tag }}</strong>
-      {{ form.last_name }}
-      {% if form.last_name.errors %}
-      <div style="color:red;">{{ form.last_name.errors.as_text }}</div>
-      {% endif %}
-      <br>
+      <div class="form-group" style="margin-bottom: 20px;">
+        <p style="color:rgb(10, 248, 236);"><strong>*choose from this options:
+          <strong><a href="#" class="role-info" data-role="recruiter">Recruiter</a> </strong>
+        <strong><a href="#" class="role-info" data-role="junior">Juniors</a> </strong></p>
+        <strong>{{ form.role.label_tag }}</strong>
+        <br>
+        {{ form.role }}
+        {% if form.role.errors %}
+          <div style="color:red;">{{ form.role.errors.as_text }}</div>
+        {% endif %}
+        <br>
+        <small class="form-text text-muted">{{ form.group.help_text }}</small>
+        <br>
 
-      <small class="form-text text-muted">{{ form.last_name.help_text }}</small>
-    </div>
+      </div>
 
-    <div class="form-group" style="margin-bottom: 20px;">
-      <strong>{{ form.role.label_tag }}</strong>
-      {{ form.role }}
-      {% if form.role.errors %}
-      <div style="color:red;">{{ form.role.errors.as_text }}</div>
-      {% endif %}
-      <br>
+      <div class="form-group" style="margin-bottom: 20px;">
+        <strong>{{ form.password1.label_tag }}</strong>
+        <br>
+        {{ form.password1 }}
+        {% if form.password1.errors %}
+          <div style="color:red;">{{ form.password1.errors.as_text }}</div>
+        {% endif %}
+        <br>
+        <small style="text-align: left; display: block;" class="form-text text-muted">{{form.password1.help_text|safe}}</small>
+      </div>
 
-      <small class="form-text text-muted">{{ form.group.help_text }}</small>
-    </div>
+      <div class="form-group" style="margin-bottom: 30px;">
+        <strong>{{ form.password2.label_tag }}</strong>
+        <br>
+        {{ form.password2 }}
+        {% if form.password2.errors %}
+          <div style="color:red;">{{ form.password2.errors.as_text }}</div>
+        {% endif %}
+        <br>
+        <small class="form-text text-muted">{{ form.password2.help_text }}</small>
+      </div>
 
-    <div class="form-group" style="margin-bottom: 20px;">
-      <strong>{{ form.password1.label_tag }}</strong>
-      {{ form.password1 }}
-      {% if form.password1.errors %}
-      <div style="color:red;">{{ form.password1.errors.as_text }}</div>
-      {% endif %}
-      <br>
+      <button style="font-size: 15px;" type="submit" class="btn btn-primary">Sign up</button>
+    </form>
+  </div>
 
-      <small style="text-align: center; display: block;"
-        class="form-text text-muted">{{form.password1.help_text|safe}}</small>
-    </div>
+  <script>
+    function showPopup(role) {
+      let description = '';
 
-    <div class="form-group" style="margin-bottom: 30px;">
-      <strong>{{ form.password2.label_tag }}</strong>
-      {{ form.password2 }}
-      {% if form.password2.errors %}
-      <div style="color:red;">{{ form.password2.errors.as_text }}</div>
-      {% endif %}
-      <br>
+      if (role === 'recruiter') {
+        description = 'Recruiters are responsible for finding and hiring new employees for companies. They actively search for potential candidates, review resumes, conduct interviews, and make hiring decisions.';
+      } else if (role === 'junior') {
+        description = 'Juniors are individuals who are looking for new job opportunities. They are often early in their careers and seeking entry-level or junior positions in their respective fields.';
+      }
+      alert(description);
+    }
 
-      <small class="form-text text-muted">{{ form.password2.help_text }}</small>
-    </div>
-
-    <button style="font-size: 15px;" type="submit" class="btn btn-primary">Sign up</button>
-  </form>
-</div>
+    const roleInfoLinks = document.getElementsByClassName('role-info');
+    Array.from(roleInfoLinks).forEach(link => {
+      link.addEventListener('click', function (event) {
+        event.preventDefault();
+        const role = this.getAttribute('data-role');
+        showPopup(role);
+      });
+    });
+  </script>
 {% endblock %}

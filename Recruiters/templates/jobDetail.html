@@ -4,7 +4,7 @@
 {% block content %}
 <div class="job-detail">
     <h1>{{ job.title }}</h1>
-    <p>{{ job.description }}</p>
+    <p style="font-weight: bold; color:rgb(45, 45, 138)">{{ job.description }}</p>
 
     <p><strong>Posted:</strong> {{ job.date_posted }}</p>
     <p><strong>Company Name:</strong> {{ job.company_name }}</p>
@@ -60,8 +60,8 @@
     }
 
     .job-detail {
-        margin-left: 50px;
-        margin-right: 50px;
+        margin-left: 350px;
+        margin-right: 350px;
     }
 
     .form-window {
