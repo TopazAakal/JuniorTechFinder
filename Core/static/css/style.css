@@ -43,6 +43,11 @@ main {
     margin-bottom: 60px;
 }
 
+
+.image-container-home {
+    width: 100%;
+}
+
 .main-container {
     display: flex;
     flex-wrap: wrap;
@@ -51,8 +56,8 @@ main {
 }
 
 .image-container {
-    flex-basis: 50%;
-    max-width: 50%;
+    flex-basis: 70%;
+
     text-align: right;
     padding: 20px;
 }
@@ -63,10 +68,10 @@ main {
 }
 
 .content-container {
-    flex-basis: 50%;
-    max-width: 50%;
+    flex-basis: 30%;
+    max-width: 30%;
     text-align: center;
-    padding: 40px;
+
 }
 
 .content-container h1 {
@@ -80,12 +85,12 @@ main {
 }
 
 .profile-candidate {
-    margin-left: 50px;
+    margin-left: 10px;
 }
 
 .profile-pic {
-    width: 150px;
-    height: 150px;
+    width: 100px;
+    height: 100px;
     object-fit: cover;
     object-position: right;
     border-radius: 50%;

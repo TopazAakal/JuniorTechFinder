@@ -4,30 +4,33 @@
 {% block content %}
 
 <main class="main-container">
-    <div class="content-container">
+    <div class="content-container" style="padding-left: 10%; text-align: left;">
         <strong>
             <h1 style="color: #112a53; font-weight: bold; font-family: 'Great Vibes', cursive; margin: 0;">Welcome to
             </h1>
-            <h1 style=" color: #112a53; font-weight: bold;font-family: 'Righteous', cursive; margin: 0;">
-                JobTechFinder
+            <h1 style="color: #112a53; font-weight: bold;font-family: 'Righteous', cursive; margin: 0;">JobTechFinder
             </h1>
         </strong>
-        <p style="font-weight: bold;">If you're looking for a job, look no further! <br>
-            Our site offers a wide range of job opportunities across various industries.
-            We offer tools to help you improve your resume and improve chances of getting hired.<br>
-            Sign up now and start your job search today!
-        </p>
+        <div class="landing-page-content" style="width: 70%;">
+            <p style="font-weight: 400; text-align: left;">If you're looking for a job, look no further! <br>
+                Our site offers a wide range of job opportunities across various industries.
+                We offer tools to help you improve your resume and improve chances of getting hired.<br>
+                Sign up now and start your job search today!
+            </p>
+        </div>
         <br>
         <a href="/login">
-            <button style="background-color: #112a53; ">Try us!</button>
+            <button style="background-color: #112a53;">Try us!</button>
         </a>
         <br><br>
     </div>
-    <div class="image-container">
-        <img src="{% static 'media/home.jpg' %}" alt="homepage-picture">
+    <div class="image-container" style=" width: 70%;">
+        <div class="image-container-home">
+            <img src="{% static 'media/home.jpg' %}" alt="homepage-picture">
+        </div>
     </div>
 
-    <div class="home-icons">
+    <div class="home-icons" style=" width: 100%;">
         <div class="description" style="background-color: #e1edfd;">
             <p></p>
             <h2 style="font-size: 40px; text-align: center; font-weight: bold;">Reliable. Secure. Professional.</h2>
