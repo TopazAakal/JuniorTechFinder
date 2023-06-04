@@ -7,11 +7,13 @@ from django.contrib.auth.decorators import login_required
 from Core.decorators import group_required
 from django.shortcuts import get_object_or_404, render, redirect
 from django.contrib import messages
-from .models import Juniors
-from .forms import JuniorForm
+from .models import Juniors, Interest
+from Recruiters.models import JobListing
+from .forms import JuniorForm, InterestForm
 from django import forms
 import environ
 from PyPDF2 import PdfReader
+from django.db import models
 
 env = environ.Env()
 environ.Env.read_env()
@@ -42,10 +44,24 @@ def createProfile(request):
 
 
 def showProfile(request, pk):
-    # retrieve the Junior instance with the given primary key, or return a 404 error
+
     junior = get_object_or_404(Juniors, pk=pk)
     default_photo_url = '/static/media/default.jpg'
-    context = {'junior': junior, 'default_photo_url': default_photo_url}
+ 
+    # Retrieve the jobs the junior has applied to
+    applied_jobs = JobListing.objects.filter(interest__junior=junior)
+
+    job_details = []
+    for job in applied_jobs:
+
+        status = Interest.objects.filter(junior=junior, job=job).values_list('status', flat=True).first()
+        job_details.append((job, status))
+
+    context = {
+        'junior': junior,
+        'default_photo_url': default_photo_url,
+        'job_details': job_details,
+    }
     return render(request, 'showProfile.html', context)
 
 
@@ -192,3 +208,39 @@ def generate_new_suggestions(request):
     junior.save()
 
     return redirect('suggestions')
+
+
+@group_required('Junior')
+def submit_interest(request, job_id):
+    job = get_object_or_404(JobListing, id=job_id)
+    user = request.user
+    junior = Juniors.objects.get(user=user)  
+    
+    # Check if the job is already linked to the logged-in user
+    existing_interest = Interest.objects.filter(junior=junior, job=job).first()
+    if existing_interest:
+        return redirect('showProfile', pk=junior.pk)
+    
+    if request.method == 'POST':
+        form = InterestForm(request.POST, request.FILES)
+        if form.is_valid():
+            interest = Interest(
+                name=form.cleaned_data['name'],
+                email=form.cleaned_data['email'],
+                phone=form.cleaned_data['phone'],
+                resume=form.cleaned_data['resume'],
+                job=job,
+                junior=junior,
+                status='new_applicant'
+            )
+            interest.save()
+            return redirect('showProfile', pk=junior.pk)
+        else:
+            for field, errors in form.errors.items():
+                for error in errors:
+                    messages.error(request, f"{field.capitalize()}: {error}")
+    else:
+        form = InterestForm()
+
+    context = {'job': job, 'form': form}
+    return render(request, 'jobDetail.html', context)

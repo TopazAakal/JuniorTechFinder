@@ -1,8 +1,8 @@
 from django.contrib.auth.models import User
 from django.test import TestCase, Client, tag
 from django.urls import reverse
-from Recruiters.models import Interest,JobListing,Recruiters
-
+from Recruiters.models import JobListing,Recruiters
+from Juniors.models import Interest
 class ReportsPageTestCase(TestCase):
     def setUp(self):
         self.client = Client()
