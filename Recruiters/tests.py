@@ -4,12 +4,10 @@ from django.urls import reverse
 from Recruiters.models import JobListing, Recruiters
 from Recruiters.forms import RecruitersForm
 from django.contrib.auth.models import User, Group
-from django.core.files.uploadedfile import SimpleUploadedFile
 from .forms import RecruitersForm, JobListingForm
 from Juniors.models import Interest
 
 
-from Recruiters.views import jobList
 
 
 class CreateProfileTestCase(TestCase):
