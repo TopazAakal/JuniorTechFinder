@@ -26,9 +26,9 @@ urlpatterns = [
     path('generate_new_suggestions/', Juniors.views.generate_new_suggestions,
          name='generate_new_suggestions'),
     path('apply/<int:job_id>/', Recruiters.views.apply_job, name='apply_job'),
+    path('submit_interest/<int:job_id>/', Juniors.views.submit_interest, name='submit_interest'),
     # Recruiters
     path('update_status/', Recruiters.views.update_status, name='update_status'),
-    path('submit_interest/<int:job_id>/', Recruiters.views.submit_interest, name='submit_interest'),
     path('view_applicants/<int:job_id>/', Recruiters.views.view_applicants, name='view_applicants'),
     path('showProfileRecruiter/<int:pk>',
          Recruiters.views.showProfileRecruiter, name='showProfileRecruiter'),

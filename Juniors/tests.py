@@ -7,6 +7,8 @@ from django.contrib.auth.models import User, Group
 from django.core.files.uploadedfile import SimpleUploadedFile
 from django.shortcuts import resolve_url
 from Recruiters.models import JobListing, Recruiters
+from Juniors.models import Interest
+from Juniors.forms import InterestForm
 from django.core.files import File
 from unittest.mock import patch
 from .views import PDF2Text, suggestions, generate_new_suggestions
@@ -223,6 +225,102 @@ class CheckProfileTestCase(TestCase):
         self.junior.delete()  # Delete the existing profile
         response = self.client.get(reverse('checkProfile'))
         self.assertRedirects(response, reverse('createProfile'))
+
+
+class SubmitInterestViewTest(TestCase):
+    def setUp(self):
+        self.client = Client()
+        self.user = User.objects.create_user( 
+            username='testuser',
+            email='testuser@test.com',
+            password='testpass'
+        )
+        recruiter_group = Group.objects.create(name='Recruiter')
+        self.user.groups.add(recruiter_group)
+        self.recruiter = Recruiters.objects.create(
+            user_id=self.user.id,
+            full_name='Test User',
+            email='testuser3@test.com',
+            phone_number='1224567890',
+            city='Test City',
+            age=25,
+            company='Test company',
+            summary='Test Summary',
+            photo='01.jpg',
+        )
+        self.job = JobListing.objects.create(
+            title='Job Title',
+            description='Job Description',
+            requirements='Job Requirements',
+            company='Test Company',
+            location='Test Location',
+            recruiter=self.recruiter,
+            application_link='https://example.com',
+            company_name='Test Company Name',
+            job_type='Full-time',
+        )
+
+        self.user1 = User.objects.create_user(
+            username='junioruser',
+            email='junioruser@test.com',
+            password='testpass'
+        )
+
+        # Fetch the existing "Junior" group
+        junior_group = Group.objects.create(name='Junior')
+        self.user1.groups.add(junior_group)
+        self.client.login(username='junioruser', password='testpass')
+
+        self.junior = Juniors.objects.create(
+            user_id=self.user1.id,
+            full_name='Test User',
+            email='testuser@test.com',
+            phone_number='1234567890',
+            city='Test City',
+            age=25,
+            skills='Test Skills',
+            summary='Test Summary',
+        )
+    
+    @tag("unit-test2")
+    def test_submit_interest_post_valid_form(self):
+        url = reverse('submit_interest', args=[self.job.id])
+        data = {
+            'name': 'John Doe',
+            'email': 'john@example.com',
+            'phone': '123456789',
+            'resume': 'SampleFile.pdf',
+            'status': 'new_applicant',
+            'junior_id': self.junior.id,
+        }
+        
+        response = self.client.post(url, data)
+
+        self.assertEqual(response.status_code, 302)
+        self.assertRedirects(response, reverse('home'))
+        self.assertEqual(Interest.objects.count(), 1)
+        interest = Interest.objects.first()
+        self.assertEqual(interest.job, self.job)
+
+    @tag("unit-test2")
+    def test_submit_interest_post_invalid_form(self):
+        url = reverse('submit_interest', args=[self.job.id])
+        data = {
+            'name': 'John Doe',
+            'email': '', # Invalid data
+            'phone': '123456789',
+            'resume': '',  # Invalid data
+            'status': 'new_applicant',
+        }
+        response = self.client.post(url, data)
+
+        self.assertEqual(response.status_code, 200)
+        self.assertTemplateUsed(response, 'jobDetail.html')
+        self.assertIn('form', response.context)
+        self.assertIsInstance(response.context['form'], InterestForm)
+        self.assertEqual(Interest.objects.count(), 0)
+        
+
 
 
 class JuniorListTestCase(TestCase):
