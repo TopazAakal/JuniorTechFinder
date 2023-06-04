@@ -6,7 +6,7 @@
 
     <h1>Edit Job</h1>
 
-    <form method="POST" enctype="multipart/form-data">
+    <form style="font-weight: bold; padding: 10px;" method="POST" enctype="multipart/form-data">
         {% csrf_token %}
         {{ form.as_p }}
         <button type="submit" class="btn btn-primary btn-sm" style="font-size: 14px; margin-bottom: 20px;">Save
