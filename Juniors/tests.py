@@ -282,7 +282,7 @@ class SubmitInterestViewTest(TestCase):
             summary='Test Summary',
         )
     
-    @tag("unit-test2")
+    @tag("unit-test")
     def test_submit_interest_post_valid_form(self):
         url = reverse('submit_interest', args=[self.job.id])
         data = {
@@ -297,12 +297,12 @@ class SubmitInterestViewTest(TestCase):
         response = self.client.post(url, data)
 
         self.assertEqual(response.status_code, 302)
-        self.assertRedirects(response, reverse('home'))
+        self.assertRedirects(response, reverse('showProfile', args=[self.junior.id]))
         self.assertEqual(Interest.objects.count(), 1)
         interest = Interest.objects.first()
         self.assertEqual(interest.job, self.job)
 
-    @tag("unit-test2")
+    @tag("unit-test")
     def test_submit_interest_post_invalid_form(self):
         url = reverse('submit_interest', args=[self.job.id])
         data = {
