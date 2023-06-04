@@ -2,10 +2,12 @@ from django.shortcuts import get_object_or_404, render, redirect
 from django.contrib.auth.decorators import login_required
 from Core.decorators import group_required
 from django.contrib import messages
-from .models import Recruiters, JobListing, Interest
+from .models import Recruiters, JobListing
 from .forms import RecruitersForm
 from django import forms
-from .forms import JobListingForm, InterestForm
+from .forms import JobListingForm
+from Juniors.models import Interest
+from Juniors.forms import InterestForm
 
 
 @login_required
@@ -156,28 +158,7 @@ def jobDetail(request, job_id):
     return render(request, 'jobDetail.html', context)
 
 
-def submit_interest(request, job_id):
-    job = get_object_or_404(JobListing, id=job_id)
-
-    if request.method == 'POST':
-        form = InterestForm(request.POST, request.FILES)
-        if form.is_valid():
-            interest = form.save(commit=False)
-            interest.job = job
-            interest.status = 'new_applicant'  # Set the default value
-            interest.save()
-            return redirect('home')
-        else:
-            for field, errors in form.errors.items():
-                for error in errors:
-                    messages.error(request, f"{field.capitalize()}: {error}")
-    else:
-        form = InterestForm()
-
-    context = {'job': job, 'form': form}
-    return render(request, 'jobDetail.html', context)
-
-
+@group_required('Recruiter')
 def view_applicants(request, job_id):
     job = get_object_or_404(JobListing, id=job_id)
     applicants = Interest.objects.filter(job_id=job.id)
@@ -196,7 +177,7 @@ def view_applicants(request, job_id):
                'status_choices': status_choices}
     return render(request, 'view_applicants.html', context)
 
-
+@group_required('Recruiter')
 def update_status(request):
     if request.method == 'POST':
         applicant_id = request.POST.get('applicant_id')
