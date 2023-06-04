@@ -536,7 +536,7 @@ class JuniorIntegrationTest(TestCase):
         
         response = self.client.post(self.createProfileUrl, self.profile_data, follow=True)
 
-        # Get the created junior object
+        # Get the created junior object fro db
         junior = Juniors.objects.get(user=user)
 
         self.assertEqual(response.status_code, 200)

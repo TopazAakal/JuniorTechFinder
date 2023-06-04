@@ -35,38 +35,49 @@
 <body>
     <header>
         <nav>
-            <ul>
-                <li><a href="/">Home</a></li>
-                <li><a href="{% url 'aboutUs' %}">About Us</a></li>
-                <li><a href="{% url 'contactUs' %}">Contact Us</a></li>
-                <li><a href="{% url 'siteRules' %}">Site Rules</a></li>
-                <li><a href="{% url 'jobList' %}">Jobs</a></li>
+            <ul style="display: flex;">
+                <li style="font-weight: bold;"><a href="/">Home</a></li>
+                <li style="font-weight: bold;"><a href="{% url 'aboutUs' %}">About Us</a></li>
+                <li style="font-weight: bold;"><a href="{% url 'contactUs' %}">Contact Us</a></li>
+                <li style="font-weight: bold;"><a href="{% url 'siteRules' %}">Site Rules</a></li>
+                <li style="font-weight: bold;"><a href="{% url 'jobList' %}">Jobs</a></li>
 
                 {% if user.is_authenticated %}
                 {% if request.user|user_in_group:"Junior" %}
-                <li><a href="{% url 'checkProfile' %}">My Profile</a></li>
-                <li><a href="{% url 'suggestions' %}">Improve Your CV</a></li>
+                <li style="font-weight: bold;"><a href="{% url 'checkProfile' %}">My Profile</a></li>
+                <li style="font-weight: bold;"><a href="{% url 'suggestions' %}">Improve Your CV</a></li>
                 {% elif request.user|user_in_group:"Recruiter" %}
-                <li><a href="{% url 'checkProf' %}">My Profile</a></li>
-                <li><a href="{% url 'juniorList' %}">Juniors</a></li>
+                <li style="font-weight: bold;"><a href="{% url 'checkProf' %}">My Profile</a></li>
+                <li style="font-weight: bold;"><a href="{% url 'juniorList' %}">Juniors</a></li>
                 {% endif %}
                 {% if user.is_staff%}
-                <li><a href="{% url 'reports' %}">Reports</a></li>
+                <li style="font-weight: bold;"><a href="{% url 'reports' %}">Reports</a></li>
                 {% endif %}
 
 
                 <li>
                     <form method="POST" action="{% url 'logout' %}">
                         {% csrf_token %}
-                <li><a href="{% url 'logout' %}">Logout</a></li>
+                <li style="font-weight: bold;"><a href="{% url 'logout' %}">Logout</a></li>
                 </form>
                 </li>
 
-                <li style="font-weight: bold; font-size: 13px; color:bisque">
-                    You are logged in as : {{ user.username }}
+                <li style="font-weight: bold; font-size: 13px; color:#aae0fa">
+                    <div style="display: flex; align-items: center; margin-top: 5px; margin-left: 60px;">
+                        {% if user.juniors.photo %}
+                        <img src="{{ user.juniors.photo.url }}" alt="Profile Picture"
+                            style="border-radius: 50%; height: 40px; width: 40px; margin-right: 5px;">
+                        {% else %}
+                        <img src="{% static 'media/default.jpg' %}" alt="Default Picture"
+                            style="border-radius: 50%; height: 30px; width: 30px; margin-right: 5px;">
+                        {% endif %}
+                        <span style="display: inline-block;">You are logged in as:
+                            {{ user.username }}</span>
+                    </div>
                 </li>
+
                 {% else %}
-                <li><a href="{% url 'login' %}">Login</a></li>
+                <li style="font-weight: bold;"><a href="{% url 'login' %}">Login</a></li>
                 {% endif %}
             </ul>
         </nav>
