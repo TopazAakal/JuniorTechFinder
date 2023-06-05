@@ -46,7 +46,7 @@ def createProfile(request):
 def showProfile(request, pk):
 
     junior = get_object_or_404(Juniors, pk=pk)
-    default_photo_url = '/static/media/default.jpg'
+    default_photo_url = 'media/default.jpg'
  
     # Retrieve the jobs the junior has applied to
     applied_jobs = JobListing.objects.filter(interest__junior=junior)
