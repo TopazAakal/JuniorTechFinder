@@ -93,11 +93,19 @@
             <option value="{{ job_type }}">{{ job_type }}</option>
             {% endfor %}
         </select>
-        <input type="text" name="title" placeholder="Search by title">
-        <input type="number" name="min_salary" placeholder="Min Salary">
+        <select name="company">
+            <option value="">All Companies</option>
+            {% for company in companies %}
+            <option value="{{ company }}">{{ company }}</option>
+            {% endfor %}
+        </select>
+        <input style="width: 140px;" type="text" name="title" placeholder="Search by title">
+        <input style="width: 125px;" type="number" name="min_salary" placeholder="Min Salary">
         <input type="text" name="requirements" placeholder="Search by requirements">
 
-        <button type="submit">Filter</button>
+        <button style="background-color: #293a52;
+        color: #fff;
+        cursor: pointer;" type="submit">Filter</button>
     </form>
 
     <br><br>
