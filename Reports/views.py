@@ -1,5 +1,5 @@
 from django.shortcuts import render, redirect
-from Recruiters.models import Interest
+from Juniors.models import Interest
 from django.contrib.admin.views.decorators import user_passes_test
 from django.http import HttpResponse
 from reportlab.pdfgen import canvas

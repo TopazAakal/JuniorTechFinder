@@ -1,13 +1,13 @@
 
 from django.test import TestCase, Client, tag
 from django.urls import reverse
-from Recruiters.models import JobListing, Recruiters, Interest
+from Recruiters.models import JobListing, Recruiters
 from Recruiters.forms import RecruitersForm
 from django.contrib.auth.models import User, Group
-from django.core.files.uploadedfile import SimpleUploadedFile
-from .forms import RecruitersForm, JobListingForm, InterestForm
+from .forms import RecruitersForm, JobListingForm
+from Juniors.models import Interest
 
-from Recruiters.views import jobList
+
 
 
 class CreateProfileTestCase(TestCase):
@@ -558,75 +558,7 @@ class ApplyJobViewTest(TestCase):
 
 
 
-class SubmitInterestViewTest(TestCase):
-    def setUp(self):
-        self.client = Client()
-        self.user = User.objects.create_user( 
-            username='testuser',
-            email='testuser@test.com',
-            password='testpass'
-        )
-        recruiter_group = Group.objects.create(name='Recruiter')
-        self.user.groups.add(recruiter_group)
-        self.recruiter = Recruiters.objects.create(
-            user_id=self.user.id,
-            full_name='Test User',
-            email='testuser3@test.com',
-            phone_number='1224567890',
-            city='Test City',
-            age=25,
-            company='Test company',
-            summary='Test Summary',
-            photo='01.jpg',
-        )
-        self.job = JobListing.objects.create(
-            title='Job Title',
-            description='Job Description',
-            requirements='Job Requirements',
-            company='Test Company',
-            location='Test Location',
-            recruiter=self.recruiter,
-            application_link='https://example.com',
-            company_name='Test Company Name',
-            job_type='Full-time',
-        )
-    
-    @tag("unit-test")
-    def test_submit_interest_post_valid_form(self):
-        url = reverse('submit_interest', args=[self.job.id])
-        data = {
-            'name': 'John Doe',
-            'email': 'john@example.com',
-            'phone': '123456789',
-            'resume': 'path/to/resume.pdf',
-            'status': 'new_applicant',
-        }
-        response = self.client.post(url, data)
 
-        self.assertEqual(response.status_code, 302)
-        self.assertRedirects(response, reverse('home'))
-        self.assertEqual(Interest.objects.count(), 1)
-        interest = Interest.objects.first()
-        self.assertEqual(interest.job, self.job)
-
-    @tag("unit-test")
-    def test_submit_interest_post_invalid_form(self):
-        url = reverse('submit_interest', args=[self.job.id])
-        data = {
-            'name': 'John Doe',
-            'email': '', # Invalid data
-            'phone': '123456789',
-            'resume': '',  # Invalid data
-            'status': 'new_applicant',
-        }
-        response = self.client.post(url, data)
-
-        self.assertEqual(response.status_code, 200)
-        self.assertTemplateUsed(response, 'jobDetail.html')
-        self.assertIn('form', response.context)
-        self.assertIsInstance(response.context['form'], InterestForm)
-        self.assertEqual(Interest.objects.count(), 0)
-        
 
 class ViewApplicantsViewTest(TestCase):
     def setUp(self):
@@ -660,6 +592,7 @@ class ViewApplicantsViewTest(TestCase):
             company_name='Test Company Name',
             job_type='Full-time',
         )
+        self.client.login(username='testuser', password='testpass')
         self.applicant = Interest.objects.create(job=self.job, status='new_applicant')
     @tag("unit-test")
     def test_view_applicants_get(self):
@@ -718,7 +651,9 @@ class UpdateStatusViewTest(TestCase):
             company_name='Test Company Name',
             job_type='Full-time',
         )
+        self.client.login(username='testuser', password='testpass')
         self.applicant = Interest.objects.create(job=self.job, status='new_applicant')
+    
     @tag("unit-test")
     def test_update_status_post(self):
         url = reverse('update_status')
@@ -732,6 +667,7 @@ class UpdateStatusViewTest(TestCase):
         self.assertRedirects(response, reverse('view_applicants', args=[self.job.id]))
         self.applicant.refresh_from_db()
         self.assertEqual(self.applicant.status, 'hired')
+    
     @tag("unit-test")
     def test_update_status_get(self):
         url = reverse('update_status')
