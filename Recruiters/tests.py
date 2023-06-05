@@ -440,7 +440,7 @@ class JobListViewTest(TestCase):
         # Assert that the response contains the filtered job listing
         self.assertContains(response, self.job_listing.title)
 
-    @tag('unit-test3')
+    @tag('unit-test')
     def test_jobList_filter_by_requirements(self):
         url = reverse('jobList')
         selected_requirements = 'Job Requirements'
