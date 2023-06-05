@@ -110,12 +110,13 @@ def jobList(request):
     all_jobs = JobListing.objects.all()
     locations = list(set([job.location for job in all_jobs]))
     job_types = list(set([job.job_type for job in all_jobs]))
+    companies = list(set([job.company_name for job in all_jobs]))
     selected_location = request.GET.get('location')
     selected_title = request.GET.get('title')
     selected_job_type = request.GET.get('job_type')
     min_salary = request.GET.get('min_salary')
     selected_requirements = request.GET.get('requirements')
-
+    selected_company = request.GET.get('company')
 
     if selected_location:
         all_jobs = all_jobs.filter(location=selected_location)
@@ -126,11 +127,15 @@ def jobList(request):
     if min_salary:
         all_jobs = all_jobs.filter(salary__gte=min_salary)
     if selected_requirements:
-        all_jobs = all_jobs.filter(requirements__icontains=selected_requirements)    
+        all_jobs = all_jobs.filter(
+            requirements__icontains=selected_requirements)
+    if selected_company:
+        all_jobs = all_jobs.filter(company_name__icontains=selected_company)
 
-    return render(request, 'jobList.html', {'all_jobs': all_jobs, 'locations': locations, 'job_types': job_types})
+    return render(request, 'jobList.html', {'all_jobs': all_jobs, 'locations': locations, 'job_types': job_types, 'companies': companies})
 
-@login_required
+
+@ login_required
 def editJob(request, job_id):
     job = get_object_or_404(JobListing, id=job_id)
 
@@ -165,7 +170,7 @@ def jobDetail(request, job_id):
     return render(request, 'jobDetail.html', context)
 
 
-@group_required('Recruiter')
+@ group_required('Recruiter')
 def view_applicants(request, job_id):
     job = get_object_or_404(JobListing, id=job_id)
     applicants = Interest.objects.filter(job_id=job.id)
@@ -183,6 +188,7 @@ def view_applicants(request, job_id):
     context = {'job': job, 'applicants': applicants,
                'status_choices': status_choices}
     return render(request, 'view_applicants.html', context)
+
 
 @group_required('Recruiter')
 def update_status(request):
