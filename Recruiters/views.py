@@ -113,6 +113,7 @@ def jobList(request):
     selected_location = request.GET.get('location')
     selected_title = request.GET.get('title')
     selected_job_type = request.GET.get('job_type')
+    min_salary = request.GET.get('min_salary')
 
     if selected_location:
         all_jobs = all_jobs.filter(location=selected_location)
@@ -120,8 +121,10 @@ def jobList(request):
         all_jobs = all_jobs.filter(title__icontains=selected_title)
     if selected_job_type:
         all_jobs = all_jobs.filter(job_type=selected_job_type)
-    return render(request, 'jobList.html', {'all_jobs': all_jobs, 'locations': locations, 'job_types': job_types})
+    if min_salary:
+        all_jobs = all_jobs.filter(salary__gte=min_salary)
 
+    return render(request, 'jobList.html', {'all_jobs': all_jobs, 'locations': locations, 'job_types': job_types})
 
 @login_required
 def editJob(request, job_id):
