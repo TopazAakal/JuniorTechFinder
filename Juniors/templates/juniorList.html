@@ -34,7 +34,11 @@
             </h3>
         </header>
         <div class="card__image">
-            <img src="{{ junior.photo.url }}" alt="Junior Photo">
+            {% if junior.photo %}
+            <img class="profile-pic" src="{{ junior.photo.url }}" alt="{{ junior.name }}'s profile picture ">
+            {% else %}
+            <img class="profile-pic" src="{{ default_photo_url }}" alt="Default photo">
+            {% endif %}
         </div>
         <div class="card__content">
             <p class="junior__description">
