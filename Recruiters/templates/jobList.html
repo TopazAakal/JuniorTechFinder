@@ -39,6 +39,7 @@
 
     select,
     input[type="text"],
+    input[type="number"],
     button {
         height: 40px;
         font-size: 16px;
@@ -54,7 +55,8 @@
         font-weight: bold;
     }
 
-    input[type="text"] {
+    input[type="text"],
+    input[type="number"] {
         background-color: #fff;
         box-shadow: 0 0 5px rgba(0, 0, 0, 0.2);
         font-family: 'Lato', sans-serif;
@@ -92,6 +94,7 @@
             {% endfor %}
         </select>
         <input type="text" name="title" placeholder="Search by title">
+        <input type="number" name="min_salary" placeholder="Min Salary">
         <button type="submit">Filter</button>
     </form>
 
