@@ -8,8 +8,6 @@ from .forms import RecruitersForm, JobListingForm
 from Juniors.models import Interest
 
 
-
-
 class CreateProfileTestCase(TestCase):
 
     def setUp(self):
@@ -329,9 +327,10 @@ class CheckProfViewTest(TestCase):
             summary='Test Summary',
             photo='01.jpg',
         )
+
     @tag('unit-test')
     def test_checkProf_redirect_existing_profile(self):
-        url = reverse('checkProf')  
+        url = reverse('checkProf')
         response = self.client.get(url)
 
         # Assert that the response redirects to the showProfileRecruiter view
@@ -339,18 +338,17 @@ class CheckProfViewTest(TestCase):
             response,
             reverse('showProfileRecruiter', kwargs={'pk': self.recruiter.pk})
         )
+
     @tag('unit-test')
     def test_checkProf_redirect_no_profile(self):
         # Delete the existing recruiter profile
         self.recruiter.delete()
 
-        url = reverse('checkProf')  
+        url = reverse('checkProf')
         response = self.client.get(url)
 
         # Assert that the response redirects to the createProfileRecruiters view
         self.assertRedirects(response, reverse('createProfileRecruiters'))
-
-
 
 
 class JobListViewTest(TestCase):
@@ -389,6 +387,7 @@ class JobListViewTest(TestCase):
             company_name='Test Company Name',
             job_type='Full-time',
         )
+
     @tag('unit-test')
     def test_jobList_filter_by_location(self):
         url = reverse('jobList')  # Assuming 'jobList' is the correct URL name
@@ -401,9 +400,10 @@ class JobListViewTest(TestCase):
 
         # Assert that the response contains the filtered job listing
         self.assertContains(response, self.job_listing.title)
+
     @tag('unit-test')
     def test_jobList_filter_by_title(self):
-        url = reverse('jobList')  # Assuming 'jobList' is the correct URL name
+        url = reverse('jobList')
         selected_title = 'Job Title'
 
         # Add the 'title' query parameter to the URL
@@ -413,9 +413,10 @@ class JobListViewTest(TestCase):
 
         # Assert that the response contains the filtered job listing
         self.assertContains(response, self.job_listing.title)
+
     @tag('unit-test')
     def test_jobList_filter_by_job_type(self):
-        url = reverse('jobList')  # Assuming 'jobList' is the correct URL name
+        url = reverse('jobList')
         selected_job_type = 'Full-time'
 
         # Add the 'job_type' query parameter to the URL
@@ -425,6 +426,34 @@ class JobListViewTest(TestCase):
 
         # Assert that the response contains the filtered job listing
         self.assertContains(response, self.job_listing.title)
+
+    @tag('unit-test')
+    def test_jobList_filter_by_company(self):
+        url = reverse('jobList')
+        selected_company = 'Test Company'
+
+        # Add the 'company' query parameter to the URL
+        url += f'?company={selected_company}'
+
+        response = self.client.get(url)
+
+        # Assert that the response contains the filtered job listing
+        self.assertContains(response, self.job_listing.title)
+
+    @tag('unit-test3')
+    def test_jobList_filter_by_requirements(self):
+        url = reverse('jobList')
+        selected_requirements = 'Job Requirements'
+
+        # Add the 'company' query parameter to the URL
+        url += f'?requirements__icontains={selected_requirements}'
+
+        response = self.client.get(url)
+
+        # Assert that the response contains the filtered job listing
+        self.assertContains(response, self.job_listing.title)
+
+    
 
 
 class EditJobViewTest(TestCase):
@@ -495,7 +524,8 @@ class EditJobViewTest(TestCase):
         self.assertEqual(self.job.description, 'Updated Job Description')
         self.assertEqual(self.job.requirements, 'Updated Job Requirements')
         self.assertEqual(self.job.location, 'Updated Test Location')
-        self.assertEqual(self.job.application_link, 'https://UpdatedExample.com')
+        self.assertEqual(self.job.application_link,
+                         'https://UpdatedExample.com')
         self.assertEqual(self.job.company_name, 'Updated Test Company Name')
 
     @tag("unit-test")
@@ -516,7 +546,7 @@ class EditJobViewTest(TestCase):
 class ApplyJobViewTest(TestCase):
     def setUp(self):
         self.client = Client()
-        self.user = User.objects.create_user( 
+        self.user = User.objects.create_user(
             username='testuser',
             email='testuser@test.com',
             password='testpass'
@@ -557,13 +587,10 @@ class ApplyJobViewTest(TestCase):
         self.assertEqual(response.context['job'], self.job)
 
 
-
-
-
 class ViewApplicantsViewTest(TestCase):
     def setUp(self):
         self.client = Client()
-        self.user = User.objects.create_user( 
+        self.user = User.objects.create_user(
             username='testuser',
             email='testuser@test.com',
             password='testpass'
@@ -593,7 +620,9 @@ class ViewApplicantsViewTest(TestCase):
             job_type='Full-time',
         )
         self.client.login(username='testuser', password='testpass')
-        self.applicant = Interest.objects.create(job=self.job, status='new_applicant')
+        self.applicant = Interest.objects.create(
+            job=self.job, status='new_applicant')
+
     @tag("unit-test")
     def test_view_applicants_get(self):
         url = reverse('view_applicants', args=[self.job.id])
@@ -605,6 +634,7 @@ class ViewApplicantsViewTest(TestCase):
         self.assertEqual(response.context['job'], self.job)
         self.assertIn('applicants', response.context)
         self.assertEqual(response.context['applicants'].count(), 1)
+
     @tag("unit-test")
     def test_view_applicants_post_update_status(self):
         url = reverse('view_applicants', args=[self.job.id])
@@ -615,14 +645,16 @@ class ViewApplicantsViewTest(TestCase):
         response = self.client.post(url, data)
 
         self.assertEqual(response.status_code, 302)
-        self.assertRedirects(response, reverse('view_applicants', args=[self.job.id]))
+        self.assertRedirects(response, reverse(
+            'view_applicants', args=[self.job.id]))
         self.applicant.refresh_from_db()
         self.assertEqual(self.applicant.status, 'hired')
+
 
 class UpdateStatusViewTest(TestCase):
     def setUp(self):
         self.client = Client()
-        self.user = User.objects.create_user( 
+        self.user = User.objects.create_user(
             username='testuser',
             email='testuser@test.com',
             password='testpass'
@@ -652,8 +684,9 @@ class UpdateStatusViewTest(TestCase):
             job_type='Full-time',
         )
         self.client.login(username='testuser', password='testpass')
-        self.applicant = Interest.objects.create(job=self.job, status='new_applicant')
-    
+        self.applicant = Interest.objects.create(
+            job=self.job, status='new_applicant')
+
     @tag("unit-test")
     def test_update_status_post(self):
         url = reverse('update_status')
@@ -664,10 +697,11 @@ class UpdateStatusViewTest(TestCase):
         response = self.client.post(url, data)
 
         self.assertEqual(response.status_code, 302)
-        self.assertRedirects(response, reverse('view_applicants', args=[self.job.id]))
+        self.assertRedirects(response, reverse(
+            'view_applicants', args=[self.job.id]))
         self.applicant.refresh_from_db()
         self.assertEqual(self.applicant.status, 'hired')
-    
+
     @tag("unit-test")
     def test_update_status_get(self):
         url = reverse('update_status')
@@ -675,8 +709,6 @@ class UpdateStatusViewTest(TestCase):
 
         self.assertEqual(response.status_code, 302)
         self.assertRedirects(response, reverse('home'))
-
-
 
 
 class RecruiterIntegrationTest(TestCase):
