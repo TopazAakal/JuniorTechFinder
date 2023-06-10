@@ -1,13 +1,11 @@
 
-from django.test import TestCase, Client, RequestFactory, tag
+from django.test import TestCase, Client, tag
 from django.urls import reverse
 from Recruiters.models import JobListing, Recruiters
 from Recruiters.forms import RecruitersForm
 from django.contrib.auth.models import User, Group
-from django.core.files.uploadedfile import SimpleUploadedFile
-from .forms import RecruitersForm
-
-from Recruiters.views import jobList
+from .forms import RecruitersForm, JobListingForm
+from Juniors.models import Interest
 
 
 class CreateProfileTestCase(TestCase):
@@ -303,6 +301,414 @@ class JobListTestCase(TestCase):
         self.assertEqual(response.status_code, 200)
         self.assertTemplateUsed(response, 'jobDetail.html')
         self.assertEqual(response.context['job'], job_listing)
+
+
+class CheckProfViewTest(TestCase):
+    def setUp(self):
+        self.client = Client()
+        self.user = User.objects.create_user(
+            username='testuser',
+            email='testuser@test.com',
+            password='testpass'
+        )
+
+        recruiter_group = Group.objects.create(name='Recruiter')
+        self.user.groups.add(recruiter_group)
+        self.client.login(username='testuser', password='testpass')
+
+        self.recruiter = Recruiters.objects.create(
+            user_id=self.user.id,
+            full_name='Test User',
+            email='testuser3@test.com',
+            phone_number='1224567890',
+            city='Test City',
+            age=25,
+            company='Test company',
+            summary='Test Summary',
+            photo='01.jpg',
+        )
+
+    @tag('unit-test')
+    def test_checkProf_redirect_existing_profile(self):
+        url = reverse('checkProf')
+        response = self.client.get(url)
+
+        # Assert that the response redirects to the showProfileRecruiter view
+        self.assertRedirects(
+            response,
+            reverse('showProfileRecruiter', kwargs={'pk': self.recruiter.pk})
+        )
+
+    @tag('unit-test')
+    def test_checkProf_redirect_no_profile(self):
+        # Delete the existing recruiter profile
+        self.recruiter.delete()
+
+        url = reverse('checkProf')
+        response = self.client.get(url)
+
+        # Assert that the response redirects to the createProfileRecruiters view
+        self.assertRedirects(response, reverse('createProfileRecruiters'))
+
+
+class JobListViewTest(TestCase):
+    def setUp(self):
+        self.client = Client()
+        self.user = User.objects.create_user(
+            username='testuser',
+            email='testuser@test.com',
+            password='testpass'
+        )
+
+        recruiter_group = Group.objects.create(name='Recruiter')
+        self.user.groups.add(recruiter_group)
+        self.client.login(username='testuser', password='testpass')
+
+        self.recruiter = Recruiters.objects.create(
+            user_id=self.user.id,
+            full_name='Test User',
+            email='testuser3@test.com',
+            phone_number='1224567890',
+            city='Test City',
+            age=25,
+            company='Test company',
+            summary='Test Summary',
+            photo='01.jpg',
+        )
+
+        self.job_listing = JobListing.objects.create(
+            title='Job Title',
+            description='Job Description',
+            requirements='Job Requirements',
+            company='Test Company',
+            location='Test Location',
+            recruiter=self.recruiter,
+            application_link='https://example.com',
+            company_name='Test Company Name',
+            job_type='Full-time',
+        )
+
+    @tag('unit-test')
+    def test_jobList_filter_by_location(self):
+        url = reverse('jobList')  # Assuming 'jobList' is the correct URL name
+        selected_location = 'Test Location'
+
+        # Add the 'location' query parameter to the URL
+        url += f'?location={selected_location}'
+
+        response = self.client.get(url)
+
+        # Assert that the response contains the filtered job listing
+        self.assertContains(response, self.job_listing.title)
+
+    @tag('unit-test')
+    def test_jobList_filter_by_title(self):
+        url = reverse('jobList')
+        selected_title = 'Job Title'
+
+        # Add the 'title' query parameter to the URL
+        url += f'?title={selected_title}'
+
+        response = self.client.get(url)
+
+        # Assert that the response contains the filtered job listing
+        self.assertContains(response, self.job_listing.title)
+
+    @tag('unit-test')
+    def test_jobList_filter_by_job_type(self):
+        url = reverse('jobList')
+        selected_job_type = 'Full-time'
+
+        # Add the 'job_type' query parameter to the URL
+        url += f'?job_type={selected_job_type}'
+
+        response = self.client.get(url)
+
+        # Assert that the response contains the filtered job listing
+        self.assertContains(response, self.job_listing.title)
+
+    @tag('unit-test')
+    def test_jobList_filter_by_company(self):
+        url = reverse('jobList')
+        selected_company = 'Test Company'
+
+        # Add the 'company' query parameter to the URL
+        url += f'?company={selected_company}'
+
+        response = self.client.get(url)
+
+        # Assert that the response contains the filtered job listing
+        self.assertContains(response, self.job_listing.title)
+
+    @tag('unit-test')
+    def test_jobList_filter_by_requirements(self):
+        url = reverse('jobList')
+        selected_requirements = 'Job Requirements'
+
+        # Add the 'company' query parameter to the URL
+        url += f'?requirements__icontains={selected_requirements}'
+
+        response = self.client.get(url)
+
+        # Assert that the response contains the filtered job listing
+        self.assertContains(response, self.job_listing.title)
+
+    
+
+
+class EditJobViewTest(TestCase):
+    def setUp(self):
+        self.client = Client()
+        self.user = User.objects.create_user(
+            username='testuser',
+            email='testuser@test.com',
+            password='testpass'
+        )
+        recruiter_group = Group.objects.create(name='Recruiter')
+        self.user.groups.add(recruiter_group)
+        self.recruiter = Recruiters.objects.create(
+            user_id=self.user.id,
+            full_name='Test User',
+            email='testuser3@test.com',
+            phone_number='1224567890',
+            city='Test City',
+            age=25,
+            company='Test company',
+            summary='Test Summary',
+            photo='01.jpg',
+        )
+        self.job = JobListing.objects.create(
+            title='Job Title',
+            description='Job Description',
+            requirements='Job Requirements',
+            company='Test Company',
+            location='Test Location',
+            recruiter=self.recruiter,
+            application_link='https://example.com',
+            company_name='Test Company Name',
+            job_type='Full-time',
+        )
+        self.client.login(username='testuser', password='testpass')
+
+    @tag("unit-test")
+    def test_editJob_get(self):
+        url = reverse('editJob', args=[self.job.id])
+        response = self.client.get(url)
+
+        self.assertEqual(response.status_code, 200)
+        self.assertTemplateUsed(response, 'editJob.html')
+        self.assertIn('form', response.context)
+        self.assertIsInstance(response.context['form'], JobListingForm)
+
+    @tag("unit-test")
+    def test_editJob_post_valid_form(self):
+        url = reverse('editJob', args=[self.job.id])
+        data = {
+            'title': 'Updated Job Title',
+            'description': 'Updated Job Description',
+            'requirements': 'Updated Job Requirements',
+            'location': 'Updated Test Location',
+            'application_link': 'https://UpdatedExample.com',
+            'company_name': 'Updated Test Company Name',
+            'job_type': 'Full-time',
+        }
+        response = self.client.post(url, data=data)
+
+        self.assertEqual(response.status_code, 302)
+        self.assertRedirects(
+            response,
+            reverse('showProfileRecruiter', kwargs={'pk': self.recruiter.pk})
+        )
+        self.job.refresh_from_db()
+        self.assertEqual(self.job.title, 'Updated Job Title')
+        self.assertEqual(self.job.description, 'Updated Job Description')
+        self.assertEqual(self.job.requirements, 'Updated Job Requirements')
+        self.assertEqual(self.job.location, 'Updated Test Location')
+        self.assertEqual(self.job.application_link,
+                         'https://UpdatedExample.com')
+        self.assertEqual(self.job.company_name, 'Updated Test Company Name')
+
+    @tag("unit-test")
+    def test_editJob_post_invalid_form(self):
+        url = reverse('editJob', args=[self.job.id])
+        data = {
+            'title': '',
+            'description': 'Updated Job Description',
+        }
+        response = self.client.post(url, data)
+
+        self.assertEqual(response.status_code, 200)
+        self.assertTemplateUsed(response, 'editJob.html')
+        self.assertIn('form', response.context)
+        self.assertIsInstance(response.context['form'], JobListingForm)
+
+
+class ApplyJobViewTest(TestCase):
+    def setUp(self):
+        self.client = Client()
+        self.user = User.objects.create_user(
+            username='testuser',
+            email='testuser@test.com',
+            password='testpass'
+        )
+        recruiter_group = Group.objects.create(name='Recruiter')
+        self.user.groups.add(recruiter_group)
+        self.recruiter = Recruiters.objects.create(
+            user_id=self.user.id,
+            full_name='Test User',
+            email='testuser3@test.com',
+            phone_number='1224567890',
+            city='Test City',
+            age=25,
+            company='Test company',
+            summary='Test Summary',
+            photo='01.jpg',
+        )
+        self.job = JobListing.objects.create(
+            title='Job Title',
+            description='Job Description',
+            requirements='Job Requirements',
+            company='Test Company',
+            location='Test Location',
+            recruiter=self.recruiter,
+            application_link='https://example.com',
+            company_name='Test Company Name',
+            job_type='Full-time',
+        )
+
+    @tag("unit-test")
+    def test_apply_job_get(self):
+        url = reverse('apply_job', args=[self.job.id])
+        response = self.client.get(url)
+
+        self.assertEqual(response.status_code, 200)
+        self.assertTemplateUsed(response, 'applyJob.html')
+        self.assertIn('job', response.context)
+        self.assertEqual(response.context['job'], self.job)
+
+
+class ViewApplicantsViewTest(TestCase):
+    def setUp(self):
+        self.client = Client()
+        self.user = User.objects.create_user(
+            username='testuser',
+            email='testuser@test.com',
+            password='testpass'
+        )
+        recruiter_group = Group.objects.create(name='Recruiter')
+        self.user.groups.add(recruiter_group)
+        self.recruiter = Recruiters.objects.create(
+            user_id=self.user.id,
+            full_name='Test User',
+            email='testuser3@test.com',
+            phone_number='1224567890',
+            city='Test City',
+            age=25,
+            company='Test company',
+            summary='Test Summary',
+            photo='01.jpg',
+        )
+        self.job = JobListing.objects.create(
+            title='Job Title',
+            description='Job Description',
+            requirements='Job Requirements',
+            company='Test Company',
+            location='Test Location',
+            recruiter=self.recruiter,
+            application_link='https://example.com',
+            company_name='Test Company Name',
+            job_type='Full-time',
+        )
+        self.client.login(username='testuser', password='testpass')
+        self.applicant = Interest.objects.create(
+            job=self.job, status='new_applicant')
+
+    @tag("unit-test")
+    def test_view_applicants_get(self):
+        url = reverse('view_applicants', args=[self.job.id])
+        response = self.client.get(url)
+
+        self.assertEqual(response.status_code, 200)
+        self.assertTemplateUsed(response, 'view_applicants.html')
+        self.assertIn('job', response.context)
+        self.assertEqual(response.context['job'], self.job)
+        self.assertIn('applicants', response.context)
+        self.assertEqual(response.context['applicants'].count(), 1)
+
+    @tag("unit-test")
+    def test_view_applicants_post_update_status(self):
+        url = reverse('view_applicants', args=[self.job.id])
+        data = {
+            'applicant_id': self.applicant.id,
+            'status': 'hired',
+        }
+        response = self.client.post(url, data)
+
+        self.assertEqual(response.status_code, 302)
+        self.assertRedirects(response, reverse(
+            'view_applicants', args=[self.job.id]))
+        self.applicant.refresh_from_db()
+        self.assertEqual(self.applicant.status, 'hired')
+
+
+class UpdateStatusViewTest(TestCase):
+    def setUp(self):
+        self.client = Client()
+        self.user = User.objects.create_user(
+            username='testuser',
+            email='testuser@test.com',
+            password='testpass'
+        )
+        recruiter_group = Group.objects.create(name='Recruiter')
+        self.user.groups.add(recruiter_group)
+        self.recruiter = Recruiters.objects.create(
+            user_id=self.user.id,
+            full_name='Test User',
+            email='testuser3@test.com',
+            phone_number='1224567890',
+            city='Test City',
+            age=25,
+            company='Test company',
+            summary='Test Summary',
+            photo='01.jpg',
+        )
+        self.job = JobListing.objects.create(
+            title='Job Title',
+            description='Job Description',
+            requirements='Job Requirements',
+            company='Test Company',
+            location='Test Location',
+            recruiter=self.recruiter,
+            application_link='https://example.com',
+            company_name='Test Company Name',
+            job_type='Full-time',
+        )
+        self.client.login(username='testuser', password='testpass')
+        self.applicant = Interest.objects.create(
+            job=self.job, status='new_applicant')
+
+    @tag("unit-test")
+    def test_update_status_post(self):
+        url = reverse('update_status')
+        data = {
+            'applicant_id': self.applicant.id,
+            'status': 'hired',
+        }
+        response = self.client.post(url, data)
+
+        self.assertEqual(response.status_code, 302)
+        self.assertRedirects(response, reverse(
+            'view_applicants', args=[self.job.id]))
+        self.applicant.refresh_from_db()
+        self.assertEqual(self.applicant.status, 'hired')
+
+    @tag("unit-test")
+    def test_update_status_get(self):
+        url = reverse('update_status')
+        response = self.client.get(url)
+
+        self.assertEqual(response.status_code, 302)
+        self.assertRedirects(response, reverse('home'))
 
 
 class RecruiterIntegrationTest(TestCase):

@@ -2,10 +2,12 @@ from django.shortcuts import get_object_or_404, render, redirect
 from django.contrib.auth.decorators import login_required
 from Core.decorators import group_required
 from django.contrib import messages
-from .models import Recruiters, JobListing , Interest
+from .models import Recruiters, JobListing
 from .forms import RecruitersForm
 from django import forms
-from .forms import JobListingForm , InterestForm
+from .forms import JobListingForm
+from Juniors.models import Interest
+from Juniors.forms import InterestForm
 
 
 @login_required
@@ -108,9 +110,13 @@ def jobList(request):
     all_jobs = JobListing.objects.all()
     locations = list(set([job.location for job in all_jobs]))
     job_types = list(set([job.job_type for job in all_jobs]))
+    companies = list(set([job.company_name for job in all_jobs]))
     selected_location = request.GET.get('location')
     selected_title = request.GET.get('title')
     selected_job_type = request.GET.get('job_type')
+    min_salary = request.GET.get('min_salary')
+    selected_requirements = request.GET.get('requirements')
+    selected_company = request.GET.get('company')
 
     if selected_location:
         all_jobs = all_jobs.filter(location=selected_location)
@@ -118,11 +124,18 @@ def jobList(request):
         all_jobs = all_jobs.filter(title__icontains=selected_title)
     if selected_job_type:
         all_jobs = all_jobs.filter(job_type=selected_job_type)
-    return render(request, 'jobList.html', {'all_jobs': all_jobs, 'locations': locations, 'job_types': job_types})
+    if min_salary:
+        all_jobs = all_jobs.filter(salary__gte=min_salary)
+    if selected_requirements:
+        all_jobs = all_jobs.filter(
+            requirements__icontains=selected_requirements)
+    if selected_company:
+        all_jobs = all_jobs.filter(company_name__icontains=selected_company)
+
+    return render(request, 'jobList.html', {'all_jobs': all_jobs, 'locations': locations, 'job_types': job_types, 'companies': companies})
 
 
-
-@login_required
+@ login_required
 def editJob(request, job_id):
     job = get_object_or_404(JobListing, id=job_id)
 
@@ -150,41 +163,19 @@ def apply_job(request, job_id):
     return render(request, 'applyJob.html', context)
 
 
-
 def jobDetail(request, job_id):
     job = get_object_or_404(JobListing, id=job_id)
     form = InterestForm()
     context = {'job': job, 'form': form}
     return render(request, 'jobDetail.html', context)
 
-from django.contrib import messages
 
-def submit_interest(request, job_id):
-    job = get_object_or_404(JobListing, id=job_id)
-
-    if request.method == 'POST':
-        form = InterestForm(request.POST, request.FILES)
-        if form.is_valid():
-            interest = form.save(commit=False)
-            interest.job = job
-            interest.status = 'new_applicant'  # Set the default value
-            interest.save()
-            return redirect('home')
-        else:
-            for field, errors in form.errors.items():
-                for error in errors:
-                    messages.error(request, f"{field.capitalize()}: {error}")
-    else:
-        form = InterestForm()
-
-    context = {'job': job, 'form': form}
-    return render(request, 'jobDetail.html', context)
-
-
+@ group_required('Recruiter')
 def view_applicants(request, job_id):
     job = get_object_or_404(JobListing, id=job_id)
     applicants = Interest.objects.filter(job_id=job.id)
-    status_choices = ['in process', 'hired', 'rejected', 'qualified', 'awaiting decision', 'new applicant']
+    status_choices = ['in process', 'hired', 'rejected',
+                      'qualified', 'awaiting decision', 'new applicant']
 
     if request.method == 'POST':
         applicant_id = request.POST.get('applicant_id')
@@ -194,10 +185,12 @@ def view_applicants(request, job_id):
         applicant.save()
         return redirect('view_applicants', job_id=job_id)
 
-    context = {'job': job, 'applicants': applicants, 'status_choices': status_choices}
+    context = {'job': job, 'applicants': applicants,
+               'status_choices': status_choices}
     return render(request, 'view_applicants.html', context)
 
 
+@group_required('Recruiter')
 def update_status(request):
     if request.method == 'POST':
         applicant_id = request.POST.get('applicant_id')

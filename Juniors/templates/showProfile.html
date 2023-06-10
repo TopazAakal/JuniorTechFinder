@@ -23,14 +23,82 @@
     <h3>City: {{ junior.city }}</h3>
     <h3>Age: {{ junior.age }}</h3>
     <h3>Skills: {{junior.skills}}</h3>
-    <h3>Summary: {{junior.summary}}</h3>
+    <h3 style="margin-left: 150px; margin-right: 150px;">Summary: {{junior.summary}}</h3>
     {% if junior.cv_file %}
     <a style="background-color:#15396c; color:white; padding: 1em 1.5em; text-decoration: none;text-transform: uppercase; border-radius: 10px; display: inline-block; margin-top: 10px; margin-bottom: 10px;"
         href="{{ junior.cv_file.url }}" target="_blank">View my CV</a>
 
     {% endif %}
-
-
 </div>
+<br>
+<h2 style="color: #23416b; font-family: 'Righteous', cursive; margin-right: 1020px;"><strong>Applied Jobs:</strong></h2>
+<br>
+{% if job_details %}
+<div class="table-responsive">
+    <table class="table table-striped" style="margin: 0 auto;">
+        <thead>
+            <tr>
+                <th>Title</th>
+                <th>Company</th>
+                <th>Location</th>
+                <th>Type</th>
+                <th>Salary</th>
+                <th>Status</th>
+                <th>More details</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for job, status in job_details %}
+            <tr>
+                <td>{{ job.title }}</td>
+                <td>{{ job.company_name }}</td>
+                <td>{{ job.location }}</td>
+                <td> {{ job.job_type}} </td>
+                <td>{% if job.salary %}{{ job.salary }}${% else %}Not specified{% endif %}</td>
+                <td> {{ status|default:"N/A" }}</td>
+                <td>
+                    <a href="{% url 'jobDetail' job.id %}" class="btn btn-primary"
+                        style="background-color:#405677; color:white; padding: 1em 1.5em; text-decoration: none; border-radius: 10px; display: inline-block; margin-top: 10px; margin-bottom: 10px; font-size: 10px;">View
+                        Job</a>
+                </td>
+            </tr>
+            {% empty %}
+            <tr>
+                <td colspan="7">No applied jobs yet.</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+<style>
+    body {
+        text-align: center;
+    }
+
+    table {
+        text-align: center;
+        border-collapse: collapse;
+        width: 90%;
+    }
+
+    .table-responsive {
+        text-align: center;
+        margin-bottom: 60px;
+    }
+
+    th,
+    td {
+        padding: 8px;
+        text-align: left;
+        border-bottom: 1px solid #ddd;
+    }
+
+    tr:hover {
+        background-color: #f5f5f5;
+    }
+</style>
+{% else %}
+<p>No applied jobs yet.</p>
+{% endif %}
 
 {% endblock %}

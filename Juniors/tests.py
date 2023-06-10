@@ -1,3 +1,4 @@
+import os
 from django.test import TestCase, Client, tag
 from django.urls import reverse
 from Juniors.models import Juniors
@@ -6,7 +7,11 @@ from django.contrib.auth.models import User, Group
 from django.core.files.uploadedfile import SimpleUploadedFile
 from django.shortcuts import resolve_url
 from Recruiters.models import JobListing, Recruiters
+from Juniors.models import Interest
+from Juniors.forms import InterestForm
 from django.core.files import File
+from unittest.mock import patch
+from .views import PDF2Text, suggestions, generate_new_suggestions
 
 
 class CreateProfileTestCase(TestCase):
@@ -222,6 +227,102 @@ class CheckProfileTestCase(TestCase):
         self.assertRedirects(response, reverse('createProfile'))
 
 
+class SubmitInterestViewTest(TestCase):
+    def setUp(self):
+        self.client = Client()
+        self.user = User.objects.create_user( 
+            username='testuser',
+            email='testuser@test.com',
+            password='testpass'
+        )
+        recruiter_group = Group.objects.create(name='Recruiter')
+        self.user.groups.add(recruiter_group)
+        self.recruiter = Recruiters.objects.create(
+            user_id=self.user.id,
+            full_name='Test User',
+            email='testuser3@test.com',
+            phone_number='1224567890',
+            city='Test City',
+            age=25,
+            company='Test company',
+            summary='Test Summary',
+            photo='01.jpg',
+        )
+        self.job = JobListing.objects.create(
+            title='Job Title',
+            description='Job Description',
+            requirements='Job Requirements',
+            company='Test Company',
+            location='Test Location',
+            recruiter=self.recruiter,
+            application_link='https://example.com',
+            company_name='Test Company Name',
+            job_type='Full-time',
+        )
+
+        self.user1 = User.objects.create_user(
+            username='junioruser',
+            email='junioruser@test.com',
+            password='testpass'
+        )
+
+        # Fetch the existing "Junior" group
+        junior_group = Group.objects.create(name='Junior')
+        self.user1.groups.add(junior_group)
+        self.client.login(username='junioruser', password='testpass')
+
+        self.junior = Juniors.objects.create(
+            user_id=self.user1.id,
+            full_name='Test User',
+            email='testuser@test.com',
+            phone_number='1234567890',
+            city='Test City',
+            age=25,
+            skills='Test Skills',
+            summary='Test Summary',
+        )
+    
+    @tag("unit-test")
+    def test_submit_interest_post_valid_form(self):
+        url = reverse('submit_interest', args=[self.job.id])
+        data = {
+            'name': 'John Doe',
+            'email': 'john@example.com',
+            'phone': '123456789',
+            'resume': 'SampleFile.pdf',
+            'status': 'new_applicant',
+            'junior_id': self.junior.id,
+        }
+        
+        response = self.client.post(url, data)
+
+        self.assertEqual(response.status_code, 302)
+        self.assertRedirects(response, reverse('showProfile', args=[self.junior.id]))
+        self.assertEqual(Interest.objects.count(), 1)
+        interest = Interest.objects.first()
+        self.assertEqual(interest.job, self.job)
+
+    @tag("unit-test")
+    def test_submit_interest_post_invalid_form(self):
+        url = reverse('submit_interest', args=[self.job.id])
+        data = {
+            'name': 'John Doe',
+            'email': '', # Invalid data
+            'phone': '123456789',
+            'resume': '',  # Invalid data
+            'status': 'new_applicant',
+        }
+        response = self.client.post(url, data)
+
+        self.assertEqual(response.status_code, 200)
+        self.assertTemplateUsed(response, 'jobDetail.html')
+        self.assertIn('form', response.context)
+        self.assertIsInstance(response.context['form'], InterestForm)
+        self.assertEqual(Interest.objects.count(), 0)
+        
+
+
+
 class JuniorListTestCase(TestCase):
     def setUp(self):
         self.client = Client()
@@ -293,6 +394,118 @@ class JuniorListTestCase(TestCase):
         self.assertCountEqual(response.context['juniors'], [self.junior1])
         self.assertCountEqual(response.context['cities'], [
                               'City1', 'City2', 'City3'])
+
+
+
+class PDF2TextViewTest(TestCase):
+    @tag('unit-test')
+    def test_pdf2text(self):
+        file_path = os.path.join(os.path.dirname(os.path.abspath(__file__)), '..', 'SampleFile.pdf')
+        result = PDF2Text(file_path)
+        expected_text = "This is a sample PDF file.  \n "
+        self.assertEqual(result, expected_text)
+
+class SuggestionsViewTest(TestCase):
+    def setUp(self):
+        self.client = Client()
+        self.user = User.objects.create_user(
+            username='testuser',
+            email='testuser@test.com',
+            password='testpass'
+        )
+
+        junior_group = Group.objects.create(name='Junior')
+        self.user.groups.add(junior_group)
+        self.client.login(username='testuser', password='testpass')
+
+        self.junior = Juniors.objects.create(
+            user_id=self.user.id,
+            full_name='Test User',
+            email='testuser@test.com',
+            phone_number='1234567890',
+            city='Test City',
+            age=25,
+            skills='Test Skills',
+            summary='Test Summary',
+        )
+
+    @tag('unit-test')
+    def test_suggestions_get_without_cv_file(self):
+        self.client.force_login(self.user)
+        response = self.client.get(reverse('suggestions'))
+        self.assertEqual(response.status_code, 200)
+        self.assertTemplateUsed(response, 'suggestions.html')
+        self.assertIn('junior', response.context)
+        self.assertEqual(response.context['junior'], self.junior)
+        self.assertIn('generated_text', response.context)
+        self.assertEqual(response.context['generated_text'], 'Upload your CV to get suggestions')
+
+    @tag('unit-test')
+    def test_suggestions_get_with_cv_file(self):
+        self.client.force_login(self.user)
+        self.junior.cv_file = 'SampleFile.pdf'
+        self.junior.save()
+        with patch('Juniors.views.PDF2Text') as mock_PDF2Text:
+            mock_PDF2Text.return_value = 'Sample CV Text'
+            response = self.client.get(reverse('suggestions'))
+        self.assertEqual(response.status_code, 200)
+        self.assertTemplateUsed(response, 'suggestions.html')
+        self.assertIn('junior', response.context)
+        self.assertEqual(response.context['junior'], self.junior)
+        self.assertIn('generated_text', response.context)
+
+
+    @tag('unit-test')
+    def test_suggestions_post(self):
+        # Prepare the file data
+        file_path = os.path.join(os.path.dirname(os.path.abspath(__file__)), '..', 'SampleFile.pdf')
+        with open(file_path, 'rb') as file:
+            file_data = file.read()
+        uploaded_file = SimpleUploadedFile('SampleFile.pdf', file_data, content_type='application/pdf')
+
+        # Send the POST request with the file upload
+        response = self.client.post(reverse('suggestions'), {'cv_file': uploaded_file}, format='multipart')
+ 
+        self.assertEqual(response.status_code, 200)
+        self.assertTemplateUsed(response, 'suggestions.html')
+        uploaded_file.close()
+
+class GenerateNewSuggestionsViewTest(TestCase):
+    def setUp(self):
+        self.client = Client()
+        self.user = User.objects.create_user(
+            username='testuser',
+            email='testuser@test.com',
+            password='testpass'
+        )
+
+        # Fetch the existing "Junior" group
+        junior_group = Group.objects.create(name='Junior')
+        self.user.groups.add(junior_group)
+        self.client.login(username='testuser', password='testpass')
+
+        self.junior = Juniors.objects.create(
+            user_id=self.user.id,
+            full_name='Test User',
+            email='testuser@test.com',
+            phone_number='1234567890',
+            city='Test City',
+            age=25,
+            skills='Test Skills',
+            summary='Test Summary',
+        )
+    @tag('unit-test')
+    def test_generate_new_suggestions(self):
+        self.client.force_login(self.user)
+        response = self.client.get(reverse('generate_new_suggestions'))
+        self.assertEqual(response.status_code, 302)
+        self.assertRedirects(response, reverse('suggestions'))
+        self.junior.refresh_from_db()
+        self.assertIsNone(self.junior.generated_text)
+
+
+
+
 
 
 class JuniorIntegrationTest(TestCase):
@@ -400,3 +613,49 @@ class JuniorIntegrationTest(TestCase):
         self.assertContains(response, job.company_name)
         self.assertContains(response, job.job_type)
         self.assertContains(response, job.location)
+
+
+    @tag('integrationTest')
+    def test_Junior_Workflow_improving_cv(self):
+        self.client.logout()
+        
+        # Step 1: Signup as a Junior
+        response = self.client.post(self.signup_url, self.junior_data)
+        # Redirect after successful signup
+        self.assertEqual(response.status_code, 302)
+        self.assertRedirects(response, reverse('home'))
+        
+        # Get the created user object
+        user = User.objects.get(username=self.junior_data['email'])
+
+        # Step 2: Create Junior profile
+        response = self.client.post(self.login_url, {
+                                    'username': self.junior_data['email'], 'password': self.junior_data['password1']})
+        
+        response = self.client.post(self.createProfileUrl, self.profile_data, follow=True)
+
+        # Get the created junior object fro db
+        junior = Juniors.objects.get(user=user)
+
+        self.assertEqual(response.status_code, 200)
+        self.assertRedirects(response, reverse('showProfile', args=[junior.id]))
+
+        # Step 3: Access suggestions view and without CV file
+        response = self.client.get(reverse('suggestions'))
+        self.assertEqual(response.status_code, 200)
+        self.assertContains(response, "You don't have a CV on your profile.")
+
+        # Step 4: Upload CV file and check if suggestions are displayed
+        with open('SampleFile.pdf', 'rb') as file:
+            response = self.client.post(reverse('suggestions'), {'cv_file': file}, follow=True)
+        self.assertEqual(response.status_code, 200)
+        self.assertTemplateUsed(response, 'suggestions.html')
+
+        # Step 5: Generate new suggestions
+        response = self.client.get(reverse('generate_new_suggestions'))
+        self.assertEqual(response.status_code, 302)
+        self.assertRedirects(response, reverse('suggestions'))
+
+        # Step 6: Logout
+        self.client.logout()
+        response = self.client.get(reverse('home'))

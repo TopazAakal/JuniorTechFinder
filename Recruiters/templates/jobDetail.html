@@ -4,7 +4,7 @@
 {% block content %}
 <div class="job-detail">
     <h1>{{ job.title }}</h1>
-    <p>{{ job.description }}</p>
+    <p style="font-weight: bold; color:rgb(45, 45, 138)">{{ job.description }}</p>
 
     <p><strong>Posted:</strong> {{ job.date_posted }}</p>
     <p><strong>Company Name:</strong> {{ job.company_name }}</p>
@@ -18,36 +18,39 @@
     <p><strong>Salary:</strong> Not specified</p>
     {% endif %}
 
-    <button class="btn btn-primary show-form" style="background-color:#405677; color:white; padding: 1em 1.5em; text-decoration: none; border-radius: 10px; display: inline-block; margin-top: 10px; margin-bottom: 10px; font-size: 14px;">I'm interested!</button>
+    <button class="btn btn-primary show-form"
+        style="background-color:#405677; color:white; padding: 1em 1.5em; text-decoration: none; border-radius: 10px; display: inline-block; margin-top: 10px; margin-bottom: 10px; font-size: 14px;">I'm
+        interested!</button>
 
     <div class="form-window">
-        <form id="interest-form" method="POST" action="{% url 'submit_interest' job_id=job.id %}" enctype="multipart/form-data">
+        <form id="interest-form" method="POST" action="{% url 'submit_interest' job_id=job.id %}"
+            enctype="multipart/form-data">
             {% csrf_token %}
-            <label for="name">Name:</label>
+            <label style="font-weight: bold;" for="name">Name:</label>
             <input type="text" id="name" name="name" required>
             <br>
-            <label for="email">Email:</label>
+            <label style="font-weight: bold;" for="email">Email:</label>
             <input type="email" id="email" name="email" required>
             <br>
-            <label for="phone">Phone Number:</label>
+            <label style="font-weight: bold;" for="phone">Phone Number:</label>
             <input type="tel" id="phone" name="phone" required>
             <br>
-            <input type="hidden" name="status" value="new_applicant">  <!-- Hidden status field -->
-            <label for="resume">Resume:</label>
+            <input type="hidden" name="status" value="new_applicant"> <!-- Hidden status field -->
+            <label style="font-weight: bold;" for="resume">Resume:</label>
             <input type="file" id="resume" name="resume" accept=".pdf,.doc,.docx" required>
             <br>
-            <button type="submit">Submit</button>
+            <button style="background-color: #405677;" type="submit">Submit</button>
         </form>
         <button class="close-form">Close</button>
-        
+
     </div>
     {% if messages %}
     <ul class="messages">
-      {% for message in messages %}
-        <li{% if message.tags %} class="{{ message.tags }}"{% endif %}>{{ message }}</li>
-      {% endfor %}
+        {% for message in messages %}
+        <li{% if message.tags %} class="{{ message.tags }}" {% endif %}>{{ message }}</li>
+            {% endfor %}
     </ul>
-  {% endif %}
+    {% endif %}
     <br><br>
 </div>
 
@@ -57,8 +60,8 @@
     }
 
     .job-detail {
-        margin-left: 50px;
-        margin-right: 50px;
+        margin-left: 350px;
+        margin-right: 350px;
     }
 
     .form-window {
@@ -75,9 +78,14 @@
         z-index: 9999;
     }
 
+
     .form-window input,
     .form-window button {
         margin-bottom: 10px;
+    }
+
+    button {
+        font-size: 14px;
     }
 </style>
 

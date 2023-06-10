@@ -39,6 +39,7 @@
 
     select,
     input[type="text"],
+    input[type="number"],
     button {
         height: 40px;
         font-size: 16px;
@@ -54,7 +55,8 @@
         font-weight: bold;
     }
 
-    input[type="text"] {
+    input[type="text"],
+    input[type="number"] {
         background-color: #fff;
         box-shadow: 0 0 5px rgba(0, 0, 0, 0.2);
         font-family: 'Lato', sans-serif;
@@ -91,8 +93,19 @@
             <option value="{{ job_type }}">{{ job_type }}</option>
             {% endfor %}
         </select>
-        <input type="text" name="title" placeholder="Search by title">
-        <button type="submit">Filter</button>
+        <select name="company">
+            <option value="">All Companies</option>
+            {% for company in companies %}
+            <option value="{{ company }}">{{ company }}</option>
+            {% endfor %}
+        </select>
+        <input style="width: 140px;" type="text" name="title" placeholder="Search by title">
+        <input style="width: 125px;" type="number" name="min_salary" placeholder="Min Salary">
+        <input type="text" name="requirements" placeholder="Search by requirements">
+
+        <button style="background-color: #293a52;
+        color: #fff;
+        cursor: pointer;" type="submit">Filter</button>
     </form>
 
     <br><br>

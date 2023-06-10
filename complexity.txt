@@ -1,0 +1,217 @@
+Authentication\apps.py
+    [1m[36mC [0m4:0 AuthenticationConfig - [32mA (1)[0m
+Authentication\forms.py
+    [1m[36mC [0m16:0 SignUpForm - [32mA (2)[0m
+    [1m[36mC [0m8:0 LoginForm - [32mA (1)[0m
+    [1m[37mM [0m41:4 SignUpForm.clean - [32mA (1)[0m
+Authentication\tests.py
+    [1m[36mC [0m11:0 LoginViewTestCase - [32mA (2)[0m
+    [1m[36mC [0m67:0 SignUpFormTest - [32mA (2)[0m
+    [1m[36mC [0m89:0 SignUpViewTest - [32mA (2)[0m
+    [1m[36mC [0m159:0 LogoutViewTest - [32mA (2)[0m
+    [1m[37mM [0m12:4 LoginViewTestCase.setUp - [32mA (1)[0m
+    [1m[37mM [0m23:4 LoginViewTestCase.test_login_valid_credentials - [32mA (1)[0m
+    [1m[37mM [0m30:4 LoginViewTestCase.test_login_invalid_username - [32mA (1)[0m
+    [1m[37mM [0m37:4 LoginViewTestCase.test_login_invalid_password - [32mA (1)[0m
+    [1m[37mM [0m44:4 LoginViewTestCase.test_login_get_request - [32mA (1)[0m
+    [1m[37mM [0m50:4 LoginViewTestCase.test_login_redirect_already_logged_in_user - [32mA (1)[0m
+    [1m[37mM [0m60:4 LoginViewTestCase.test_login_post_request_with_empty_form - [32mA (1)[0m
+    [1m[37mM [0m71:4 SignUpFormTest.test_form_email_required - [32mA (1)[0m
+    [1m[37mM [0m79:4 SignUpFormTest.test_form_passwords_match - [32mA (1)[0m
+    [1m[37mM [0m93:4 SignUpViewTest.test_view_url_exists_at_desired_location - [32mA (1)[0m
+    [1m[37mM [0m99:4 SignUpViewTest.test_view_url_accessible_by_name - [32mA (1)[0m
+    [1m[37mM [0m105:4 SignUpViewTest.test_view_uses_correct_template - [32mA (1)[0m
+    [1m[37mM [0m112:4 SignUpViewTest.test_view_can_sign_up_user - [32mA (1)[0m
+    [1m[37mM [0m130:4 SignUpViewTest.test_view_prevents_duplicate_email_signup - [32mA (1)[0m
+    [1m[37mM [0m160:4 LogoutViewTest.setUp - [32mA (1)[0m
+    [1m[37mM [0m171:4 LogoutViewTest.test_logout_view - [32mA (1)[0m
+Authentication\views.py
+    [1m[35mF [0m8:0 login_view - [32mA (5)[0m
+    [1m[35mF [0m33:0 signup_view - [32mA (5)[0m
+    [1m[35mF [0m69:0 logout_view - [32mA (1)[0m
+Authentication\migrations\0001_initial.py
+    [1m[36mC [0m9:0 Migration - [32mA (1)[0m
+Authentication\migrations\0002_delete_user.py
+    [1m[36mC [0m6:0 Migration - [32mA (1)[0m
+Authentication\templatetags\my_tags.py
+    [1m[35mF [0m7:0 user_in_group - [32mA (2)[0m
+Core\apps.py
+    [1m[36mC [0m4:0 CoreConfig - [32mA (1)[0m
+Core\decorators.py
+    [1m[35mF [0m4:0 group_required - [32mA (1)[0m
+Core\tests.py
+    [1m[36mC [0m6:0 AboutUsPageTestCase - [32mA (2)[0m
+    [1m[36mC [0m14:0 SiteRulesTestCase - [32mA (2)[0m
+    [1m[36mC [0m22:0 ContactUsPageTestCase - [32mA (2)[0m
+    [1m[37mM [0m8:4 AboutUsPageTestCase.test_about_us_page - [32mA (1)[0m
+    [1m[37mM [0m16:4 SiteRulesTestCase.test_site_rules_page - [32mA (1)[0m
+    [1m[37mM [0m23:4 ContactUsPageTestCase.setUp - [32mA (1)[0m
+    [1m[37mM [0m28:4 ContactUsPageTestCase.test_contact_us_page - [32mA (1)[0m
+Core\views.py
+    [1m[35mF [0m20:0 contactUsPage - [32mA (2)[0m
+    [1m[35mF [0m8:0 homePage - [32mA (1)[0m
+    [1m[35mF [0m12:0 aboutUsPage - [32mA (1)[0m
+    [1m[35mF [0m16:0 siteRulesPage - [32mA (1)[0m
+Core\migrations\0002_delete_junior.py
+    [1m[36mC [0m6:0 Migration - [32mA (1)[0m
+Core\templatetags\auth_extras.py
+    [1m[35mF [0m8:0 belongsToGroup - [32mA (2)[0m
+Juniors\admin.py
+    [1m[36mC [0m5:0 JuniorsAdmin - [32mA (1)[0m
+Juniors\apps.py
+    [1m[36mC [0m4:0 JuniorsConfig - [32mA (1)[0m
+Juniors\forms.py
+    [1m[36mC [0m7:0 JuniorForm - [32mA (3)[0m
+    [1m[37mM [0m27:4 JuniorForm.__init__ - [32mA (2)[0m
+Juniors\models.py
+    [1m[36mC [0m6:0 Juniors - [32mA (1)[0m
+Juniors\tests.py
+    [1m[36mC [0m12:0 CreateProfileTestCase - [32mA (2)[0m
+    [1m[36mC [0m86:0 ShowProfileTestCase - [32mA (2)[0m
+    [1m[36mC [0m133:0 EditProfileTestCase - [32mA (2)[0m
+    [1m[36mC [0m192:0 CheckProfileTestCase - [32mA (2)[0m
+    [1m[36mC [0m225:0 JuniorListTestCase - [32mA (2)[0m
+    [1m[36mC [0m298:0 JuniorIntegrationTest - [32mA (2)[0m
+    [1m[37mM [0m14:4 CreateProfileTestCase.setUp - [32mA (1)[0m
+    [1m[37mM [0m24:4 CreateProfileTestCase.test_create_profile_GET - [32mA (1)[0m
+    [1m[37mM [0m31:4 CreateProfileTestCase.test_create_profile_POST_valid - [32mA (1)[0m
+    [1m[37mM [0m64:4 CreateProfileTestCase.test_create_profile_POST_invalid - [32mA (1)[0m
+    [1m[37mM [0m87:4 ShowProfileTestCase.setUp - [32mA (1)[0m
+    [1m[37mM [0m112:4 ShowProfileTestCase.test_showProfile_GET_valid - [32mA (1)[0m
+    [1m[37mM [0m124:4 ShowProfileTestCase.test_showProfile_GET_invalid - [32mA (1)[0m
+    [1m[37mM [0m134:4 EditProfileTestCase.setUp - [32mA (1)[0m
+    [1m[37mM [0m160:4 EditProfileTestCase.test_editProfile_GET - [32mA (1)[0m
+    [1m[37mM [0m168:4 EditProfileTestCase.test_editProfile_POST_invalid - [32mA (1)[0m
+    [1m[37mM [0m193:4 CheckProfileTestCase.setUp - [32mA (1)[0m
+    [1m[37mM [0m213:4 CheckProfileTestCase.test_checkProfile_GET_existing_profile - [32mA (1)[0m
+    [1m[37mM [0m219:4 CheckProfileTestCase.test_checkProfile_GET_no_profile - [32mA (1)[0m
+    [1m[37mM [0m226:4 JuniorListTestCase.setUp - [32mA (1)[0m
+    [1m[37mM [0m259:4 JuniorListTestCase.test_juniorList_GET - [32mA (1)[0m
+    [1m[37mM [0m269:4 JuniorListTestCase.test_juniorList_GET_with_skills_filter - [32mA (1)[0m
+    [1m[37mM [0m279:4 JuniorListTestCase.test_juniorList_GET_with_city_filter - [32mA (1)[0m
+    [1m[37mM [0m288:4 JuniorListTestCase.test_juniorList_GET_with_skills_and_city_filters - [32mA (1)[0m
+    [1m[37mM [0m299:4 JuniorIntegrationTest.setUp - [32mA (1)[0m
+    [1m[37mM [0m360:4 JuniorIntegrationTest.test_Junior_Workflow - [32mA (1)[0m
+Juniors\views.py
+    [1m[35mF [0m118:0 suggestions - [32mB (8)[0m
+    [1m[35mF [0m53:0 editProfile - [32mA (5)[0m
+    [1m[35mF [0m81:0 juniorList - [32mA (5)[0m
+    [1m[35mF [0m21:0 createProfile - [32mA (4)[0m
+    [1m[35mF [0m98:0 PDF2Text - [32mA (3)[0m
+    [1m[35mF [0m73:0 checkProfile - [32mA (2)[0m
+    [1m[35mF [0m177:0 generate_new_suggestions - [32mA (2)[0m
+    [1m[35mF [0m44:0 showProfile - [32mA (1)[0m
+Juniors\migrations\0001_initial.py
+    [1m[36mC [0m7:0 Migration - [32mA (1)[0m
+Juniors\migrations\0002_alter_juniors_cv_file_alter_juniors_photo.py
+    [1m[36mC [0m7:0 Migration - [32mA (1)[0m
+Juniors\migrations\0003_alter_juniors_phone_number.py
+    [1m[36mC [0m7:0 Migration - [32mA (1)[0m
+Juniors\migrations\0004_alter_juniors_phone_number.py
+    [1m[36mC [0m7:0 Migration - [32mA (1)[0m
+Juniors\migrations\0005_alter_juniors_phone_number.py
+    [1m[36mC [0m6:0 Migration - [32mA (1)[0m
+Juniors\migrations\0006_alter_juniors_age_alter_juniors_city_and_more.py
+    [1m[36mC [0m6:0 Migration - [32mA (1)[0m
+Juniors\migrations\0007_alter_juniors_phone_number.py
+    [1m[36mC [0m6:0 Migration - [32mA (1)[0m
+Juniors\migrations\0008_alter_juniors_age_alter_juniors_city_and_more.py
+    [1m[36mC [0m7:0 Migration - [32mA (1)[0m
+Juniors\migrations\0009_alter_juniors_skills.py
+    [1m[36mC [0m6:0 Migration - [32mA (1)[0m
+Juniors\migrations\0010_alter_juniors_cv_file.py
+    [1m[36mC [0m7:0 Migration - [32mA (1)[0m
+Juniors\migrations\0011_juniors_user.py
+    [1m[36mC [0m8:0 Migration - [32mA (1)[0m
+Juniors\migrations\0012_alter_juniors_user.py
+    [1m[36mC [0m8:0 Migration - [32mA (1)[0m
+Juniors\migrations\0013_juniors_generated_text.py
+    [1m[36mC [0m6:0 Migration - [32mA (1)[0m
+Recruiters\admin.py
+    [1m[36mC [0m6:0 RecruitersAdmin - [32mA (1)[0m
+    [1m[36mC [0m16:0 JobListingAdmin - [32mA (1)[0m
+Recruiters\apps.py
+    [1m[36mC [0m4:0 RecruitersConfig - [32mA (1)[0m
+Recruiters\forms.py
+    [1m[36mC [0m7:0 RecruitersForm - [32mA (3)[0m
+    [1m[37mM [0m25:4 RecruitersForm.__init__ - [32mA (2)[0m
+    [1m[36mC [0m32:0 JobListingForm - [32mA (1)[0m
+    [1m[36mC [0m43:0 InterestForm - [32mA (1)[0m
+Recruiters\models.py
+    [1m[36mC [0m31:0 JobListing - [32mA (2)[0m
+    [1m[36mC [0m60:0 Interest - [32mA (2)[0m
+    [1m[36mC [0m7:0 Recruiters - [32mA (1)[0m
+    [1m[37mM [0m57:4 JobListing.__str__ - [32mA (1)[0m
+    [1m[37mM [0m79:4 Interest.__str__ - [32mA (1)[0m
+Recruiters\tests.py
+    [1m[36mC [0m13:0 CreateProfileTestCase - [32mA (2)[0m
+    [1m[36mC [0m87:0 EditProfileTestCase - [32mA (2)[0m
+    [1m[36mC [0m148:0 ShowProfileTestCase - [32mA (2)[0m
+    [1m[36mC [0m194:0 JobListTestCase - [32mA (2)[0m
+    [1m[36mC [0m308:0 RecruiterIntegrationTest - [32mA (2)[0m
+    [1m[37mM [0m15:4 CreateProfileTestCase.setUp - [32mA (1)[0m
+    [1m[37mM [0m25:4 CreateProfileTestCase.test_create_profile_GET - [32mA (1)[0m
+    [1m[37mM [0m32:4 CreateProfileTestCase.test_create_profile_POST_valid - [32mA (1)[0m
+    [1m[37mM [0m64:4 CreateProfileTestCase.test_create_profile_POST_invalid - [32mA (1)[0m
+    [1m[37mM [0m88:4 EditProfileTestCase.setUp - [32mA (1)[0m
+    [1m[37mM [0m116:4 EditProfileTestCase.test_editProfile_GET - [32mA (1)[0m
+    [1m[37mM [0m124:4 EditProfileTestCase.test_editProfile_POST_invalid - [32mA (1)[0m
+    [1m[37mM [0m149:4 ShowProfileTestCase.setUp - [32mA (1)[0m
+    [1m[37mM [0m174:4 ShowProfileTestCase.test_showProfile_GET_valid - [32mA (1)[0m
+    [1m[37mM [0m185:4 ShowProfileTestCase.test_showProfile_GET_invalid - [32mA (1)[0m
+    [1m[37mM [0m195:4 JobListTestCase.setUp - [32mA (1)[0m
+    [1m[37mM [0m220:4 JobListTestCase.test_postJob_view - [32mA (1)[0m
+    [1m[37mM [0m252:4 JobListTestCase.test_deleteJob_view - [32mA (1)[0m
+    [1m[37mM [0m282:4 JobListTestCase.test_jobList_view - [32mA (1)[0m
+    [1m[37mM [0m289:4 JobListTestCase.test_jobDetail_view - [32mA (1)[0m
+    [1m[37mM [0m309:4 RecruiterIntegrationTest.setUp - [32mA (1)[0m
+    [1m[37mM [0m325:4 RecruiterIntegrationTest.test_recruiter_creation_job_posting - [32mA (1)[0m
+Recruiters\views.py
+    [1m[35mF [0m107:0 jobList - [32mB (6)[0m
+    [1m[35mF [0m53:0 editProfileRecruiter - [32mA (5)[0m
+    [1m[35mF [0m126:0 editJob - [32mA (5)[0m
+    [1m[35mF [0m162:0 submit_interest - [32mA (5)[0m
+    [1m[35mF [0m12:0 createProfileRecruiters - [32mA (4)[0m
+    [1m[35mF [0m82:0 postJob - [32mA (4)[0m
+    [1m[35mF [0m34:0 showProfileRecruiter - [32mA (3)[0m
+    [1m[35mF [0m73:0 checkProf - [32mA (2)[0m
+    [1m[35mF [0m98:0 deleteJob - [32mA (2)[0m
+    [1m[35mF [0m184:0 view_applicants - [32mA (2)[0m
+    [1m[35mF [0m201:0 update_status - [32mA (2)[0m
+    [1m[35mF [0m146:0 apply_job - [32mA (1)[0m
+    [1m[35mF [0m154:0 jobDetail - [32mA (1)[0m
+Recruiters\migrations\0001_initial.py
+    [1m[36mC [0m9:0 Migration - [32mA (1)[0m
+Recruiters\migrations\0002_joblisting.py
+    [1m[36mC [0m9:0 Migration - [32mA (1)[0m
+Recruiters\migrations\0003_alter_joblisting_salary.py
+    [1m[36mC [0m6:0 Migration - [32mA (1)[0m
+Recruiters\migrations\0004_alter_joblisting_recruiter.py
+    [1m[36mC [0m7:0 Migration - [32mA (1)[0m
+Recruiters\migrations\0005_alter_joblisting_recruiter.py
+    [1m[36mC [0m8:0 Migration - [32mA (1)[0m
+Recruiters\migrations\0006_alter_joblisting_recruiter.py
+    [1m[36mC [0m7:0 Migration - [32mA (1)[0m
+Recruiters\migrations\0007_joblisting_job_type.py
+    [1m[36mC [0m6:0 Migration - [32mA (1)[0m
+Recruiters\migrations\0008_alter_joblisting_job_type.py
+    [1m[36mC [0m6:0 Migration - [32mA (1)[0m
+Recruiters\migrations\0009_interest.py
+    [1m[36mC [0m6:0 Migration - [32mA (1)[0m
+Recruiters\migrations\0010_interest_job.py
+    [1m[36mC [0m7:0 Migration - [32mA (1)[0m
+Recruiters\migrations\0011_alter_interest_resume.py
+    [1m[36mC [0m7:0 Migration - [32mA (1)[0m
+Recruiters\migrations\0012_alter_interest_resume.py
+    [1m[36mC [0m7:0 Migration - [32mA (1)[0m
+Recruiters\migrations\0013_interest_status.py
+    [1m[36mC [0m6:0 Migration - [32mA (1)[0m
+Reports\apps.py
+    [1m[36mC [0m4:0 ReportsConfig - [32mA (1)[0m
+Reports\tests.py
+    [1m[36mC [0m6:0 ReportsPageTestCase - [32mA (2)[0m
+    [1m[37mM [0m7:4 ReportsPageTestCase.setUp - [32mA (1)[0m
+    [1m[37mM [0m56:4 ReportsPageTestCase.test_admin_access - [32mA (1)[0m
+    [1m[37mM [0m65:4 ReportsPageTestCase.test_non_admin_access - [32mA (1)[0m
+Reports\views.py
+    [1m[35mF [0m7:0 reportsPage - [32mA (3)[0m

@@ -71,42 +71,51 @@
         background-color: #34445b;
     }
 </style>
-<div class="job-list">
-<form method="GET">
-    <select name="reportType">
-        <option value="Status">Candidates Status</option>
-        <option value="Hired">Hired Candidates</option>
-    </select>
+
+<div class="job-list" style="margin-top: 30px;">
+    <form method="GET">
+        <select name="reportType">
+            <option value="Status">Candidates Status</option>
+            <option value="Hired">Hired Candidates</option>
+        </select>
         <button type="submit">Show Report</button>
-</form>
+    </form>
 
-{% if all_Status %}
-<div class="table-responsive">
-    <table class="table table-striped" style="margin: 0 auto;">
-        <thead>
-            <tr>
-                <th>Candidate name</th>
-                <th>Status</th>
-            </tr>
-        </thead>
-        <tbody>
-            {% for status in all_Status %}
-            <tr>
-                <td>{{ status.name }}</td>
-                <td>{{ status.status }}</td>
-            </tr>
-            {% empty %}
-            <tr>
-                <td colspan="6">No job Status list yet</td>
-            </tr>
-            {% endfor %}
-        </tbody>
-    </table>
-</div>
+    {% if all_Status %}
+    <div class="table-responsive">
+        <table class="table table-striped" style="margin: 0 auto;">
+            <thead>
+                <tr>
+                    <th>Candidate name</th>
+                    <th>Status</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for status in all_Status %}
+                <tr>
+                    <td>{{ status.name }}</td>
+                    <td>{{ status.status }}</td>
+                </tr>
+                {% empty %}
+                <tr>
+                    <td colspan="6">No job Status list yet</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+        <br><br>
 
-{% else %}
-<p>No job Status list yet.</p>
-{% endif %}
+        <a style="background-color:#717171; color:white; padding: 1em 1.5em; text-decoration: none; border-radius: 10px; display: inline-block; margin-top: 10px; margin-bottom: 10px; font-size: 14px; margin-right: 10px;"
+            href="{% url 'reports' %}?reportType=Status&export=pdf">Candidates Status Report<br> Export to PDF</a>
+        <a style="background-color:#343f4e; color:white; padding: 1em 1.5em; text-decoration: none; border-radius: 10px; display: inline-block; margin-top: 10px; margin-bottom: 10px; font-size: 14px;"
+            href="{% url 'reports' %}?reportType=Hired&export=pdf"> Hired Candidates Report <br> Export to PDF</a>
+
+        <br>
+    </div>
+
+    {% else %}
+    <p>No job Status list yet.</p>
+    {% endif %}
 
 </div>
 
