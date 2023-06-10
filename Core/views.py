@@ -22,7 +22,7 @@ def contactUsPage(request):
         name = request.POST['name']
         email = request.POST['email']
         message = request.POST['message']
-        # print(f'Name: {name}\nEmail: {email}\nMessage: {message}')
+        print(f'Name: {name}\nEmail: {email}\nMessage: {message}')
         messages.success(request, 'Your message has been sent successfully!')
         return render(request, 'contactUs.html')
     return render(request, 'contactUs.html')
