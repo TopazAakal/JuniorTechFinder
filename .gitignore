@@ -7,4 +7,4 @@ Scripts
 Lib
 .venv
 pyvenv.cfg
-# .env
+.env
